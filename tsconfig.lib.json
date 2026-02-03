@@ -1,0 +1,10 @@
+{
+  "extends": "./public/tsconfig/tsconfig.node-lib.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}

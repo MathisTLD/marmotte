@@ -1,0 +1,10 @@
+{
+  "extends": "marmotte/tsconfig/tsconfig.vue.json",
+  "include": ["src/**/*", "src/**/*.vue"],
+  "exclude": [],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  // vitest vscode often crashes because of tempalte dirs where it can't resolve @mathitld/marmotte here is a temporary fix
+  "vitest.configSearchPatternExclude": "{**/node_modules/**,**/vendor/**,**/.*/**,**/*.d.ts,**/templates/**,**/.template-tests/**}"
+}
