@@ -14,10 +14,7 @@ function normalizePathFilter(filter: PathFilter) {
  * Recursively iterates over a directory (and its subdirectories) files
  * @param dir
  */
-export async function* walk(
-  dir: string,
-  filter?: PathFilter,
-): AsyncGenerator<string> {
+export async function* walk(dir: string, filter?: PathFilter): AsyncGenerator<string> {
   const _filter = filter ? normalizePathFilter(filter) : () => true;
   for await (const d of await fs.opendir(dir)) {
     const entry = resolve(dir, d.name);
@@ -44,8 +41,5 @@ export function fileExists(path: string) {
 }
 
 export function moduleExists(path: string) {
-  return (
-    (dirExists(path) && fileExists(resolve(path, "index.ts"))) ||
-    fileExists(path + ".ts")
-  );
+  return (dirExists(path) && fileExists(resolve(path, "index.ts"))) || fileExists(path + ".ts");
 }

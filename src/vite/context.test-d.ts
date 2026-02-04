@@ -15,7 +15,5 @@ test("path map correctly inferred", () => {
   assertType<VitePluginContext<"sourceDir" | "docsDir">>(ctx);
   expectTypeOf<"sourceDir" | "docsDir">().toEqualTypeOf<P>();
 
-  assertType<(base: "root" | "sourceDir" | "docsDir") => string>(
-    ctx.resolveBase,
-  );
+  assertType<(base: "root" | "sourceDir" | "docsDir") => string>(ctx.resolveBase);
 });

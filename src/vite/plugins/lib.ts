@@ -1,10 +1,7 @@
 import type { Plugin } from "vite";
 
 import dts, { type PluginOptions as DTSPluginOptions } from "vite-plugin-dts";
-import {
-  nodeExternals,
-  type ExternalsOptions,
-} from "rollup-plugin-node-externals";
+import { nodeExternals, type ExternalsOptions } from "rollup-plugin-node-externals";
 import { DefaultVitePluginContext } from "../context";
 import { PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs } from "./docs";
@@ -32,10 +29,7 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
       const entry =
         options.entries === false
           ? {}
-          : await resolveEntries(
-              ctx.resolve("sourceDir"),
-              options.entries ?? /(?<!d\.)ts$/,
-            );
+          : await resolveEntries(ctx.resolve("sourceDir"), options.entries ?? /(?<!d\.)ts$/);
       return {
         build: {
           minify: false,

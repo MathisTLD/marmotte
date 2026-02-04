@@ -3,15 +3,7 @@ import { DefaultVitePluginContext } from "../context";
 import { PackageMeta } from "./package-meta";
 
 /** see https://vite.dev/config/shared-options#resolve-extensions */
-export const DEFAULT_EXTENSION = [
-  ".mjs",
-  ".js",
-  ".mts",
-  ".ts",
-  ".jsx",
-  ".tsx",
-  ".json",
-];
+export const DEFAULT_EXTENSION = [".mjs", ".js", ".mts", ".ts", ".jsx", ".tsx", ".json"];
 
 /**
  * A vite plugin that injects a base configuration so that user don't have to.

@@ -7,11 +7,7 @@ import { nodeExternals } from "rollup-plugin-node-externals";
 import { PackageMeta } from "./src/vite/plugins/package-meta";
 
 export default defineConfig({
-  plugins: [
-    PackageMeta(),
-    dts({ tsconfigPath: "./tsconfig.lib.json" }),
-    nodeExternals(),
-  ],
+  plugins: [PackageMeta(), dts({ tsconfigPath: "./tsconfig.lib.json" }), nodeExternals()],
   build: {
     minify: false,
     sourcemap: true,
@@ -21,8 +17,7 @@ export default defineConfig({
         "vite/index": "./src/vite/index.ts",
         // TODO: we might wanna build client files with another vite config
         "vite/plugins/docs/client": "./src/vite/plugins/docs/client.ts",
-        "vite/plugins/package-meta/client":
-          "./src/vite/plugins/package-meta/client.ts",
+        "vite/plugins/package-meta/client": "./src/vite/plugins/package-meta/client.ts",
       },
       formats: ["es"],
     },
@@ -40,10 +35,6 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "./tests/project-templates/**",
-    ],
+    exclude: ["**/node_modules/**", "**/dist/**", "./tests/project-templates/**"],
   },
 });

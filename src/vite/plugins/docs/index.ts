@@ -33,9 +33,7 @@ export function DocsTypedoc(
       if (!app) {
         const lib = config.build.lib;
         if (lib) {
-          this.info(
-            "lib detected, adding API reference with typedoc-plugin-markdown",
-          );
+          this.info("lib detected, adding API reference with typedoc-plugin-markdown");
           const { entry } = lib;
           const entryPoints =
             typeof entry === "string"
@@ -43,9 +41,7 @@ export function DocsTypedoc(
               : Array.isArray(entry)
                 ? entry
                 : Object.values(entry);
-          this.debug(
-            `detected entry points: ${JSON.stringify(entryPoints, null, 2)}`,
-          );
+          this.debug(`detected entry points: ${JSON.stringify(entryPoints, null, 2)}`);
 
           const typedocOptions: TypeDocOptions = {
             entryPoints,
@@ -86,10 +82,7 @@ export function Docs() {
     DocsTypedoc({
       options(opts) {
         // @ts-ignore (added by typedoc-plugin-markdown but not in typing see https://typedoc-plugin-markdown.org/docs/options/utility#navigationjson)
-        opts.navigationJson = this.resolve(
-          "docsDir",
-          ".vitepress/api-reference.navigation.json",
-        );
+        opts.navigationJson = this.resolve("docsDir", ".vitepress/api-reference.navigation.json");
       },
       async onGenerated() {
         // On initial run, .vitepress/api-reference.navigation.json might is missing when we create

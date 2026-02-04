@@ -14,12 +14,9 @@ export function PackageMeta(): Plugin {
     config(config) {
       const pkgPath =
         // TODO: learn more about this env var
-        process.env.npm_package_json ??
-        resolve(config.root ?? process.cwd(), "package.json");
+        process.env.npm_package_json ?? resolve(config.root ?? process.cwd(), "package.json");
       if (statSync(pkgPath).isFile()) {
-        const pkg = ZPackageJson.parse(
-          JSON.parse(readFileSync(pkgPath, { encoding: "utf8" })),
-        );
+        const pkg = ZPackageJson.parse(JSON.parse(readFileSync(pkgPath, { encoding: "utf8" })));
         process.env.VITE_PACKAGE_NAME = pkg.name;
         process.env.VITE_PACKAGE_VERSION = pkg.version;
       }

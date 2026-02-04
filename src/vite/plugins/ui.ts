@@ -40,11 +40,7 @@ export function UICommon(
   Object.assign(vueComponentsPluginOptions, options.vueComponents ?? {});
 
   // common
-  plugin.push(
-    ...BaseBundle(),
-    Vue(vuePluginOptions),
-    VueComponents(vueComponentsPluginOptions),
-  );
+  plugin.push(...BaseBundle(), Vue(vuePluginOptions), VueComponents(vueComponentsPluginOptions));
   if (options.vuetify !== false) {
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     plugin.push(Vuetify(options.vuetify));
@@ -53,8 +49,7 @@ export function UICommon(
   return Object.assign(plugin, { ctx });
 }
 
-export interface UILibPluginOptions
-  extends LibPluginOptions, UICommonPluginOptions {
+export interface UILibPluginOptions extends LibPluginOptions, UICommonPluginOptions {
   vue?: VuePluginOptions;
   vueComponents?: VueComponentsPluginOptions;
   /** Options for `vite-plugin-vuetify` or `false` to deactivate */

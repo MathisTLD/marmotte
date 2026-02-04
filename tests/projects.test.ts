@@ -19,11 +19,7 @@ async function getPackagePath() {
   console.log("generating package archive...");
   // prepare package archive
   await new Promise((resolve) =>
-    exec(
-      `npm pack --pack-destination "${scaffoldDir}"`,
-      { cwd: rootDir },
-      resolve,
-    ),
+    exec(`npm pack --pack-destination "${scaffoldDir}"`, { cwd: rootDir }, resolve),
   );
   packagePath = resolve(scaffoldDir, `${pkg.name}-${pkg.version}.tgz`);
   return packagePath;
@@ -38,9 +34,7 @@ async function scaffold(template: TemplateName) {
   await cp(resolve(templatesDir, template), root, { recursive: true });
   const packagePath = await getPackagePath();
   // install this build
-  await new Promise((resolve) =>
-    exec(`npm install ${packagePath}`, { cwd: root }, resolve),
-  );
+  await new Promise((resolve) => exec(`npm install ${packagePath}`, { cwd: root }, resolve));
   return root;
 }
 

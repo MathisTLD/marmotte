@@ -23,12 +23,6 @@ test("preserve default extensions", async () => {
   expect(withFoo.resolve.extensions).toEqual([".foo"]);
 
   // thanks to the the Common plugin, extension are preserved
-  const withCommonAndFoo = await resolveConfig(
-    { plugins: [BaseConfig(), fooPlugin] },
-    "build",
-  );
-  expect(withCommonAndFoo.resolve.extensions).toEqual([
-    ...DEFAULT_EXTENSION,
-    ".foo",
-  ]);
+  const withCommonAndFoo = await resolveConfig({ plugins: [BaseConfig(), fooPlugin] }, "build");
+  expect(withCommonAndFoo.resolve.extensions).toEqual([...DEFAULT_EXTENSION, ".foo"]);
 });

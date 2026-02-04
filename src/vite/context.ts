@@ -27,10 +27,7 @@ function resolveBase<P extends string>(
     const pathDefault = defaults[base];
     if (Array.isArray(pathDefault)) {
       const [base, relative] = pathDefault;
-      basePath = path.resolve(
-        resolveBase<P>(defaults, options, base),
-        relative,
-      );
+      basePath = path.resolve(resolveBase<P>(defaults, options, base), relative);
     } else {
       basePath = pathDefault;
     }
