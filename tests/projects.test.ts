@@ -5,10 +5,29 @@ import { fileExists } from "@/utils/fs";
 import { cp, mkdir, rm } from "node:fs/promises";
 import { exec } from "node:child_process";
 
+import pkg from "../package.json";
+
 const rootDir = dirname(import.meta.dirname);
-const templatesDir = resolve(rootDir, "templates");
-const scaffoldDir = resolve(rootDir, ".template-tests"); // "/tmp/projects"
+const templatesDir = resolve(import.meta.dirname, "project-templates");
+const scaffoldDir = resolve(import.meta.dirname, ".projects"); // "/tmp/projects"
 type TemplateName = "node-library" | "ui-library" | "ui-app";
+
+let packagePath: string | undefined;
+
+async function getPackagePath() {
+  if (packagePath) return packagePath;
+  console.log("generating package archive...");
+  // prepare package archive
+  await new Promise((resolve) =>
+    exec(
+      `npm pack --pack-destination "${scaffoldDir}"`,
+      { cwd: rootDir },
+      resolve,
+    ),
+  );
+  packagePath = resolve(scaffoldDir, `${pkg.name}-${pkg.version}.tgz`);
+  return packagePath;
+}
 
 async function scaffold(template: TemplateName) {
   const root = resolve(scaffoldDir, template);
@@ -17,13 +36,10 @@ async function scaffold(template: TemplateName) {
   await rm(root, { recursive: true, force: true });
   // copy template
   await cp(resolve(templatesDir, template), root, { recursive: true });
+  const packagePath = await getPackagePath();
   // install this build
   await new Promise((resolve) =>
-    exec(
-      `npm install ${rootDir /* relative(root, rootDir) */}`,
-      { cwd: root },
-      resolve,
-    ),
+    exec(`npm install ${packagePath}`, { cwd: root }, resolve),
   );
   return root;
 }
@@ -38,16 +54,22 @@ describe("Projects", () => {
   beforeAll(async () => {
     // ensure we have a fresh build of this package that will be installed by scaffolded projects
     await build({ root: rootDir });
+    await getPackagePath();
   });
   test("node-library", async () => {
     const root = await scaffoldAndBuild("node-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
-  }, 20000);
+  }, 30000);
 
   test("ui-library", async () => {
     const root = await scaffoldAndBuild("ui-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
-  }, 20000);
+  }, 30000);
+
+  test("ui-app", async () => {
+    const root = await scaffoldAndBuild("ui-app");
+    expect(fileExists(resolve(root, "dist", "index.html")));
+  }, 30000);
 });

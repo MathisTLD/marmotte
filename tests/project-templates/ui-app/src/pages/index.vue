@@ -14,6 +14,8 @@
                     cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
                     culpa qui officia deserunt mollit anim id est laborum.
                   </p>
+                  <!-- this component should be auto imported -->
+                  <foo />
                 </v-card-text>
               </v-card>
             </v-col>
