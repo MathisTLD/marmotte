@@ -1,4 +1,4 @@
-import type { PluginOption } from "vite";
+import type { Plugin } from "vite";
 
 import dts, { type PluginOptions as DTSPluginOptions } from "vite-plugin-dts";
 import {
@@ -8,10 +8,57 @@ import {
 import { DefaultVitePluginContext } from "../context";
 import { PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs } from "./docs";
+import { BaseBundle } from "./base-config";
 
-export type LibPluginOptions = {
-  /** Filter which files in the {@link VitePluginPathOptions.sourceDir} to use as sources */
-  entries?: PathFilter;
+export type LibConfigPluginOptions = {
+  /**
+   * A filter to automatically add files from {@link VitePluginPathOptions.sourceDir} to entries.
+   *
+   * Automatic entries are disabled if set to false.
+   *
+   * @default /(?<!d\.)ts$/
+   * */
+  entries?: PathFilter | false;
+};
+
+export function LibConfig(options: LibConfigPluginOptions): Plugin {
+  return {
+    name: "marmotte:lib-config",
+    async config(cfg) {
+      const ctx = new DefaultVitePluginContext({
+        root: cfg.root ?? process.cwd(),
+      });
+      // this is deeply merged in cfg
+      const entry =
+        options.entries === false
+          ? {}
+          : await resolveEntries(
+              ctx.resolve("sourceDir"),
+              options.entries ?? /(?<!d\.)ts$/,
+            );
+      return {
+        build: {
+          minify: false,
+          sourcemap: true,
+          lib: {
+            entry,
+            // only build es modules by default
+            formats: ["es"],
+          },
+          rollupOptions: {
+            output: {
+              preserveModules: true,
+              preserveModulesRoot: ctx.resolve("sourceDir"),
+            },
+            treeshake: false,
+          },
+        },
+      };
+    },
+  };
+}
+
+export type LibPluginOptions = LibConfigPluginOptions & {
   /** Options for the `vite-plugin-dts` (will be merged with defaults) */
   dts?: DTSPluginOptions;
   /** Options for the `rollup-plugin-node-externals` */
@@ -19,11 +66,12 @@ export type LibPluginOptions = {
   /** Optionally disable the {@link Docs} plugins */
   docs?: false;
 };
+
 /**
  * Configures vite to build a library (can be node, browser or isomorphic)
  */
 export function Lib(options: LibPluginOptions = {}) {
-  const plugin: PluginOption = [];
+  const plugin: Plugin[] = [];
 
   const dtsOptions = {
     cleanVueFileName: true,
@@ -37,59 +85,16 @@ export function Lib(options: LibPluginOptions = {}) {
   };
   // common
   plugin.push(
+    ...BaseBundle(),
+    // TODO: replace by https://www.npmjs.com/package/unplugin-dts
     dts(dtsOptions),
     // only bundle what's in devDependencies
     nodeExternals(options.externals),
   );
   if (options.docs !== false) {
-    plugin.push(Docs());
+    plugin.push(...Docs());
   }
 
-  plugin.push({
-    name: "marmotte-lib",
-
-    async config(cfg) {
-      const ctx = new DefaultVitePluginContext({
-        root: cfg.root ?? process.cwd(),
-      });
-      const pkg = await ctx.resolvePackageJson();
-      const resolve = {
-        // add alias to src dir
-        alias: {
-          "@": ctx.resolve("sourceDir"),
-        },
-        // base handled file extensions
-        extensions: [".mjs", ".js", ".mts", ".ts", ".jsx", ".tsx", ".json"],
-      };
-      const define = {
-        __PACKAGE_VERSION__: JSON.stringify(pkg.version),
-        __PACKAGE_NAME__: JSON.stringify(pkg.name),
-      };
-      // this is deeply merged in cfg
-      return {
-        build: {
-          minify: false,
-          sourcemap: true,
-          lib: {
-            entry: await resolveEntries(
-              ctx.resolve("sourceDir"),
-              options.entries ?? /(?<!d\.)ts$/,
-            ),
-            // only build es modules by default
-            formats: ["es"],
-          },
-          rollupOptions: {
-            output: {
-              preserveModules: true,
-              preserveModulesRoot: ctx.resolve("sourceDir"),
-            },
-            treeshake: false,
-          },
-        },
-        resolve,
-        define,
-      };
-    },
-  });
+  plugin.push(LibConfig(options));
   return plugin;
 }

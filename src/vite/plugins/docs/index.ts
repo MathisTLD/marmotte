@@ -1,4 +1,4 @@
-import { Plugin, PluginOption, ResolvedConfig } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import { createServer, build } from "vitepress";
 import { Application, TypeDocOptions } from "typedoc";
 
@@ -23,7 +23,7 @@ export function DocsTypedoc(
   let ctx: Context;
 
   return {
-    name: "marmotte-docs-typedoc",
+    name: "marmotte:docs-typedoc",
     configResolved(resolvedConfig) {
       config = resolvedConfig;
       ctx = resolveContext(resolvedConfig);
@@ -78,7 +78,7 @@ export function DocsTypedoc(
   };
 }
 
-export function Docs(): PluginOption {
+export function Docs() {
   let config: ResolvedConfig;
   let ctx: Context;
 
@@ -99,7 +99,7 @@ export function Docs(): PluginOption {
       },
     }),
     {
-      name: "marmotte-docs",
+      name: "marmotte:docs",
       async configResolved(resolvedConfig) {
         config = resolvedConfig;
         ctx = resolveContext(resolvedConfig);
@@ -126,6 +126,6 @@ export function Docs(): PluginOption {
         });
         server.middlewares.use(vitePressServer.middlewares);
       },
-    },
+    } satisfies Plugin,
   ];
 }
