@@ -40,6 +40,10 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: ["**/node_modules/**", "**/dist/**", "./tests/projects/**"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "./tests/project-templates/**",
+    ],
   },
 });
