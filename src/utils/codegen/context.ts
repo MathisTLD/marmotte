@@ -9,7 +9,7 @@ export interface CodeGenContext {
   commentType: CommentType;
 }
 
-export function resolveContext(filePath: string): CodeGenContext {
+export function resolveContext(_filePath: string): CodeGenContext {
   const { name, version } = resolvePackageMeta();
   return {
     generator: {

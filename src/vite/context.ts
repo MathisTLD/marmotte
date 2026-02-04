@@ -46,6 +46,7 @@ class VitePluginContext<PathNames extends string> {
   constructor(public readonly options: UserVitePluginOptions<PathNames>) {}
 
   /** resolves a base path using options or defaults */
+  // oxlint-disable-next-line no-unused-vars
   resolveBase(base: PathNames | "root"): string {
     // using an abstract class for VitePluginContext didn't work
     // because the class return by the factory function is marked as abstract which is odd
@@ -90,6 +91,7 @@ export function contextFactory<P extends string>(
 
 export type getPathMap<C> = C extends VitePluginContext<infer P> ? P : never;
 export type contextOptions<C> =
+  // oxlint-disable-next-line no-unused-vars
   C extends VitePluginContext<infer P> ? C["options"] : never;
 
 export class DefaultVitePluginContext extends contextFactory({

@@ -23,7 +23,9 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
   "devDependencies": {
     "@types/node": "*",
@@ -39,6 +41,8 @@
   },
   "peerDependencies": {
     "@vitejs/plugin-vue": "^6.0.4",
+    "oxfmt": "^0.28.0",
+    "oxlint": "^1.43.0",
     "rollup-plugin-node-externals": "^8.1.2",
     "sass-embedded": "^1.97.3",
     "typedoc": "^0.28.16",
