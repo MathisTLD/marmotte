@@ -40,6 +40,7 @@
   "peerDependencies": {
     "@vitejs/plugin-vue": "^6.0.4",
     "rollup-plugin-node-externals": "^8.1.2",
+    "sass-embedded": "^1.97.3",
     "typedoc": "^0.28.16",
     "typedoc-plugin-markdown": "^4.9.0",
     "unplugin-vue-components": "^31.0.0",
