@@ -19,6 +19,8 @@ export function autoManagedFileHeaderFirstLine(ctx: CodeGenContext) {
 export function autoManagedFileDisableTools(ctx: CodeGenContext) {
   if (ctx.commentType === "//") {
     return `/* eslint-disable */
+// biome-ignore lint: disable
+// oxlint-disable
 /* prettier-ignore */
 `;
   }
@@ -28,10 +30,7 @@ export function autoManagedFileDisableTools(ctx: CodeGenContext) {
 export function autoManagedFileHeader(ctx: CodeGenContext) {
   return `${autoManagedFileHeaderFirstLine(ctx)}
 ${autoManagedFileDisableTools(ctx)}${generatedBy(ctx)}
-${
-  // FIXME: emojis might not be a good idea in every type of file
-  comment("‼️ DO NOT MODIFY THIS FILE ‼️", ctx.commentType)
-}
+${comment("!! DO NOT MODIFY THIS FILE !!", ctx.commentType)}
 
 `;
 }
