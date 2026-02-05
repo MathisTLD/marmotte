@@ -1,5 +1,5 @@
 import { test, assertType, expectTypeOf } from "vitest";
-import { contextFactory, getPathMap, VitePluginContext } from "./context";
+import { contextFactory, type getPathMap, type VitePluginContext } from "./context";
 
 test("path map correctly inferred", () => {
   const Context = contextFactory({

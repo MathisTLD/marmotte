@@ -1,5 +1,5 @@
 import { resolvePackageMeta } from "@/vite/plugins/package-meta/client";
-import { CommentType } from "./format";
+import type { CommentType } from "./format";
 
 export interface CodeGenContext {
   generator: {

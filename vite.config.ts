@@ -7,7 +7,19 @@ import { nodeExternals } from "rollup-plugin-node-externals";
 import { PackageMeta } from "./src/vite/plugins/package-meta";
 
 export default defineConfig({
-  plugins: [PackageMeta(), dts({ tsconfigPath: "./tsconfig.lib.json" }), nodeExternals()],
+  plugins: [
+    PackageMeta(),
+    dts({
+      tsconfigPath: "./tsconfig.lib.json",
+      afterDiagnostic(diagnostics) {
+        // TODO: not allowing to build lib with typing error should be a default
+        if (diagnostics.length) {
+          throw new Error("got typing errors");
+        }
+      },
+    }),
+    nodeExternals(),
+  ],
   build: {
     minify: false,
     sourcemap: true,

@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { resolveConfig } from "vite";
-import dts, { getDTSPluginOptions, PluginOptions } from "./dts";
+import dts, { getDTSPluginOptions, type PluginOptions } from "./dts";
 
 test("retrieve dts options", async () => {
   const options: PluginOptions = { tsconfigPath: "./path/to/tsconfig.json" };

@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { Plugin, resolveConfig } from "vite";
+import { type Plugin, resolveConfig } from "vite";
 import { BaseConfig, DEFAULT_EXTENSION } from "./base-config";
 
 test("preserve default extensions", async () => {

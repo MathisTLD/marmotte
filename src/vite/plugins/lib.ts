@@ -3,7 +3,7 @@ import type { Plugin } from "vite";
 import dts, { type PluginOptions as DTSPluginOptions } from "./dts";
 import { nodeExternals, type ExternalsOptions } from "rollup-plugin-node-externals";
 import { DefaultVitePluginContext } from "../context";
-import { PathFilter, resolveEntries } from "@/utils/fs";
+import { type PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs } from "./docs";
 import { BaseBundle } from "./base-config";
 
@@ -67,7 +67,7 @@ export type LibPluginOptions = LibConfigPluginOptions & {
 export function Lib(options: LibPluginOptions = {}) {
   const plugin: Plugin[] = [];
 
-  const dtsOptions = {
+  const dtsOptions: DTSPluginOptions = {
     cleanVueFileName: true,
     compilerOptions: {
       // set to true to enable declarationMap

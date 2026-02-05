@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { build } from "vite";
-import dts, { PluginOptions } from "../dts";
+import dts, { type PluginOptions } from "../dts";
 import { DocsTypedoc } from ".";
 
 describe("typedoc", () => {

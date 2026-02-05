@@ -4,9 +4,10 @@
 
 const PLUGIN_NAME = "marmotte:dts";
 
-import plugin, { PluginOptions } from "unplugin-dts";
+import plugin, { type PluginOptions } from "unplugin-dts";
 import type { ResolvedConfig } from "vite";
-export { PluginOptions };
+
+export type { PluginOptions };
 export default function dts(options: PluginOptions = {}) {
   const _plugins = plugin.vite(options);
   return {

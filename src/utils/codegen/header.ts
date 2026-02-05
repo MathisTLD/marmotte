@@ -1,4 +1,4 @@
-import { CodeGenContext } from "./context";
+import { type CodeGenContext } from "./context";
 import { comment } from "./format";
 
 export function generatedBy(ctx: CodeGenContext) {

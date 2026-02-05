@@ -1,6 +1,6 @@
-import { Plugin, PluginOption, ResolvedConfig } from "vite";
+import type { Plugin, ResolvedConfig } from "vite";
 import { createServer, build } from "vitepress";
-import { Application, TypeDocOptions } from "typedoc";
+import { Application, type TypeDocOptions } from "typedoc";
 
 import { Context } from "./context";
 import { writeConfig, writeDefaultFiles } from "./codegen/vitepress";
