@@ -13,12 +13,13 @@ export type LibConfigPluginOptions = {
    *
    * Automatic entries are disabled if set to false.
    *
-   * @default /(?<!d\.)ts$/
+   * @default /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/
    * */
   entries?: PathFilter | false;
 };
 
 export function LibConfig(options: LibConfigPluginOptions): Plugin {
+  const { entries = /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/ } = options;
   return {
     name: "marmotte:lib-config",
     async config(cfg) {
@@ -27,9 +28,7 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
       });
       // this is deeply merged in cfg
       const entry =
-        options.entries === false
-          ? {}
-          : await resolveEntries(ctx.resolve("sourceDir"), options.entries ?? /(?<!d\.)ts$/);
+        entries === false ? {} : await resolveEntries(ctx.resolve("sourceDir"), entries);
       return {
         build: {
           minify: false,
