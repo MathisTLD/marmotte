@@ -1,9 +1,10 @@
-import { Plugin, ResolvedConfig } from "vite";
+import { Plugin, PluginOption, ResolvedConfig } from "vite";
 import { createServer, build } from "vitepress";
 import { Application, TypeDocOptions } from "typedoc";
 
 import { Context } from "./context";
 import { writeConfig, writeDefaultFiles } from "./codegen/vitepress";
+import { type PluginOptions, getDTSPluginOptions } from "../dts";
 
 function resolveContext(config: ResolvedConfig) {
   // TODO: make other parts configurable
@@ -22,13 +23,22 @@ export function DocsTypedoc(
   let config: ResolvedConfig;
   let ctx: Context;
 
+  let dtsOptions: PluginOptions | undefined;
+
   return {
     name: "marmotte:docs-typedoc",
     configResolved(resolvedConfig) {
       config = resolvedConfig;
+      try {
+        dtsOptions = getDTSPluginOptions(config);
+        this.debug(`Got dts plugin options`);
+      } catch (error) {
+        this.warn(`Failed to get dts plugin options (${error}), plugin will be inactive.`);
+      }
       ctx = resolveContext(resolvedConfig);
     },
     async buildStart() {
+      if (!dtsOptions) return;
       const out = ctx.resolve("docsDir", "reference/api");
       if (!app) {
         const lib = config.build.lib;
@@ -42,8 +52,9 @@ export function DocsTypedoc(
                 ? entry
                 : Object.values(entry);
           this.debug(`detected entry points: ${JSON.stringify(entryPoints, null, 2)}`);
-
+          // TODO: tsconfig
           const typedocOptions: TypeDocOptions = {
+            tsconfig: dtsOptions.tsconfigPath,
             entryPoints,
             plugin: ["typedoc-plugin-markdown"],
             out,

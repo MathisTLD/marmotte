@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
 
-import dts, { type PluginOptions as DTSPluginOptions } from "vite-plugin-dts";
+import dts, { type PluginOptions as DTSPluginOptions } from "./dts";
 import { nodeExternals, type ExternalsOptions } from "rollup-plugin-node-externals";
 import { DefaultVitePluginContext } from "../context";
 import { PathFilter, resolveEntries } from "@/utils/fs";
@@ -53,7 +53,7 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
 }
 
 export type LibPluginOptions = LibConfigPluginOptions & {
-  /** Options for the `vite-plugin-dts` (will be merged with defaults) */
+  /** Options for the `unplugin-dts` (will be merged with defaults) */
   dts?: DTSPluginOptions;
   /** Options for the `rollup-plugin-node-externals` */
   externals?: ExternalsOptions;
@@ -70,6 +70,7 @@ export function Lib(options: LibPluginOptions = {}) {
   const dtsOptions = {
     cleanVueFileName: true,
     compilerOptions: {
+      // set to true to enable declarationMap
       declaration: true,
       // declarations map are useful with linked packages / monorepos
       declarationMap: true,

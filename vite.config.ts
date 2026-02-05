@@ -2,7 +2,7 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
-import dts from "vite-plugin-dts";
+import dts from "unplugin-dts/vite";
 import { nodeExternals } from "rollup-plugin-node-externals";
 import { PackageMeta } from "./src/vite/plugins/package-meta";
 
