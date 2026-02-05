@@ -37,8 +37,8 @@
   "devDependencies": {
     "@types/node": "*",
     "rollup-plugin-node-externals": "*",
-    "vite": "*",
     "unplugin-dts": "*",
+    "vite": "*",
     "vitest": "^4.0.18"
   },
   "peerDependencies": {
