@@ -18,7 +18,7 @@ export async function* walk(dir: string, filter?: PathFilter): AsyncGenerator<st
   const _filter = filter ? normalizePathFilter(filter) : () => true;
   for await (const d of await fs.opendir(dir)) {
     const entry = resolve(dir, d.name);
-    if (d.isDirectory()) yield* walk(entry);
+    if (d.isDirectory()) yield* walk(entry, _filter);
     else if (d.isFile() && _filter(entry)) yield entry;
   }
 }
