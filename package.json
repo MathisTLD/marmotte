@@ -1,6 +1,6 @@
 {
   "name": "marmotte",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "An extensible development toolkit for TypeScript based projects",
   "homepage": "https://github.com/MathisTLD/marmotte#readme",
   "bugs": {
