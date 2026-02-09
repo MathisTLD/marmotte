@@ -50,19 +50,19 @@ describe("Projects", () => {
     await build({ root: rootDir });
     await getPackagePath();
   });
-  test("node-library", async () => {
+  test.concurrent("node-library", async () => {
     const root = await scaffoldAndBuild("node-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
   }, 60000);
 
-  test("ui-library", async () => {
+  test.concurrent("ui-library", async () => {
     const root = await scaffoldAndBuild("ui-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
   }, 60000);
 
-  test("ui-app", async () => {
+  test.concurrent("ui-app", async () => {
     const root = await scaffoldAndBuild("ui-app");
     expect(fileExists(resolve(root, "dist", "index.html")));
   }, 60000);
