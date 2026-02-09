@@ -1,15 +1,17 @@
-/**
- * A wrapper around `unplugin-dts/vite` that also exposes the options
- */
-
 const PLUGIN_NAME = "marmotte:dts";
 
-import plugin, { type PluginOptions } from "unplugin-dts";
+// TODO: replace by https://www.npmjs.com/package/unplugin-dts once stable
+import _dts, { type PluginOptions } from "vite-plugin-dts";
 import type { ResolvedConfig } from "vite";
 
 export type { PluginOptions };
+
+/**
+ * A wrapper around `vite-plugin-dts` that also exposes the options so that other plugins can use the same TS config
+ * without having to copy paste settings
+ */
 export default function dts(options: PluginOptions = {}) {
-  const _plugins = plugin.vite(options);
+  const _plugins = _dts(options);
   return {
     ..._plugins,
     name: PLUGIN_NAME,

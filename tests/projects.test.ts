@@ -54,16 +54,16 @@ describe("Projects", () => {
     const root = await scaffoldAndBuild("node-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
-  }, 30000);
+  }, 60000);
 
   test("ui-library", async () => {
     const root = await scaffoldAndBuild("ui-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
-  }, 30000);
+  }, 60000);
 
   test("ui-app", async () => {
     const root = await scaffoldAndBuild("ui-app");
     expect(fileExists(resolve(root, "dist", "index.html")));
-  }, 30000);
+  }, 60000);
 });

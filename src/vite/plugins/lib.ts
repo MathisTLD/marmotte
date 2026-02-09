@@ -52,7 +52,7 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
 }
 
 export type LibPluginOptions = LibConfigPluginOptions & {
-  /** Options for the `unplugin-dts` (will be merged with defaults) */
+  /** Options for the `vite-plugin-dts` (will be merged with defaults) */
   dts?: DTSPluginOptions;
   /** Options for the `rollup-plugin-node-externals` */
   externals?: ExternalsOptions;
@@ -80,7 +80,6 @@ export function Lib(options: LibPluginOptions = {}) {
   // common
   plugin.push(
     ...BaseBundle(),
-    // TODO: replace by https://www.npmjs.com/package/unplugin-dts
     dts(dtsOptions),
     // only bundle what's in devDependencies
     nodeExternals(options.externals),

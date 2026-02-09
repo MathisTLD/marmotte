@@ -7,6 +7,7 @@ test("retrieve dts options", async () => {
   const options: PluginOptions = { tsconfigPath: "./path/to/tsconfig.json" };
   const config = await resolveConfig(
     {
+      configFile: false,
       plugins: [dts(options)],
     },
     "build",
@@ -20,6 +21,7 @@ test("require exactly one instance", async () => {
   await expect(
     resolveConfig(
       {
+        configFile: false,
         plugins: [],
       },
       "build",
@@ -28,6 +30,7 @@ test("require exactly one instance", async () => {
   await expect(
     resolveConfig(
       {
+        configFile: false,
         plugins: [dts(options), dts()],
       },
       "build",

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { build } from "vite";
+import { build, resolveConfig } from "vite";
 import dts, { type PluginOptions } from "../dts";
 import { DocsTypedoc } from ".";
 
@@ -15,18 +15,21 @@ describe("typedoc", () => {
       throw endTest;
     });
     await expect(
-      build({
-        // make sure not to have side effects
-        root: "/tmp",
-        plugins: [dts(options), DocsTypedoc({ options: optionsHook })],
-        build: {
-          lib: {
-            //  add entry else the plugin is inactive
-            entry: "src/index.ts",
-            formats: ["es"],
+      resolveConfig(
+        {
+          // make sure not to have side effects
+          root: "/tmp",
+          plugins: [dts(options), DocsTypedoc({ options: optionsHook })],
+          build: {
+            lib: {
+              //  add entry else the plugin is inactive
+              entry: "src/index.ts",
+              formats: ["es"],
+            },
           },
         },
-      }),
+        "build",
+      ),
     ).rejects.toThrow(endTest);
 
     expect(optionsHook).toHaveBeenCalled();

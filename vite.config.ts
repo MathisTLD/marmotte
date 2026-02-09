@@ -2,8 +2,8 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
-import dts from "unplugin-dts/vite";
 import { nodeExternals } from "rollup-plugin-node-externals";
+import dts from "./src/vite/plugins/dts";
 import { PackageMeta } from "./src/vite/plugins/package-meta";
 
 export default defineConfig({

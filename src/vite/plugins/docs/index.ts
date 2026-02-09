@@ -24,10 +24,11 @@ export function DocsTypedoc(
   let ctx: Context;
 
   let dtsOptions: PluginOptions | undefined;
+  let typedocOptions: TypeDocOptions | undefined;
 
   return {
     name: "marmotte:docs-typedoc",
-    configResolved(resolvedConfig) {
+    async configResolved(resolvedConfig) {
       config = resolvedConfig;
       try {
         dtsOptions = getDTSPluginOptions(config);
@@ -36,42 +37,36 @@ export function DocsTypedoc(
         this.warn(`Failed to get dts plugin options (${error}), plugin will be inactive.`);
       }
       ctx = resolveContext(resolvedConfig);
+      const out = ctx.resolve("docsDir", "reference/api");
+      const lib = config.build.lib;
+      if (lib) {
+        this.info("lib detected, adding API reference with typedoc-plugin-markdown");
+        const { entry } = lib;
+        const entryPoints =
+          typeof entry === "string" ? [entry] : Array.isArray(entry) ? entry : Object.values(entry);
+        this.debug(`detected entry points: ${JSON.stringify(entryPoints, null, 2)}`);
+        // TODO: tsconfig
+        typedocOptions = {
+          tsconfig: dtsOptions?.tsconfigPath,
+          entryPoints,
+          plugin: ["typedoc-plugin-markdown"],
+          out,
+          readme: "none",
+          alwaysCreateEntryPointModule: true,
+          cleanOutputDir: true,
+          router: "module",
+        };
+
+        await options.options?.call(ctx, typedocOptions);
+      } else {
+        this.debug("this is not a lib, skipping API reference generation");
+      }
     },
     async buildStart() {
-      if (!dtsOptions) return;
-      const out = ctx.resolve("docsDir", "reference/api");
-      if (!app) {
-        const lib = config.build.lib;
-        if (lib) {
-          this.info("lib detected, adding API reference with typedoc-plugin-markdown");
-          const { entry } = lib;
-          const entryPoints =
-            typeof entry === "string"
-              ? [entry]
-              : Array.isArray(entry)
-                ? entry
-                : Object.values(entry);
-          this.debug(`detected entry points: ${JSON.stringify(entryPoints, null, 2)}`);
-          // TODO: tsconfig
-          const typedocOptions: TypeDocOptions = {
-            tsconfig: dtsOptions.tsconfigPath,
-            entryPoints,
-            plugin: ["typedoc-plugin-markdown"],
-            out,
-            readme: "none",
-            alwaysCreateEntryPointModule: true,
-            cleanOutputDir: true,
-            router: "module",
-          };
-
-          await options.options?.call(ctx, typedocOptions);
+      if (typedocOptions) {
+        if (!app) {
           app = await Application.bootstrapWithPlugins(typedocOptions);
-        } else {
-          this.debug("this is not a lib, skipping API reference generation");
         }
-      }
-
-      if (app) {
         const project = await app.convert();
         if (project) {
           this.info("🔄 Generating TypeDoc documentation...");
@@ -79,6 +74,8 @@ export function DocsTypedoc(
           // TODO: decide what to do with /reference/api/README.md file
           await options.onGenerated?.call(ctx);
           this.info("✅ TypeDoc documentation generated!");
+        } else {
+          this.warn("TypeDoc project reflection is undefined");
         }
       }
     },
