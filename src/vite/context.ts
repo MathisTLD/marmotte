@@ -92,7 +92,7 @@ class VitePluginContext<PathNames extends string> {
   async writeDefaultFile(
     file: string,
     content: string,
-    options: Parameters<typeof writeDefaultFile>[2],
+    options?: Parameters<typeof writeDefaultFile>[2],
     ctx?: Partial<CodeGenContext>,
   ) {
     return writeDefaultFile(file, content, options, {
