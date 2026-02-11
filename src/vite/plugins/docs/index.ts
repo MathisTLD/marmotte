@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from "vite";
+import type { ConfigEnv, Plugin, ResolvedConfig, UserConfig } from "vite";
 import { createServer, build } from "vitepress";
 import { Application, type TypeDocOptions } from "typedoc";
 
@@ -9,6 +9,10 @@ import { type PluginOptions, getDTSPluginOptions } from "../dts";
 function resolveContext(config: ResolvedConfig) {
   // TODO: make other parts configurable
   return new Context({ root: config.root });
+}
+
+function apply(config: UserConfig, env: ConfigEnv) {
+  return env.mode === "docs";
 }
 
 export function DocsTypedoc(
@@ -28,6 +32,7 @@ export function DocsTypedoc(
 
   return {
     name: "marmotte:docs-typedoc",
+    apply,
     async configResolved(resolvedConfig) {
       config = resolvedConfig;
       try {
@@ -101,6 +106,7 @@ export function Docs() {
     }),
     {
       name: "marmotte:docs",
+      apply,
       async configResolved(resolvedConfig) {
         config = resolvedConfig;
         ctx = resolveContext(resolvedConfig);
@@ -119,7 +125,6 @@ export function Docs() {
         }
       },
       async configureServer(server) {
-        if (config.mode !== "docs") return;
         const vitePressServer = await createServer(ctx.resolve("docsDir"), {
           middlewareMode: {
             server: server.httpServer!,
