@@ -74,6 +74,8 @@ export function Lib(options: LibPluginOptions = {}) {
       // declarations map are useful with linked packages / monorepos
       declarationMap: true,
     },
+    // don't create declarations for test-related files
+    exclude: ["**/*.test.ts", "**/*.test-*.ts"],
     // TODO: proper merge
     ...options.dts,
   };
