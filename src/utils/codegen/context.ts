@@ -1,5 +1,5 @@
 import { resolvePackageMeta } from "@/vite/plugins/package-meta/client";
-import type { CommentType } from "./format";
+import { resolveCommentType, type CommentType } from "./format";
 
 export interface CodeGenContext {
   generator: {
@@ -9,14 +9,14 @@ export interface CodeGenContext {
   commentType: CommentType;
 }
 
-export function resolveContext(_filePath: string): CodeGenContext {
+export function resolveContext(filePath: string): CodeGenContext {
+  // FIXME: this doesn't resolve to to calling package's meta but uses current (marmotte)
   const { name, version } = resolvePackageMeta();
   return {
     generator: {
-      name: name ?? "marmotte",
-      version: version ?? "unknown",
+      name,
+      version,
     },
-    // TODO: infer from filepath
-    commentType: "//",
+    commentType: resolveCommentType(filePath, true),
   };
 }
