@@ -46,9 +46,19 @@ export function comment(content: string, type: CommentType) {
     .join("\n");
 }
 
-export function indent(code: string, indentation: string) {
+export function indent(
+  code: string,
+  indentation: string,
+  skipLines: ((line: string) => boolean) | RegExp | false = /^\s*$/,
+) {
+  const skipLine =
+    skipLines === false
+      ? () => false
+      : typeof skipLines === "function"
+        ? skipLines
+        : (line: string) => skipLines.test(line);
   return code
     .split("\n")
-    .map((line) => indentation + line)
+    .map((line) => (skipLine(line) ? line : indentation + line))
     .join("\n");
 }
