@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@tsconfig/node24": "^24.0.4",
+    "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
     "rollup-plugin-node-externals": "^8.1.2",
     "typedoc": "^0.28.17",
@@ -50,12 +51,15 @@
     "vitest": "^4.0.18"
   },
   "peerDependencies": {
-    "@vitejs/plugin-vue": "^6.0.4",
-    "sass-embedded": "^1.97.3",
     "typescript": "^5.0.0",
     "vite": "^7.3.1",
     "vitepress": "^2.0.0-alpha.16",
     "vue-router": "^5.0.3"
+  },
+  "peerDependenciesMeta": {
+    "vue-router": {
+      "optional": true
+    }
   },
   "overrides": {
     "minimatch": "^10.2.3"
