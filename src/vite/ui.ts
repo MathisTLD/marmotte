@@ -6,7 +6,7 @@ import Vue, { type Options as VuePluginOptions } from "@vitejs/plugin-vue";
 import VueRouter from "unplugin-vue-router/vite";
 import VueComponents from "unplugin-vue-components/vite";
 import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
-import { DefaultVitePluginContext, type contextOptions } from "../context";
+import { DefaultVitePluginContext, type contextOptions } from "./lib/context";
 import { resolveEntries } from "@/utils/fs";
 
 type VueComponentsPluginOptions = Parameters<typeof VueComponents>[0];

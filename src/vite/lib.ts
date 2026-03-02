@@ -2,9 +2,9 @@ import type { Plugin } from "vite";
 
 import dts, { type PluginOptions as DTSPluginOptions } from "./dts";
 import { nodeExternals, type ExternalsOptions } from "rollup-plugin-node-externals";
-import { DefaultVitePluginContext } from "../context";
+import { DefaultVitePluginContext } from "./lib/context";
 import { type PathFilter, resolveEntries } from "@/utils/fs";
-import { Docs } from "./docs";
+import { Docs, type Options as DocsPluginOptions } from "./docs";
 import { BaseBundle } from "./base-config";
 
 export type LibConfigPluginOptions = {
@@ -56,8 +56,8 @@ export type LibPluginOptions = LibConfigPluginOptions & {
   dts?: DTSPluginOptions;
   /** Options for the `rollup-plugin-node-externals` */
   externals?: ExternalsOptions;
-  /** Optionally disable the {@link Docs} plugins */
-  docs?: false;
+  /** Options for the {@link Docs} plugins, use false to disable */
+  docs?: DocsPluginOptions | false;
 };
 
 /**
@@ -87,7 +87,7 @@ export function Lib(options: LibPluginOptions = {}) {
     nodeExternals(options.externals),
   );
   if (options.docs !== false) {
-    plugin.push(...Docs());
+    plugin.push(Docs(options.docs));
   }
 
   plugin.push(LibConfig(options));

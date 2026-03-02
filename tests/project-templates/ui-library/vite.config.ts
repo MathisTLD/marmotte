@@ -1,6 +1,6 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from "vite";
-import { UILib } from "marmotte/vite/plugins/ui";
+import { UILib } from "marmotte/vite/ui";
 
 export default defineConfig({
   plugins: [

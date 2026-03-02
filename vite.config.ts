@@ -3,8 +3,8 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 
 import { nodeExternals } from "rollup-plugin-node-externals";
-import dts from "./src/vite/plugins/dts";
-import { PackageMeta } from "./src/vite/plugins/package-meta";
+import dts from "./src/vite/dts";
+import { PackageMeta } from "./src/vite/package-meta";
 
 export default defineConfig({
   plugins: [
@@ -25,11 +25,17 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: {
-        index: "./src/index.ts",
-        "vite/index": "./src/vite/index.ts",
+        // vite plugins
+        "vite/docs": "./src/vite/docs/index.ts",
+        "vite/dts": "./src/vite/dts.ts",
+        "vite/lib": "./src/vite/lib.ts",
+        "vite/ui": "./src/vite/ui.ts",
         // TODO: we might wanna build client files with another vite config
-        "vite/plugins/docs/client": "./src/vite/plugins/docs/client.ts",
-        "vite/plugins/package-meta/client": "./src/vite/plugins/package-meta/client.ts",
+        "vite/docs/client": "./src/vite/docs/client.ts",
+        "vite/package-meta/client": "./src/vite/package-meta/client.ts",
+        // vitepress
+        "vitepress/sidebar": "./src/vitepress/sidebar.ts",
+        "vitepress/typedoc": "./src/vitepress/typedoc.ts",
       },
       formats: ["es"],
     },

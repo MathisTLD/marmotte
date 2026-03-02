@@ -44,6 +44,10 @@ async function scaffoldAndBuild(template: TemplateName) {
   return root;
 }
 
+function expectDocsToBeGenerated(root: string) {
+  expect(fileExists(resolve(root, "docs", ".vitepress", "dist", "index.html")));
+}
+
 describe("Projects", () => {
   beforeAll(async () => {
     // ensure we have a fresh build of this package that will be installed by scaffolded projects
@@ -54,12 +58,14 @@ describe("Projects", () => {
     const root = await scaffoldAndBuild("node-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
+    expectDocsToBeGenerated(root);
   }, 60000);
 
   test.concurrent("ui-library", async () => {
     const root = await scaffoldAndBuild("ui-library");
     expect(fileExists(resolve(root, "dist", "index.js")));
     expect(fileExists(resolve(root, "dist", "index.d.ts")));
+    expectDocsToBeGenerated(root);
   }, 60000);
 
   test.concurrent("ui-app", async () => {

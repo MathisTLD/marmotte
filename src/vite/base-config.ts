@@ -1,5 +1,5 @@
 import type { Plugin } from "vite";
-import { DefaultVitePluginContext } from "../context";
+import { DefaultVitePluginContext } from "./lib/context";
 import { PackageMeta } from "./package-meta";
 
 /** see https://vite.dev/config/shared-options#resolve-extensions */

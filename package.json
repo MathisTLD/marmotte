@@ -1,6 +1,6 @@
 {
   "name": "marmotte",
-  "version": "0.1.7",
+  "version": "0.2.0-beta.0",
   "description": "An extensible development toolkit for TypeScript based projects",
   "homepage": "https://github.com/MathisTLD/marmotte#readme",
   "bugs": {
@@ -32,6 +32,10 @@
   "dependencies": {
     "@tsconfig/node24": "^24.0.4",
     "@vue/tsconfig": "^0.8.1",
+    "typedoc": "^0.28.17",
+    "typedoc-plugin-markdown": "^4.10.0",
+    "typedoc-vitepress-theme": "^1.1.2",
+    "vitepress-sidebar": "^1.33.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -46,8 +50,6 @@
     "oxlint": "^1.43.0",
     "rollup-plugin-node-externals": "^8.1.2",
     "sass-embedded": "^1.97.3",
-    "typedoc": "^0.28.16",
-    "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.0.0",
     "unplugin-vue-components": "^31.0.0",
     "unplugin-vue-router": "^0.19.2",

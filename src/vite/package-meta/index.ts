@@ -1,7 +1,7 @@
 import { readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Plugin } from "vite";
-import { ZPackageJson } from "../../../utils/package-json"; // don't use @ alias so we can import this in this project's vite config
+import { ZPackageJson } from "../../utils/package-json"; // don't use @ alias so we can import this in this project's vite config
 
 /**
  * Injects process.env.VITE_PACKAGE_NAME and process.env.VITE_PACKAGE_VERSION

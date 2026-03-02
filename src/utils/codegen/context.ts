@@ -1,4 +1,4 @@
-import { resolvePackageMeta } from "@/vite/plugins/package-meta/client";
+import { resolvePackageMeta } from "@/vite/package-meta/client";
 import { resolveCommentType, type CommentType } from "./format";
 
 export interface CodeGenContext {

@@ -13,9 +13,13 @@ gen_package() {
   )
 }
 
+package_version() {
+  node -e "process.stdout.write(require('$ROOT/package.json').version)"
+}
+
 find_package() {
   # TODO: proper resolution
-  echo "$SCAFFOLD_DIR/marmotte-0.1.0.tgz"
+  echo "$SCAFFOLD_DIR/marmotte-$(package_version).tgz"
 }
 
 test_template() {

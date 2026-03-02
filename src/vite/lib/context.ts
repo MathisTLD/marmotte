@@ -7,7 +7,7 @@ import {
   writeDefaultFile,
   type CodeGenContext,
 } from "@/utils/codegen";
-import { resolvePackageMeta } from "./plugins/package-meta/client";
+import { resolvePackageMeta } from "../package-meta/client";
 
 export type UserVitePluginOptions<PathNames extends string> = {
   root: string;

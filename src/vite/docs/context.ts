@@ -1,4 +1,4 @@
-import { contextFactory } from "@/vite/context";
+import { contextFactory } from "@/vite/lib/context";
 
 export class Context extends contextFactory({
   paths: {
