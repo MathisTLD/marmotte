@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 
 import dts, { type PluginOptions as DTSPluginOptions } from "./dts";
-import { nodeExternals, type ExternalsOptions } from "rollup-plugin-node-externals";
+import { nodeExternals, type ExternalsOptions } from "./externals";
 import { DefaultVitePluginContext } from "./lib/context";
 import { type PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs, type Options as DocsPluginOptions } from "./docs";

@@ -2,7 +2,7 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
-import { nodeExternals } from "rollup-plugin-node-externals";
+import { nodeExternals } from "./src/vite/externals";
 import dts from "./src/vite/dts";
 import { PackageMeta } from "./src/vite/package-meta";
 
