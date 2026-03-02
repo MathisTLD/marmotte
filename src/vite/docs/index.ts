@@ -1,4 +1,4 @@
-import type { ConfigEnv, Plugin, ResolvedConfig, UserConfig } from "vite";
+import type { Plugin, ResolvedConfig } from "vite";
 import { createServer, build } from "vitepress";
 
 import { Context } from "./context";
