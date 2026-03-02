@@ -1,0 +1,3 @@
+# this should not be necessary as the file contains oxfmt-ignore
+# hope we can remove this in the future
+**/typed-router.d.ts
