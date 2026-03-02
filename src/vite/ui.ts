@@ -3,7 +3,7 @@ import { Lib, type LibPluginOptions } from "./lib";
 import { BaseBundle } from "./base-config";
 
 import Vue, { type Options as VuePluginOptions } from "@vitejs/plugin-vue";
-import VueRouter from "unplugin-vue-router/vite";
+import VueRouter from "vue-router/vite";
 import VueComponents from "unplugin-vue-components/vite";
 import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 import { DefaultVitePluginContext, type contextOptions } from "./lib/context";
@@ -91,7 +91,7 @@ export interface UIAppPluginOptions extends UICommonPluginOptions {
 
 /**
  * Configures vite to build a vue UI library
- * uses similar setup as {@link Lib} with `unplugin-vue-router` on top
+ * uses similar setup as {@link Lib} with `vue-router` on top
  */
 export function UIApp(options: UIAppPluginOptions) {
   const common = UICommon(options);
