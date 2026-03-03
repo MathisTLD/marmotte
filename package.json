@@ -15,6 +15,7 @@
   "type": "module",
   "exports": {
     "./vitest": "./dist/vitest/index.js",
+    "./*.css": "./dist/*.css",
     "./*": {
       "types": "./dist/*.d.ts",
       "import": "./dist/*.js"
@@ -23,7 +24,9 @@
   },
   "scripts": {
     "build": "vite build",
+    "build:docs": "vitepress build docs",
     "dev": "vite build --watch",
+    "docs": "vitepress dev docs",
     "test": "vitest",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",

@@ -1,0 +1,6 @@
+# ignore vitepress output dirs
+/.vitepress/dist
+/.vitepress/cache
+
+# ignore automatically generated markdown files (they can be re-generated when building)
+/reference/api/

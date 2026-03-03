@@ -1,0 +1,7 @@
+/* see https://vitepress-sidebar.cdget.com/advanced-usage/multi-level-sidebar-with-indents */
+.group:has([role="button"]) .VPSidebarItem.level-0 .items {
+  padding-left: 16px !important;
+  border-left: 1px solid var(--vp-c-divider);
+  border-radius: 2px;
+  transition: background-color 0.25s;
+}
