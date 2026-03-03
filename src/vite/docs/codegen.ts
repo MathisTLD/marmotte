@@ -57,7 +57,7 @@ export default async () => {
   await writeDefaultFile(
     ctx.resolve("docsDir", ".gitignore"),
     `# ignore vitepress output dirs
-/dist
+/.vitepress/dist
 /.vitepress/cache
 
 # ignore automatically generated markdown files (they can be re-generated when building)

@@ -27,8 +27,7 @@ export function Docs(options: Options = {}) {
     async buildEnd() {
       if (config.command === "build") {
         this.info("🔄 Building VitePress documentation...");
-        const outDir = ctx.resolve("docsDir", "dist");
-        await build(ctx.resolve("docsDir"), { outDir });
+        await build(ctx.resolve("docsDir"));
         this.info("✅ Documentation built!");
       }
     },
