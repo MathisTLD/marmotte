@@ -36,6 +36,8 @@ export default defineConfig({
         // vitepress
         "vitepress/sidebar": "./src/vitepress/sidebar.ts",
         "vitepress/typedoc": "./src/vitepress/typedoc.ts",
+        // vitest
+        "vitest/index": "./src/vitest/index.ts",
       },
       formats: ["es"],
     },
