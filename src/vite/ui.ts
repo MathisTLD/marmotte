@@ -43,6 +43,7 @@ export function UICommon(
   plugin.push(...BaseBundle(), Vue(vuePluginOptions), VueComponents(vueComponentsPluginOptions));
   if (options.vuetify !== false) {
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+    // note that user might need to have sass-embedded installed (his responsibility)
     plugin.push(Vuetify(options.vuetify));
   }
   // also give a ref to context so it can be reused
