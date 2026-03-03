@@ -20,6 +20,14 @@ export interface UICommonPluginOptions extends contextOptions<DefaultVitePluginC
   vuetify?: VuetifyPluginOptions | false;
 }
 
+/**
+ * Shared base plugin setup used by both {@link UILib} and {@link UIApp}.
+ * Includes {@link BaseBundle}, `@vitejs/plugin-vue`, `unplugin-vue-components`,
+ * and optionally `vite-plugin-vuetify` (enabled by default).
+ *
+ * Returns the plugin array augmented with a `ctx` property so callers can
+ * reuse the resolved {@link DefaultVitePluginContext} (e.g. for additional path resolution).
+ */
 export function UICommon(
   options: UICommonPluginOptions,
 ): (Plugin | Plugin[])[] & { ctx: DefaultVitePluginContext } {
@@ -91,8 +99,9 @@ export interface UIAppPluginOptions extends UICommonPluginOptions {
 }
 
 /**
- * Configures vite to build a vue UI library
- * uses similar setup as {@link Lib} with `vue-router` on top
+ * Configures Vite to build a Vue application.
+ * Combines {@link UICommon} (Vue + Vuetify) with `vue-router/vite` for file-based routing.
+ * Pass `vueRouter: false` to disable the router plugin.
  */
 export function UIApp(options: UIAppPluginOptions) {
   const common = UICommon(options);

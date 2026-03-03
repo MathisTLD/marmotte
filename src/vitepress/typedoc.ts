@@ -19,9 +19,21 @@ export const defaultPlugins = [
 ] satisfies TypeDocOptions["plugin"];
 
 /**
- * A vite plugin meant to be used in the `vite` section of the vitepress config
- * @param options
- * @returns
+ * Vite plugin that generates a TypeDoc API reference as Markdown files during the VitePress build.
+ *
+ * Place this in the `vite.plugins` array of your VitePress config (not the main Vite config):
+ *
+ * ```ts
+ * // docs/.vitepress/config.ts
+ * import TypeDoc from "marmotte/vitepress/typedoc"
+ * export default defineConfig({ vite: { plugins: [TypeDoc()] } })
+ * ```
+ *
+ * Generated files land in `<docsRoot>/reference/api/` and are excluded from git by the
+ * default `.gitignore` written by {@link Docs}.
+ *
+ * Use {@link Options.onOptions} to mutate TypeDoc options before the app is bootstrapped,
+ * and {@link Options.onGenerated} to run post-generation logic.
  */
 export function TypeDocPlugin(options: Options = {}) {
   let app: Application | undefined;

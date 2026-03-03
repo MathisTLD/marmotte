@@ -18,6 +18,13 @@ export type LibConfigPluginOptions = {
   entries?: PathFilter;
 };
 
+/**
+ * Low-level plugin that sets the Vite build options for library mode.
+ * Discovers entry points from `sourceDir` using the {@link LibConfigPluginOptions.entries} filter,
+ * or falls back to `<sourceDir>/index.ts` when no entries or manual `build.lib.entry` are provided.
+ *
+ * Used internally by {@link Lib}. Prefer `Lib()` for most use cases.
+ */
 export function LibConfig(options: LibConfigPluginOptions): Plugin {
   const { entries } = options;
   return {

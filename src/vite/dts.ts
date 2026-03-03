@@ -6,6 +6,7 @@ import type { ResolvedConfig } from "vite";
 
 export type { PluginOptions };
 
+// FIXME: make build fail by default if typescript errors (build only not in dev mode)
 /**
  * A wrapper around `vite-plugin-dts` that also exposes the options so that other plugins can use the same TS config
  * without having to copy paste settings

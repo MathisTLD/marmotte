@@ -14,6 +14,18 @@ export type Options = {
   serve?: string | false;
 };
 
+// FIXME: {@link Lib} in the JSDoc below requires `import type { Lib } from "../lib"` to make typedoc generate proper link. We don't wan't docs to mess-up code but we want that fixed
+/**
+ * Vite plugin that integrates a VitePress documentation site into your project.
+ *
+ * - On `configResolved`: scaffolds default docs files (`docs/index.md`, `.vitepress/config.ts`, etc.)
+ *   if they do not already exist.
+ * - On `buildEnd` (build mode): runs `vitepress build` so docs are automatically built.
+ * - On `configureServer` (dev mode): mounts a VitePress dev server as middleware, served at
+ *   `options.serve` (default `/docs/`).
+ *
+ * Included automatically by {@link Lib} unless `docs: false` is passed.
+ */
 export function Docs(options: Options = {}) {
   let config: ResolvedConfig;
   let ctx: Context;

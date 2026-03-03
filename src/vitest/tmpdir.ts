@@ -3,10 +3,12 @@ import { mkdtemp, rm } from "fs/promises";
 import { tmpdir } from "os";
 import { beforeAll, afterAll } from "vitest";
 
+/** Synchronously creates a unique temporary directory and returns its absolute path. */
 export function createTmpDirSync() {
   return mkdtempSync(tmpdir());
 }
 
+/** Asynchronously creates a unique temporary directory and returns its absolute path. */
 export function createTmpDir() {
   return mkdtemp(tmpdir());
 }
