@@ -9,26 +9,30 @@ import { BaseBundle } from "./base-config";
 
 export type LibConfigPluginOptions = {
   /**
-   * A filter to automatically add files from {@link VitePluginPathOptions.sourceDir} to entries.
+   * A filter to automatically add files from {@link UserVitePluginOptions.sourceDir} to entries.
    *
-   * Automatic entries are disabled if set to false.
+   * If not defined and no entry is manually added by the user in its vite config, `<sourceDir>/index.ts` will be used
    *
-   * @default /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/
+   * @example /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/
    * */
-  entries?: PathFilter | false;
+  entries?: PathFilter;
 };
 
 export function LibConfig(options: LibConfigPluginOptions): Plugin {
-  const { entries = /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/ } = options;
+  const { entries } = options;
   return {
     name: "marmotte:lib-config",
     async config(cfg) {
       const ctx = new DefaultVitePluginContext({
         root: cfg.root ?? process.cwd(),
       });
+
       // this is deeply merged in cfg
-      const entry =
-        entries === false ? {} : await resolveEntries(ctx.resolve("sourceDir"), entries);
+      const entry = entries ? await resolveEntries(ctx.resolve("sourceDir"), entries) : {};
+      if (!(cfg.build?.lib && cfg.build.lib.entry) && !entries) {
+        // no entry specified, use default
+        entry["index"] = ctx.resolve("sourceDir", "index.ts");
+      }
       return {
         build: {
           minify: false,
