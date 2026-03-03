@@ -1,5 +1,5 @@
 import type { Plugin } from "vite";
-import { Application, type TypeDocOptions } from "typedoc";
+import { Application, ProjectReflection, type TypeDocOptions } from "typedoc";
 import { join, resolve } from "path";
 
 export type Options = TypeDocOptions & {
@@ -14,9 +14,42 @@ export type Options = TypeDocOptions & {
 };
 
 export const defaultPlugins = [
-  (app) => import("typedoc-plugin-markdown").then((m) => m.load(app)),
-  (app) => import("typedoc-vitepress-theme").then((m) => m.load(app as any)),
+  async function typedocPluginMarkdown(app) {
+    return import("typedoc-plugin-markdown").then((m) => m.load(app));
+  },
+  async function typedocVitePressTheme(app) {
+    return import("typedoc-vitepress-theme").then((m) => m.load(app as any));
+  },
 ] satisfies TypeDocOptions["plugin"];
+
+/**
+ * Bootstrap a TypeDoc application generating an API reference into `<docsRoot>/reference/api/`.
+ */
+export async function bootstrapTypeDoc(docsRoot: string, options: Options = {}) {
+  const { onOptions, sourceDir: userSourceDir, ...userTypedocOptions } = options;
+  const root = resolve(docsRoot);
+  const out = resolve(root, "reference", "api");
+  const sourceDir = userSourceDir ?? resolve(root, "..", "src");
+
+  const typedocOptions: TypeDocOptions = {
+    entryPoints: [join(sourceDir, "**", "*.ts")],
+    skipErrorChecking: true,
+    plugin: [...defaultPlugins],
+    out,
+    readme: "none",
+    alwaysCreateEntryPointModule: true,
+    cleanOutputDir: true,
+    router: "module",
+    // avoid to make the console flicker in dev mode
+    preserveWatchOutput: true,
+    // TODO: proper deepmerge
+    ...userTypedocOptions,
+  };
+
+  await onOptions?.(typedocOptions);
+  const app = await Application.bootstrapWithPlugins(typedocOptions);
+  return app;
+}
 
 /**
  * Vite plugin that generates a TypeDoc API reference as Markdown files during the VitePress build.
@@ -36,49 +69,47 @@ export const defaultPlugins = [
  * and {@link Options.onGenerated} to run post-generation logic.
  */
 export function TypeDocPlugin(options: Options = {}) {
-  let app: Application | undefined;
-  const { onOptions, onGenerated, sourceDir: userSourceDir, ...userTypedocOptions } = options;
-  let typedocOptions: TypeDocOptions | undefined;
+  let app: Application;
+  const { onGenerated } = options;
+
+  const generate = async (project: ProjectReflection) => {
+    console.info("🔄 Generating TypeDoc documentation...");
+    await app.generateOutputs(project);
+    await onGenerated?.();
+    console.info("✅ TypeDoc documentation generated!");
+  };
 
   return {
     name: "marmotte:vitepress-typedoc",
-    async configResolved(resolvedConfig) {
-      // TODO: check that it's the right place to put files
-      const out = resolve(resolvedConfig.root, "reference", "api");
-      const sourceDir = userSourceDir ?? resolve(resolvedConfig.root, "..", "src");
-      // TODO: tsconfig
-      typedocOptions = {
-        entryPoints: [join(sourceDir, "**", "*.ts")],
-        // without skipErrorChecking, importing .vue files in a .ts causes errors
-        skipErrorChecking: true,
-        plugin: [...defaultPlugins],
-        out,
-        readme: "none",
-        alwaysCreateEntryPointModule: true,
-        cleanOutputDir: true,
-        router: "module",
-        // TODO: proper deepmerge
-        ...userTypedocOptions,
-      };
-
-      await onOptions?.(typedocOptions);
+    apply(config, env) {
+      // else hooks are fired twice because VitePress runs two Vite instances (SSR + client)
+      return !env.isSsrBuild;
     },
-    async buildStart() {
-      if (typedocOptions) {
-        if (!app) {
-          app = await Application.bootstrapWithPlugins(typedocOptions);
-        }
+
+    async configResolved(resolvedConfig) {
+      app = await bootstrapTypeDoc(resolvedConfig.root, options);
+      // in build we wanna have reference generated
+      if (resolvedConfig.command === "build") {
         const project = await app.convert();
-        if (project) {
-          this.info("🔄 Generating TypeDoc documentation...");
-          await app.generateOutputs(project);
-          // TODO: decide what to do with /reference/api/README.md file
-          await onGenerated?.();
-          this.info("✅ TypeDoc documentation generated!");
-        } else {
-          this.warn("TypeDoc project reflection is undefined");
-        }
+        if (!project) throw new Error("TypeDoc project reflection is undefined");
+        await generate(project);
       }
+    },
+    async configureServer(server) {
+      const { promise: firstBuildPromise, resolve: onFirstBuild } = Promise.withResolvers();
+      app
+        .convertAndWatch((project) => generate(project).then(onFirstBuild))
+        .then((ok) => {
+          if (ok) {
+            // if here the typedoc config changed we should restart the dev server
+            console.info("TypeDoc config changed, restarting the dev server");
+            server.restart();
+          } else {
+            console.error("Got TypeDoc options error");
+            // FIXME: might be a good idea to throw something idk
+          }
+        });
+      await firstBuildPromise;
     },
   } satisfies Plugin;
 }

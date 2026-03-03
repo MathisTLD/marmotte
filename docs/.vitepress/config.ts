@@ -5,6 +5,7 @@
 import { defineConfig } from "vitepress";
 import { generateSidebar } from "marmotte/vitepress/sidebar";
 import TypeDoc from "marmotte/vitepress/typedoc";
+import { resolve } from "node:path";
 
 export default async () => {
   // use this auto sidebar instead of typedoc-sidebar.json
@@ -30,7 +31,9 @@ export default async () => {
     vite: {
       plugins: [
         // FIXME: as of today, the reference also includes test files
-        TypeDoc({}),
+        TypeDoc({
+          tsconfig: resolve(import.meta.dirname, "..", "..", "tsconfig.lib.json"),
+        }),
       ],
     },
   });
