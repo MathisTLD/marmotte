@@ -149,7 +149,7 @@ export function TypeDocPlugin(options: Options = {}) {
       await typedocPromise;
     },
     async configureServer() {
-      await startWatch();
+      if (!process.env.VITEST) await startWatch();
     },
   } satisfies Plugin;
 }
