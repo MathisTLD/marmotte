@@ -10,12 +10,12 @@ The [`Lib`](/reference/api/vite/lib#lib) plugin configures Vite to build an ESM 
 
 ```ts
 // vite.config.ts
-import { defineConfig } from "vite"
-import { Lib } from "marmotte/vite/lib"
+import { defineConfig } from "vite";
+import { Lib } from "marmotte/vite/lib";
 
 export default defineConfig({
   plugins: Lib(),
-})
+});
 ```
 
 This single call wires up:
@@ -36,7 +36,7 @@ By default, `src/index.ts` is the single entry point. Use the `entries` option t
 Lib({
   // include every .ts file that isn't a declaration, test, or test-type file
   entries: /(?<!\.d)(?<!\.test)(?<!\.test-d)\.ts$/,
-})
+});
 ```
 
 `entries` accepts a `RegExp` or a `(absolutePath: string) => boolean` predicate. Files are discovered by recursively walking `src/`. Entry names in the Rollup output map match the relative path without extension.
@@ -62,7 +62,7 @@ Lib({
 
   // Disable the embedded docs server
   docs: false,
-})
+});
 ```
 
 See the [API reference](/reference/api/vite/lib) for the full option types.
@@ -72,14 +72,14 @@ See the [API reference](/reference/api/vite/lib) for the full option types.
 [`LibConfig`](/reference/api/vite/lib#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
 
 ```ts
-import { LibConfig } from "marmotte/vite/lib"
+import { LibConfig } from "marmotte/vite/lib";
 
 export default defineConfig({
   plugins: [
     LibConfig({ entries: /\.ts$/ }),
     // add your own plugins
   ],
-})
+});
 ```
 
 ## Typical `package.json`

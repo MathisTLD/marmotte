@@ -5,6 +5,7 @@ import { resolve } from "path";
 import { nodeExternals } from "./src/vite/externals";
 import dts from "./src/vite/dts";
 import { PackageMeta } from "./src/vite/package-meta";
+import { TypeDocPlugin } from "./src/vite/typedoc";
 
 export default defineConfig({
   plugins: [
@@ -19,6 +20,7 @@ export default defineConfig({
       },
     }),
     nodeExternals(),
+    TypeDocPlugin({ tsconfig: "tsconfig.lib.json" }),
   ],
   build: {
     minify: false,
@@ -29,13 +31,13 @@ export default defineConfig({
         "vite/docs": "./src/vite/docs/index.ts",
         "vite/dts": "./src/vite/dts.ts",
         "vite/lib": "./src/vite/lib.ts",
+        "vite/typedoc": "./src/vite/typedoc.ts",
         "vite/ui": "./src/vite/ui.ts",
         // TODO: we might wanna build client files with another vite config
         "vite/docs/client": "./src/vite/docs/client.ts",
         "vite/package-meta/client": "./src/vite/package-meta/client.ts",
         // vitepress
         "vitepress/sidebar": "./src/vitepress/sidebar.ts",
-        "vitepress/typedoc": "./src/vitepress/typedoc.ts",
         // vitest
         "vitest/index": "./src/vitest/index.ts",
       },

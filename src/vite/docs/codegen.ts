@@ -17,21 +17,9 @@ export async function writeDefaultFiles(ctx: Context, force = false) {
   await writeDefaultFile(
     resolve(vitePressDir, "config.ts"),
     `import { defineConfig } from "vitepress";
-import { generateSidebar } from "marmotte/vitepress/sidebar";
-import TypeDoc from "marmotte/vitepress/typedoc";
+import Sidebar from "marmotte/vitepress/sidebar";
 
 export default async () => {
-  // use this auto sidebar instead of typedoc-sidebar.json
-  // see https://www.typedoc-plugin-markdown.org/plugins/vitepress/quick-start#configure-navbar-and-sidebar
-  console.log("generating sidebar..."); // this can take time
-  const sidebar = generateSidebar({
-    documentRootPath: "docs",
-    collapsed: true,
-    useFolderLinkFromIndexFile: true,
-    useTitleFromFrontmatter: true,
-    useTitleFromFileHeading: true,
-    useFolderTitleFromIndexFile: true,
-  });
   return defineConfig({
     title: "${pkg.name}",
     themeConfig: {
@@ -39,11 +27,10 @@ export default async () => {
       search: {
         provider: "local",
       },
-      sidebar
     },
     vite: {
       plugins: [
-        TypeDoc({}),
+        Sidebar(),
       ]
     }
   });
@@ -59,9 +46,6 @@ export default async () => {
     `# ignore vitepress output dirs
 /.vitepress/dist
 /.vitepress/cache
-
-# ignore automatically generated markdown files (they can be re-generated when building)
-/reference/api/
 `,
     {
       force,

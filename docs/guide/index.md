@@ -14,23 +14,23 @@ npm install --save-dev marmotte
 
 Marmotte has optional peer dependencies depending on which plugins you use:
 
-| Feature | Peer dependency |
-|---|---|
-| All plugins | `vite`, `typescript` |
-| Documentation | `vitepress` |
-| Testing utilities | `vitest` |
-| Vue routing | `vue-router` |
+| Feature           | Peer dependency      |
+| ----------------- | -------------------- |
+| All plugins       | `vite`, `typescript` |
+| Documentation     | `vitepress`          |
+| Testing utilities | `vitest`             |
+| Vue routing       | `vue-router`         |
 
 ## What's included
 
-| Import path | Purpose |
-|---|---|
-| `marmotte/vite/lib` | Build a TypeScript library |
-| `marmotte/vite/ui` | Build a Vue + Vuetify app or library |
-| `marmotte/vite/docs` | Embed VitePress docs in your dev server |
-| `marmotte/vitepress/typedoc` | Auto-generate API reference from JSDoc |
-| `marmotte/vitepress/sidebar` | Auto-generate VitePress sidebar |
-| `marmotte/vitest` | Helpers for tests |
+| Import path                  | Purpose                                 |
+| ---------------------------- | --------------------------------------- |
+| `marmotte/vite/lib`          | Build a TypeScript library              |
+| `marmotte/vite/ui`           | Build a Vue + Vuetify app or library    |
+| `marmotte/vite/docs`         | Embed VitePress docs in your dev server |
+| `marmotte/vite/typedoc`      | Auto-generate API reference from JSDoc  |
+| `marmotte/vitepress/sidebar` | Auto-generate VitePress sidebar         |
+| `marmotte/vitest`            | Helpers for tests                       |
 
 ## Concepts
 
@@ -39,12 +39,12 @@ Marmotte has optional peer dependencies depending on which plugins you use:
 Functions exported from `marmotte/vite/<plugin-name>` return a Vite `Plugin` or `Plugin[]`. You use them directly inside the `plugins` array of your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from "vite"
-import { Lib } from "marmotte/vite/lib"
+import { defineConfig } from "vite";
+import { Lib } from "marmotte/vite/lib";
 
 export default defineConfig({
   plugins: Lib(),
-})
+});
 ```
 
 Higher-level plugins (`Lib`, `UILib`, `UIApp`) are pre-composed bundles of lower-level ones. You can always drop down to individual plugins when you need more control.
