@@ -106,6 +106,7 @@ marmotte setup [dir] [options]
 | `format` | [oxfmt](https://github.com/nicolo-ribaudo/oxfmt) — `fmt` and `fmt:check` scripts |
 | `pre-commit` | [husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) pre-commit hook |
 | `changesets` | [@changesets/cli](https://github.com/changesets/changesets) — `changeset`, `version`, and `release` scripts |
+| `version-lifecycle` | `preversion` runs `vitest run`, `postversion` runs `npm run build` |
 
 ### Examples
 

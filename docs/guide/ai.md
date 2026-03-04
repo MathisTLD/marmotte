@@ -140,7 +140,7 @@ The assistant will call the `create` tool with the right inputs. No copy-pasting
 | `dir` | `string?` | Project root. Defaults to current working directory. |
 | `features` | `string[]` | Feature IDs to apply (at least one required). |
 
-**Feature IDs:** `lint`, `format`, `pre-commit`, `changesets`
+**Feature IDs:** `lint`, `format`, `pre-commit`, `changesets`, `version-lifecycle`
 
 ### Resources
 

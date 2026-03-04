@@ -2,6 +2,7 @@ import { lintFeature } from "./lint.js";
 import { formatFeature } from "./format.js";
 import { preCommitFeature } from "./pre-commit.js";
 import { changesetsFeature } from "./changesets.js";
+import { versionLifecycleFeature } from "./version-lifecycle.js";
 
 /** Minimal `package.json` shape used by features when reading/writing project metadata. */
 export interface PackageJson {
@@ -35,4 +36,4 @@ export interface Feature {
 }
 
 /** All built-in features available via `marmotte create` and `marmotte setup`. */
-export const features: Feature[] = [lintFeature, formatFeature, preCommitFeature, changesetsFeature];
+export const features: Feature[] = [lintFeature, formatFeature, preCommitFeature, changesetsFeature, versionLifecycleFeature];

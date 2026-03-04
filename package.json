@@ -27,6 +27,8 @@
     "./tsconfig/*": "./dist/tsconfig/*"
   },
   "scripts": {
+    "preversion": "vitest run",
+    "postversion": "npm run build",
     "build": "vite build",
     "build:docs": "vitepress build docs",
     "dev": "vite build --watch",
