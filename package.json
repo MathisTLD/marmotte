@@ -14,7 +14,8 @@
   },
   "type": "module",
   "bin": {
-    "marmotte": "./dist/cli/index.js"
+    "marmotte": "./dist/cli/index.js",
+    "marmotte-mcp": "./dist/mcp/index.js"
   },
   "exports": {
     "./vitest": "./dist/vitest/index.js",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@clack/prompts": "^1.1.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
     "commander": "^13.0.0",
     "@types/node": "*",
     "giget": "^3.1.2",

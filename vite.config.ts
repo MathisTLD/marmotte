@@ -18,6 +18,7 @@ export default defineConfig({
       name: "chmod-cli",
       closeBundle() {
         chmodSync("dist/cli/index.js", 0o755);
+        chmodSync("dist/mcp/index.js", 0o755);
       },
     },
     PackageMeta(),
@@ -41,6 +42,8 @@ export default defineConfig({
         // cli
         "cli/index": "./src/cli/index.ts",
         "cli/api": "./src/cli/api.ts",
+        // mcp
+        "mcp/index": "./src/mcp/index.ts",
         // vite plugins
         "vite/docs": "./src/vite/docs/index.ts",
         "vite/dts": "./src/vite/dts.ts",
@@ -62,7 +65,9 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: "./src",
         banner: (chunk) =>
-          chunk.fileName.startsWith("cli/index") ? "#!/usr/bin/env node" : "",
+          chunk.fileName.startsWith("cli/index") || chunk.fileName.startsWith("mcp/index")
+            ? "#!/usr/bin/env node"
+            : "",
       },
       treeshake: false,
     },

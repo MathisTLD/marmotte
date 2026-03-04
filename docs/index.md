@@ -38,4 +38,9 @@ features:
     details: "Vitest helpers for temporary directories with automatic cleanup via beforeAll/afterAll hooks."
     link: /guide/vitest
     linkText: Testing helpers
+
+  - title: "🤖 AI integration"
+    details: "MCP server for Claude Code, Claude Desktop, and Cursor. Programmatic API for Node.js scripts and AI-generated code."
+    link: /guide/ai
+    linkText: AI integration
 ---
