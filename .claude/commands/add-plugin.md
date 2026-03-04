@@ -12,11 +12,13 @@ Follow these steps to add a new plugin named `$ARGUMENTS` to the marmotte librar
    - Follow the same naming pattern: `marmotte:<name>` for the plugin `name` field
 
 3. **Add the entry point** in [vite.config.ts](../../vite.config.ts) under the `build.lib.entry` object:
+
    ```ts
    "vite/<name>": "./src/vite/<name>.ts",
    ```
 
 4. **Add the export** in [package.json](../../package.json) under `"exports"`:
+
    ```json
    "./vite/<name>": {
      "types": "./dist/vite/<name>.d.ts",

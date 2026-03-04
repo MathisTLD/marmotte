@@ -9,18 +9,21 @@ The new entry is: `$ARGUMENTS`
 1. **Create the source file** at `src/<module>/index.ts` (or a single file at `src/<module>.ts`).
 
 2. **Register the entry** in [vite.config.ts](../../vite.config.ts):
+
    ```ts
    // inside build.lib.entry:
    "<module>": "./src/<module>/index.ts",
    ```
 
 3. **Expose the export** in [package.json](../../package.json):
+
    ```json
    "./<module>": {
      "types": "./dist/<module>.d.ts",
      "import": "./dist/<module>.js"
    }
    ```
+
    For CSS assets use `"./<module>.css": "./dist/<module>.css"`.
 
 4. **Build** to verify types and output are correct:
