@@ -1,75 +1,69 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import { build } from "vite";
-import { dirname, resolve } from "node:path";
-import { fileExists } from "@/utils/fs";
-import { cp, mkdir, rm } from "node:fs/promises";
-import { exec } from "node:child_process";
+import { fileExists, dirExists } from "@/utils/fs";
+import { prepare, scaffold } from "./projects.test-utils";
+import { resolve } from "node:path";
+import { readdir, readFile } from "node:fs/promises";
 
-import pkg from "../package.json";
+// Shared assertions for library templates (node-library, ui-library)
+async function expectLibraryOutput(root: string) {
+  const dist = resolve(root, "dist");
+  expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+  expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
 
-const rootDir = dirname(import.meta.dirname);
-const templatesDir = resolve(import.meta.dirname, "project-templates");
-const scaffoldDir = resolve(import.meta.dirname, ".projects"); // "/tmp/projects"
-type TemplateName = "node-library" | "ui-library" | "ui-app";
+  const js = await readFile(resolve(dist, "index.js"), "utf8");
+  expect(js).toContain("MyClass");
 
-let packagePath: string | undefined;
+  const dts = await readFile(resolve(dist, "index.d.ts"), "utf8");
+  expect(dts).toContain("MyClass");
+}
 
-async function getPackagePath() {
-  if (packagePath) return packagePath;
-  console.log("generating package archive...");
-  // prepare package archive
-  await new Promise((resolve) =>
-    exec(`npm pack --pack-destination "${scaffoldDir}"`, { cwd: rootDir }, resolve),
+async function expectLibraryDocumentation(root: string) {
+  // TypeDoc generated API markdown in docs/reference/api/
+  const apiDir = resolve(root, "docs/reference/api");
+  expect(dirExists(apiDir)).toBe(true);
+  const apiMdFiles = (await readdir(apiDir)).filter((f) => f.endsWith(".md"));
+  expect(apiMdFiles.length).toBeGreaterThan(0);
+  // At least one generated file references our exported class
+  const apiContents = await Promise.all(
+    apiMdFiles.map((f) => readFile(resolve(apiDir, f), "utf8")),
   );
-  packagePath = resolve(scaffoldDir, `${pkg.name}-${pkg.version}.tgz`);
-  return packagePath;
-}
+  expect(apiContents.some((c) => c.includes("MyClass"))).toBe(true);
 
-async function scaffold(template: TemplateName) {
-  const root = resolve(scaffoldDir, template);
-  await mkdir(dirname(root), { recursive: true });
-  // cleanup
-  await rm(root, { recursive: true, force: true });
-  // copy template
-  await cp(resolve(templatesDir, template), root, { recursive: true });
-  const packagePath = await getPackagePath();
-  // install this build
-  await new Promise((resolve) => exec(`npm install ${packagePath}`, { cwd: root }, resolve));
-  return root;
-}
-
-async function scaffoldAndBuild(template: TemplateName) {
-  const root = await scaffold(template);
-  await new Promise((resolve) => exec("npm run build", { cwd: root }, resolve));
-  return root;
-}
-
-function expectDocsToBeGenerated(root: string) {
-  expect(fileExists(resolve(root, "docs", ".vitepress", "dist", "index.html")));
+  // VitePress site includes the TypeDoc API reference in a single build pass
+  expect(fileExists(resolve(root, "docs/.vitepress/dist/index.html"))).toBe(true);
+  expect(fileExists(resolve(root, "docs/.vitepress/dist/reference/api/index.html"))).toBe(true);
 }
 
 describe("Projects", () => {
   beforeAll(async () => {
-    // ensure we have a fresh build of this package that will be installed by scaffolded projects
-    await build({ root: rootDir });
-    await getPackagePath();
+    await prepare();
   });
+
   test.concurrent("node-library", async () => {
-    const root = await scaffoldAndBuild("node-library");
-    expect(fileExists(resolve(root, "dist", "index.js")));
-    expect(fileExists(resolve(root, "dist", "index.d.ts")));
-    expectDocsToBeGenerated(root);
+    const root = await scaffold("node-library");
+    await expectLibraryOutput(root);
+    await expectLibraryDocumentation(root);
   }, 60000);
 
   test.concurrent("ui-library", async () => {
-    const root = await scaffoldAndBuild("ui-library");
-    expect(fileExists(resolve(root, "dist", "index.js")));
-    expect(fileExists(resolve(root, "dist", "index.d.ts")));
-    expectDocsToBeGenerated(root);
+    const root = await scaffold("ui-library");
+    await expectLibraryOutput(root);
+    await expectLibraryDocumentation(root);
+
+    // Example Vue component was scaffolded
+    expect(fileExists(resolve(root, "src/components/foo.vue"))).toBe(true);
   }, 60000);
 
   test.concurrent("ui-app", async () => {
-    const root = await scaffoldAndBuild("ui-app");
-    expect(fileExists(resolve(root, "dist", "index.html")));
+    const root = await scaffold("ui-app");
+    const dist = resolve(root, "dist");
+
+    expect(fileExists(resolve(dist, "index.html"))).toBe(true);
+    const html = await readFile(resolve(dist, "index.html"), "utf8");
+    expect(html).toContain("/assets/");
+
+    const assets = await readdir(resolve(dist, "assets"));
+    expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
+    expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
   }, 60000);
 });

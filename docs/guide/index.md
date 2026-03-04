@@ -62,6 +62,7 @@ When the `Docs` plugin is active it writes two kinds of files into `docs/`:
 
 ## Next steps
 
+- [Scaffold a project with the CLI →](./cli)
 - [Build a TypeScript library →](./lib)
 - [Build a Vue app or library →](./ui)
 - [Set up documentation →](./docs)

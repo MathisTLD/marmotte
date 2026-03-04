@@ -2,9 +2,10 @@
 
 set -euo pipefail
 
-DIR="$(dirname "$(dirname "$(realpath "$0")")")"
-ROOT="$(dirname "$DIR")"
-SCAFFOLD_DIR="$ROOT/tests/.projects"
+TESTS_DIR="$(dirname "$(realpath "$0")")"
+ROOT="$(dirname "$TESTS_DIR")"
+SCAFFOLD_DIR="$TESTS_DIR/.projects"
+mkdir -p "$SCAFFOLD_DIR"
 
 gen_package() {
   (
@@ -23,13 +24,7 @@ find_package() {
 }
 
 test_template() {
-  local template_path=$1
-  if [ ! -d "$template_path" ]; then
-    echo "no template at '$(realpath "$template_path")'"
-    return 1
-  fi
-  mkdir -p "$SCAFFOLD_DIR"
-  local template_name="$(basename "$template_path")"
+  local template_name=$1
   local dest="$SCAFFOLD_DIR/$template_name"
   echo "scaffolding template '$template_name' in '$dest'"
 
@@ -41,8 +36,8 @@ test_template() {
 
   echo "- cleaning up..."
   rm -rf "$dest"
-  echo "- copying..."
-  cp -r "$template_path" "$dest"
+  echo "- scaffolding..."
+  npx marmotte create --template "$template_name" --name "$template_name" "$dest"
   (
     cd "$dest";
     echo "- installing..."

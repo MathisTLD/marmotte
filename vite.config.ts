@@ -1,6 +1,8 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import { chmodSync } from "fs";
+import pkg from "./package.json";
 
 import { nodeExternals } from "./src/vite/externals";
 import dts from "./src/vite/dts";
@@ -8,7 +10,16 @@ import { PackageMeta } from "./src/vite/package-meta";
 import { TypeDocPlugin } from "./src/vite/typedoc";
 
 export default defineConfig({
+  define: {
+    __MARMOTTE_VERSION__: JSON.stringify(pkg.version),
+  },
   plugins: [
+    {
+      name: "chmod-cli",
+      closeBundle() {
+        chmodSync("dist/cli/index.js", 0o755);
+      },
+    },
     PackageMeta(),
     dts({
       tsconfigPath: "./tsconfig.lib.json",
@@ -27,6 +38,9 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: {
+        // cli
+        "cli/index": "./src/cli/index.ts",
+        "cli/api": "./src/cli/api.ts",
         // vite plugins
         "vite/docs": "./src/vite/docs/index.ts",
         "vite/dts": "./src/vite/dts.ts",
@@ -47,6 +61,8 @@ export default defineConfig({
       output: {
         preserveModules: true,
         preserveModulesRoot: "./src",
+        banner: (chunk) =>
+          chunk.fileName.startsWith("cli/index") ? "#!/usr/bin/env node" : "",
       },
       treeshake: false,
     },
@@ -57,6 +73,6 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: ["**/node_modules/**", "**/dist/**", "./tests/project-templates/**"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
   },
 });

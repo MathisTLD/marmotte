@@ -13,6 +13,9 @@
     "url": "git+https://github.com/MathisTLD/marmotte.git"
   },
   "type": "module",
+  "bin": {
+    "marmotte": "./dist/cli/index.js"
+  },
   "exports": {
     "./vitest": "./dist/vitest/index.js",
     "./*.css": "./dist/*.css",
@@ -48,7 +51,10 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@clack/prompts": "^1.1.0",
+    "commander": "^13.0.0",
     "@types/node": "*",
+    "giget": "^3.1.2",
     "oxfmt": "^0.36.0",
     "oxlint": "^1.51.0",
     "vite": "*",
