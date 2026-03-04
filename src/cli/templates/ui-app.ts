@@ -1,21 +1,13 @@
-import { mkdir, writeFile } from "fs/promises";
-import { dirname, join } from "path";
-import { writeDefaultFile } from "../../utils/codegen/index.js";
+import { join } from "path";
+import { safeWrite } from "../../utils/fs.js";
 import type { Template, TemplateOptions } from "./types.js";
-
-async function writeJson(dir: string, relPath: string, content: string) {
-  const full = join(dir, relPath);
-  await mkdir(dirname(full), { recursive: true });
-  await writeFile(full, content);
-}
 
 export const uiAppTemplate: Template = {
   id: "ui-app",
   label: "Vue/Vuetify UI app",
   async generate(dir, { name, marmotteVersion, includeExamples }: TemplateOptions) {
-    await writeJson(
-      dir,
-      "package.json",
+    await safeWrite(
+      join(dir, "package.json"),
       JSON.stringify(
         {
           name,
@@ -41,7 +33,7 @@ export const uiAppTemplate: Template = {
       ) + "\n",
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "vite.config.ts"),
       `/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
@@ -58,9 +50,8 @@ export default defineConfig({
 `,
     );
 
-    await writeJson(
-      dir,
-      "tsconfig.json",
+    await safeWrite(
+      join(dir, "tsconfig.json"),
       JSON.stringify(
         {
           files: [],
@@ -71,9 +62,8 @@ export default defineConfig({
       ) + "\n",
     );
 
-    await writeJson(
-      dir,
-      "tsconfig.app.json",
+    await safeWrite(
+      join(dir, "tsconfig.app.json"),
       JSON.stringify(
         {
           extends: "marmotte/tsconfig/tsconfig.vue.json",
@@ -86,9 +76,8 @@ export default defineConfig({
       ) + "\n",
     );
 
-    await writeJson(
-      dir,
-      "tsconfig.node.json",
+    await safeWrite(
+      join(dir, "tsconfig.node.json"),
       JSON.stringify(
         {
           extends: "marmotte/tsconfig/tsconfig.vite-config.json",
@@ -99,7 +88,7 @@ export default defineConfig({
       ) + "\n",
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "index.html"),
       `<!doctype html>
 <html lang="">
@@ -117,7 +106,7 @@ export default defineConfig({
 `,
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "src/main.ts"),
       `import { createApp } from "vue";
 import App from "./App.vue";
@@ -133,7 +122,7 @@ app.mount("#app");
 `,
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "src/App.vue"),
       `<template>
   <RouterView />
@@ -141,7 +130,7 @@ app.mount("#app");
 `,
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "src/router.ts"),
       `import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "vue-router/auto-routes";
@@ -153,7 +142,7 @@ export default createRouter({
 `,
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "src/vuetify.ts"),
       `// Styles
 import "vuetify/styles";
@@ -165,7 +154,7 @@ export default createVuetify({});
 `,
     );
 
-    await writeDefaultFile(
+    await safeWrite(
       join(dir, "src/pages/index.vue"),
       includeExamples
         ? `<template>

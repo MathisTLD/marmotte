@@ -1,4 +1,4 @@
-import { resolve, relative } from "path";
+import { resolve, relative, dirname } from "path";
 import fs from "fs/promises";
 import { existsSync, statSync } from "fs";
 
@@ -49,6 +49,14 @@ export function dirExists(path: string) {
 /** Returns `true` if `path` exists and is a regular file. */
 export function fileExists(path: string) {
   return existsSync(path) && statSync(path).isFile();
+}
+
+/**
+ * Writes `content` to `path`, creating parent directories as needed.
+ */
+export async function safeWrite(path: string, content: string) {
+  await fs.mkdir(dirname(path), { recursive: true });
+  await fs.writeFile(path, content);
 }
 
 /**
