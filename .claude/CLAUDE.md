@@ -114,7 +114,6 @@ import { withTmpDir } from "marmotte/vitest";
 const { dir } = withTmpDir();
 ```
 
-Exclude `tests/project-templates/**` from Vitest (already configured in `vite.config.ts`).
 
 ## Toolchain
 

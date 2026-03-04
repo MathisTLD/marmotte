@@ -21,7 +21,7 @@ npm run fmt:check
 ## What each step does
 
 - **build** — Vite compiles `src/` to `dist/` in ESM format. `vite-plugin-dts` emits `.d.ts` files and **fails the build on any type error**.
-- **test** — Vitest runs all `*.test.ts` files except those under `tests/project-templates/`.
+- **test** — Vitest runs all `*.test.ts` files.
 - **lint** — oxlint checks code quality rules.
 - **fmt:check** — oxfmt verifies formatting without modifying files. Use `npm run fmt` to auto-fix.
 
