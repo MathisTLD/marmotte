@@ -5,6 +5,7 @@ import { nodeExternals, type ExternalsOptions } from "./externals";
 import { DefaultVitePluginContext } from "./lib/context";
 import { type PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs, type Options as DocsPluginOptions } from "./docs";
+import TypeDoc, { type Options as TypeDocPluginOptions } from "./typedoc";
 import { BaseBundle } from "./base-config";
 
 export type LibConfigPluginOptions = {
@@ -67,8 +68,10 @@ export type LibPluginOptions = LibConfigPluginOptions & {
   dts?: DTSPluginOptions;
   /** Options for the `rollup-plugin-node-externals` */
   externals?: ExternalsOptions;
-  /** Options for the {@link Docs} plugins, use false to disable */
+  /** Options for the {@link Docs} plugin, use false to disable */
   docs?: DocsPluginOptions | false;
+  /** Options for the {@link TypeDoc} plugin, use false to disable (disabled by default if `docs: false`) */
+  typedoc?: TypeDocPluginOptions | false;
 };
 
 /**
@@ -99,6 +102,15 @@ export function Lib(options: LibPluginOptions = {}) {
   );
   if (options.docs !== false) {
     plugin.push(Docs(options.docs));
+  }
+  if (
+    options.typedoc !== false &&
+    // disable by default if docs disabled
+    // but allow to force enabling manually
+    !(options.docs === false && options.typedoc === undefined)
+  ) {
+    // TODO: inject tsconfig if possible
+    plugin.push(TypeDoc(options.typedoc));
   }
 
   plugin.push(LibConfig(options));

@@ -20,7 +20,9 @@ export type Options = {
  *
  * - On `configResolved`: scaffolds default docs files (`docs/index.md`, `.vitepress/config.ts`, etc.)
  *   if they do not already exist.
- * - On `buildEnd` (build mode): runs `vitepress build` so docs are automatically built.
+ * - On `closeBundle` (build mode): runs `vitepress build` after all other plugins have finished
+ *   their `buildEnd` work (e.g. TypeDoc markdown generation), so the docs site is always built
+ *   with up-to-date content.
  * - On `configureServer` (dev mode): mounts a VitePress dev server as middleware, served at
  *   `options.serve` (default `/docs/`).
  *
@@ -29,6 +31,7 @@ export type Options = {
 export function Docs(options: Options = {}) {
   let config: ResolvedConfig;
   let ctx: Context;
+  let buildSucceeded = false;
   return {
     name: "marmotte:docs",
     async configResolved(resolvedConfig) {
@@ -36,8 +39,11 @@ export function Docs(options: Options = {}) {
       ctx = resolveContext(resolvedConfig);
       await writeDefaultFiles(ctx);
     },
-    async buildEnd() {
-      if (config.command === "build") {
+    buildEnd(error?: Error) {
+      buildSucceeded = !error;
+    },
+    async closeBundle() {
+      if (config.command === "build" && buildSucceeded) {
         this.info("🔄 Building VitePress documentation...");
         await build(ctx.resolve("docsDir"));
         this.info("✅ Documentation built!");

@@ -12,19 +12,7 @@ export const defaultPlugins = [
   },
 ] satisfies TypeDocOptions["plugin"];
 
-export type Options = TypeDocOptions & {
-  /**
-   * Path to the VitePress docs root directory.
-   * TypeDoc output lands in `<docsRoot>/reference/api/`.
-   * @default `<vite root>/docs`
-   */
-  docsRoot?: string;
-  /** path to source dir (default entryPoints are `<sourceDir>/**\/*.ts`)
-   * @default `<docsRoot>/../src`
-   */
-  sourceDir?: string;
-  /** a hook to mutate in place typedocs options */
-  onOptions?: (options: TypeDocOptions) => Promise<void> | void;
+export type Options = Partial<BootstrapOptions> & {
   /** a hook to call custom logic after files are generated */
   onGenerated?: () => void | Promise<void>;
   /**
@@ -35,15 +23,31 @@ export type Options = TypeDocOptions & {
   gitignore?: boolean;
 };
 
+type BootstrapOptions = TypeDocOptions & {
+  /**
+   * Path to the VitePress docs root directory.
+   * TypeDoc output lands in `<docsRoot>/reference/api/`.
+   * @default `<vite root>/docs`
+   */
+  docsRoot: string;
+  /**
+   * Path to the source directory. Default entry points are `<sourceDir>/**\/*.ts`.
+   * Resolved relative to the Vite root when used via `TypeDocPlugin`.
+   * @default `<vite root>/src`
+   */
+  sourceDir: string;
+  /** a hook to mutate in place typedocs options */
+  onOptions?: (options: TypeDocOptions) => Promise<void> | void;
+};
+
 /**
  * Bootstrap a TypeDoc application generating an API reference into `<docsRoot>/reference/api/`.
  * Override with the `out` TypeDoc option to change the output path.
  */
-export async function bootstrapTypeDoc(docsRoot: string, options: Options = {}) {
-  const { onOptions, sourceDir: userSourceDir, ...userTypedocOptions } = options;
+export async function bootstrapTypeDoc(options: BootstrapOptions) {
+  const { sourceDir, docsRoot, onOptions, ...userTypedocOptions } = options;
   const root = resolve(docsRoot);
   const out = resolve(root, "reference", "api");
-  const sourceDir = userSourceDir ?? resolve(root, "..", "src");
 
   const typedocOptions: TypeDocOptions = {
     entryPoints: [join(sourceDir, "**", "*.ts")],
@@ -68,7 +72,8 @@ export async function bootstrapTypeDoc(docsRoot: string, options: Options = {}) 
 /**
  * Vite plugin that generates a TypeDoc API reference as Markdown files.
  *
- * - **Build mode**: runs TypeDoc once after the bundle is written.
+ * - **Build mode**: kicks off TypeDoc in `buildStart` (fire-and-forget) so it runs concurrently
+ *   with Vite's transforms; the result is awaited in `buildEnd` before VitePress runs in `closeBundle`.
  * - **Build watch mode** (`vite build --watch`): starts TypeDoc in watch mode alongside Vite.
  * - **Dev mode** (`vite dev`): starts TypeDoc in watch mode so the API reference stays
  *   up-to-date while you iterate.
@@ -82,10 +87,12 @@ export async function bootstrapTypeDoc(docsRoot: string, options: Options = {}) 
 export function TypeDocPlugin(options: Options = {}) {
   const { docsRoot: userDocsRoot, onGenerated, gitignore = true, ...bootstrapOptions } = options;
   let config: ResolvedConfig;
-  let app: Application;
+  let resolveApp: () => Promise<Application>;
   let watchStarted = false;
+  let typedocPromise: Promise<void> | undefined;
 
   const generate = async (project: ProjectReflection) => {
+    const app = await resolveApp();
     console.info("🔄 Generating TypeDoc documentation...");
     await app.generateOutputs(project);
     if (gitignore) {
@@ -103,30 +110,43 @@ export function TypeDocPlugin(options: Options = {}) {
   const startWatch = async () => {
     if (watchStarted) return;
     watchStarted = true;
-    app.convertAndWatch((project) => generate(project));
+    (await resolveApp()).convertAndWatch((project) => generate(project));
   };
 
   return {
     name: "marmotte:typedoc",
-    apply: () => !process.env.VITEST,
     async configResolved(resolvedConfig) {
       config = resolvedConfig;
       const docsRoot = userDocsRoot ?? resolve(config.root, "docs");
-      app = await bootstrapTypeDoc(docsRoot, bootstrapOptions);
+      const sourceDir = resolve(config.root, options.sourceDir ?? "src");
+      // lazy bootstrap app only if needed
+      let app: Application | undefined;
+      resolveApp = async () => {
+        if (!app) {
+          console.info("🚀 Bootstrapping TypeDoc application...");
+          app = await bootstrapTypeDoc({ docsRoot, sourceDir, ...bootstrapOptions });
+        }
+        return app;
+      };
     },
     async buildStart() {
-      // build --watch: start the typedoc watcher alongside vite's watcher
-      if (config.command === "build" && config.build.watch) {
-        await startWatch();
+      if (config.command === "build") {
+        if (config.build.watch) {
+          // build --watch: start the typedoc watcher alongside vite's watcher
+          await startWatch();
+        } else {
+          // fire without await — runs in parallel with Vite's transforms
+          typedocPromise = (await resolveApp()).convert().then(async (project) => {
+            if (!project) throw new Error("TypeDoc project reflection is undefined");
+            await generate(project);
+          });
+        }
       }
     },
-    async closeBundle() {
-      // build (non-watch): run once after the bundle is written
-      if (config.command === "build" && !config.build.watch) {
-        const project = await app.convert();
-        if (!project) throw new Error("TypeDoc project reflection is undefined");
-        await generate(project);
-      }
+    async buildEnd(error?: Error) {
+      if (error || config.command !== "build" || config.build.watch) return;
+      // collect result and propagate any TypeDoc errors before closeBundle runs
+      await typedocPromise;
     },
     async configureServer() {
       await startWatch();
