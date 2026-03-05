@@ -4,6 +4,7 @@
 
 import { defineConfig } from "vitepress";
 import Sidebar from "marmotte/vitepress/sidebar";
+import pkg from "../../package.json";
 
 export default async () => {
   return defineConfig({
@@ -13,6 +14,7 @@ export default async () => {
       search: {
         provider: "local",
       },
+      nav: [{ text: `v${pkg.version}`, link: "https://www.npmjs.com/package/marmotte" }],
     },
     vite: {
       plugins: [Sidebar()],
