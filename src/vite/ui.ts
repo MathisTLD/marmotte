@@ -1,17 +1,18 @@
-import type { Plugin } from "vite";
+import type { Plugin, PluginOption } from "vite";
 import { Lib, type LibPluginOptions } from "./lib";
 import { BaseBundle } from "./base-config";
 
 import Vue, { type Options as VuePluginOptions } from "@vitejs/plugin-vue";
-import VueRouter from "vue-router/vite";
 import VueComponents from "unplugin-vue-components/vite";
 import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 import { DefaultVitePluginContext, type contextOptions } from "./lib/context";
 import { resolveEntries } from "@/utils/fs";
 
-type VueComponentsPluginOptions = Parameters<typeof VueComponents>[0];
+type VueComponentsPluginOptions = NonNullable<Parameters<typeof VueComponents>[0]>;
 type VuetifyPluginOptions = Parameters<typeof Vuetify>[0];
-type VueRouterPluginOptions = Parameters<typeof VueRouter>[0];
+type VueRouterPluginOptions = NonNullable<
+  Parameters<(typeof import("vue-router/vite"))["default"]>[0]
+>;
 
 export interface UICommonPluginOptions extends contextOptions<DefaultVitePluginContext> {
   vue?: VuePluginOptions;
@@ -106,14 +107,17 @@ export interface UIAppPluginOptions extends UICommonPluginOptions {
 export function UIApp(options: UIAppPluginOptions) {
   const common = UICommon(options);
   const { ctx } = common;
-  const plugin: (Plugin | Plugin[])[] = [];
+  const plugin: PluginOption = [];
   if (options.vueRouter !== false) {
     const opts: VueRouterPluginOptions = {
       dts: ctx.resolve("sourceDir", "typed-router.d.ts"),
     };
     Object.assign(opts, options.vueRouter ?? {});
     // add router before common because it must be before @vitejs/plugin-vue
-    plugin.push(VueRouter(opts));
+    plugin.push(
+      // dynamically import vue-router/vite so that you don't need it for UILib
+      import("vue-router/vite").then((m) => m.default(opts)),
+    );
   }
 
   plugin.push(...common.flat());
