@@ -1,0 +1,3 @@
+# ignore vitepress output dirs
+dist
+cache

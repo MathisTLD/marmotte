@@ -42,10 +42,10 @@ export default async () => {
   );
 
   await writeDefaultFile(
-    ctx.resolve("docsDir", ".gitignore"),
+    resolve(vitePressDir, ".gitignore"),
     `# ignore vitepress output dirs
-/.vitepress/dist
-/.vitepress/cache
+dist
+cache
 `,
     {
       force,
