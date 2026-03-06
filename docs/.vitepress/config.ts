@@ -15,6 +15,10 @@ export default async () => {
         provider: "local",
       },
       nav: [{ text: `v${pkg.version}`, link: "https://www.npmjs.com/package/marmotte" }],
+      socialLinks: [{ icon: "github", link: "https://github.com/MathisTLD/marmotte" }],
+      editLink: {
+        pattern: "https://github.com/MathisTLD/marmotte/edit/main/docs/:path",
+      },
     },
     vite: {
       plugins: [Sidebar()],
