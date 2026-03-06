@@ -7,8 +7,9 @@ import { resolveTemplate } from "@/cli/api";
 import pkg from "../package.json";
 
 const execAsync = promisify(exec);
+import { tmpdir } from "node:os";
 const rootDir = dirname(import.meta.dirname);
-const scaffoldDir = resolve(import.meta.dirname, ".projects");
+const scaffoldDir = resolve(tmpdir(), "marmotte-test-projects");
 
 // Throw with captured output so build failures are readable in CI
 export async function run(cmd: string, cwd: string) {

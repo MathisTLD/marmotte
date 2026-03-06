@@ -24,6 +24,7 @@ export const uiLibraryTemplate: Template = {
             marmotte: `^${marmotteVersion}`,
             "sass-embedded": "^1.97.3",
             vite: "^7.3.1",
+            vitepress: "^2.0.0-alpha.16",
             vitest: "^4.0.18",
           },
         },

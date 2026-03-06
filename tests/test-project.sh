@@ -4,7 +4,7 @@ set -euo pipefail
 
 TESTS_DIR="$(dirname "$(realpath "$0")")"
 ROOT="$(dirname "$TESTS_DIR")"
-SCAFFOLD_DIR="$TESTS_DIR/.projects"
+SCAFFOLD_DIR="${TMPDIR:-/tmp}/marmotte-test-projects"
 mkdir -p "$SCAFFOLD_DIR"
 
 gen_package() {
