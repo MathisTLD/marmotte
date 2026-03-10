@@ -39,6 +39,7 @@ export async function scaffold(
   templateId: string,
   options: {
     dirname?: string;
+    includeExamples?: boolean;
     beforeInstall?: (root: string) => Promise<void>;
     afterInstall?: (root: string) => Promise<void>;
     beforeBuild?: (root: string) => Promise<void>;
@@ -53,7 +54,7 @@ export async function scaffold(
   await template.generate(root, {
     name: templateId,
     marmotteVersion: pkg.version,
-    includeExamples: true,
+    includeExamples: options.includeExamples ?? true,
   });
 
   await options.beforeInstall?.(root);

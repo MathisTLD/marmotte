@@ -67,3 +67,59 @@ describe("Projects", () => {
     expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
   }, 60000);
 });
+
+describe("Projects (no examples)", () => {
+  beforeAll(async () => {
+    await prepare();
+  });
+
+  test.concurrent("node-library", async () => {
+    const root = await scaffold("node-library", {
+      dirname: "node-library-no-examples",
+      includeExamples: false,
+    });
+    const dist = resolve(root, "dist");
+
+    expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+    expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
+
+    // No example class in output
+    const js = await readFile(resolve(dist, "index.js"), "utf8");
+    expect(js).not.toContain("MyClass");
+  }, 60000);
+
+  test.concurrent("ui-library", async () => {
+    const root = await scaffold("ui-library", {
+      dirname: "ui-library-no-examples",
+      includeExamples: false,
+    });
+    const dist = resolve(root, "dist");
+
+    expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+    expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
+
+    // No example component was scaffolded
+    expect(fileExists(resolve(root, "src/components/foo.vue"))).toBe(false);
+
+    // No example class in output
+    const js = await readFile(resolve(dist, "index.js"), "utf8");
+    expect(js).not.toContain("MyClass");
+  }, 60000);
+
+  test.concurrent("ui-app", async () => {
+    const root = await scaffold("ui-app", {
+      dirname: "ui-app-no-examples",
+      includeExamples: false,
+    });
+    const dist = resolve(root, "dist");
+
+    expect(fileExists(resolve(dist, "index.html"))).toBe(true);
+    const html = await readFile(resolve(dist, "index.html"), "utf8");
+    expect(html).toContain("/assets/");
+
+    // Minimal page — no example card content
+    const assets = await readdir(resolve(dist, "assets"));
+    expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
+    expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
+  }, 60000);
+});
