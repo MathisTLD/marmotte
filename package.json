@@ -40,9 +40,13 @@
     "fmt:check": "oxfmt --check"
   },
   "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@tsconfig/node24": "^24.0.4",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
+    "commander": "^14.0.3",
+    "giget": "^3.1.2",
     "rollup-plugin-node-externals": "^8.1.2",
     "typedoc": "^0.28.17",
     "typedoc-plugin-markdown": "^4.10.0",
@@ -54,11 +58,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@clack/prompts": "^1.1.0",
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "commander": "^13.0.0",
     "@types/node": "*",
-    "giget": "^3.1.2",
     "oxfmt": "^0.36.0",
     "oxlint": "^1.51.0",
     "vite": "*",
