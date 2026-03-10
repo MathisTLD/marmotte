@@ -1,6 +1,4 @@
 import type { Plugin, ResolvedConfig } from "vite";
-import { createServer, build } from "vitepress";
-
 import { Context } from "./context";
 import { writeDefaultFiles } from "./codegen";
 
@@ -32,9 +30,11 @@ export function Docs(options: Options = {}) {
   let config: ResolvedConfig;
   let ctx: Context;
   let buildSucceeded = false;
+  let vitepress: typeof import("vitepress");
   return {
     name: "marmotte:docs",
     async configResolved(resolvedConfig) {
+      vitepress = await import("vitepress");
       config = resolvedConfig;
       ctx = resolveContext(resolvedConfig);
       await writeDefaultFiles(ctx);
@@ -45,7 +45,7 @@ export function Docs(options: Options = {}) {
     async closeBundle() {
       if (config.command === "build" && buildSucceeded) {
         this.info("🔄 Building VitePress documentation...");
-        await build(ctx.resolve("docsDir"));
+        await vitepress.build(ctx.resolve("docsDir"));
         this.info("✅ Documentation built!");
       }
     },
@@ -55,7 +55,7 @@ export function Docs(options: Options = {}) {
         // https://vitepress.dev/reference/site-config#base
         if (!(serve.startsWith("/") && serve.endsWith("/")))
           throw new Error("Base should always start and end with a slash");
-        const vitePressServer = await createServer(ctx.resolve("docsDir"), {
+        const vitePressServer = await vitepress.createServer(ctx.resolve("docsDir"), {
           base: serve,
           middlewareMode: {
             server: server.httpServer!,

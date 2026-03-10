@@ -51,7 +51,6 @@ export default defineConfig({
         "vite/typedoc": "./src/vite/typedoc.ts",
         "vite/ui": "./src/vite/ui.ts",
         // TODO: we might wanna build client files with another vite config
-        "vite/docs/client": "./src/vite/docs/client.ts",
         "vite/package-meta/client": "./src/vite/package-meta/client.ts",
         // vitepress
         "vitepress/sidebar": "./src/vitepress/sidebar.ts",
