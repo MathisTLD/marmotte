@@ -66,14 +66,8 @@ describe("Projects", () => {
     expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
     expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
   }, 60000);
-});
 
-describe("Projects (no examples)", () => {
-  beforeAll(async () => {
-    await prepare();
-  });
-
-  test.concurrent("node-library", async () => {
+  test.concurrent("node-library (no examples)", async () => {
     const root = await scaffold("node-library", {
       dirname: "node-library-no-examples",
       includeExamples: false,
@@ -88,7 +82,7 @@ describe("Projects (no examples)", () => {
     expect(js).not.toContain("MyClass");
   }, 60000);
 
-  test.concurrent("ui-library", async () => {
+  test.concurrent("ui-library (no examples)", async () => {
     const root = await scaffold("ui-library", {
       dirname: "ui-library-no-examples",
       includeExamples: false,
@@ -106,7 +100,7 @@ describe("Projects (no examples)", () => {
     expect(js).not.toContain("MyClass");
   }, 60000);
 
-  test.concurrent("ui-app", async () => {
+  test.concurrent("ui-app (no examples)", async () => {
     const root = await scaffold("ui-app", {
       dirname: "ui-app-no-examples",
       includeExamples: false,

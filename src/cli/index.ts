@@ -16,6 +16,7 @@ program
   .option("-n, --name <name>", "project name (skips prompt)")
   .option("--no-examples", "skip example code")
   .option("-f, --features <ids...>", "features to apply (skips prompt)")
+  .option("-a, --all", "apply all available features")
   .action((dir, opts) => {
     runCreate({ dir, ...opts }).catch((e) => {
       console.error(e);
@@ -27,6 +28,7 @@ program
   .command("setup [dir]")
   .description("Add tooling features to an existing project")
   .option("-f, --features <ids...>", "feature IDs to apply (skips prompt)")
+  .option("-a, --all", "apply all available features")
   .action((dir, opts) => {
     runSetup({ dir, ...opts }).catch((e) => {
       console.error(e);

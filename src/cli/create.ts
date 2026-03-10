@@ -32,6 +32,8 @@ export type CreateOptions = {
   examples?: boolean;
   /** Feature IDs to apply (e.g. `["lint", "format"]`). When provided, skips the feature prompt. */
   features?: string[];
+  /** Apply all available features without prompting. Takes precedence over `features`. */
+  all?: boolean;
 };
 
 /**
@@ -52,6 +54,7 @@ export type CreateOptions = {
 export async function runCreate(opts: CreateOptions = {}) {
   // "non-interactive" = template was supplied via flag
   const nonInteractive = opts.template !== undefined;
+  const resolvedFeatures = opts.all ? features.map((f) => f.id) : opts.features;
 
   p.intro("marmotte create");
 
@@ -102,8 +105,10 @@ export async function runCreate(opts: CreateOptions = {}) {
       },
 
       selectedFeatures: () =>
-        nonInteractive
-          ? Promise.resolve(opts.features ?? [])
+        resolvedFeatures !== undefined
+          ? Promise.resolve(resolvedFeatures)
+          : nonInteractive
+          ? Promise.resolve([])
           : p.multiselect({
               message: "Optional features",
               options: features.map((f) => ({ value: f.id, label: f.label })),

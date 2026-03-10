@@ -10,6 +10,8 @@ export type SetupOptions = {
   dir?: string;
   /** Feature IDs to apply (e.g. `["lint", "format"]`). When provided, skips the feature prompt. */
   features?: string[];
+  /** Apply all available features without prompting. Takes precedence over `features`. */
+  all?: boolean;
 };
 
 /**
@@ -29,16 +31,19 @@ export type SetupOptions = {
  * ```
  */
 export async function runSetup(opts: SetupOptions = {}) {
+  const resolvedFeatures = opts.all ? features.map((f) => f.id) : opts.features;
+
   p.intro("marmotte setup");
 
   const answers = await p.group(
     {
       selectedFeatures: () =>
-        opts.features !== undefined
-          ? Promise.resolve(opts.features)
+        resolvedFeatures !== undefined
+          ? Promise.resolve(resolvedFeatures)
           : p.multiselect({
               message: "Features to add",
               options: features.map((f) => ({ value: f.id, label: f.label })),
+              initialValues: features.map((f) => f.id),
               required: true,
             }),
     },

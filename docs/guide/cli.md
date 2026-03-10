@@ -43,6 +43,7 @@ marmotte create [dir] [options]
 | `-n, --name <name>` | Project name written into `package.json`. Defaults to the directory basename. |
 | `--no-examples` | Omit example source files (built-in templates only). |
 | `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt. |
+| `-a, --all` | Apply all available features. Takes precedence over `--features`. |
 
 ### Built-in templates
 
@@ -80,6 +81,9 @@ marmotte create ./my-lib --template node-library --name my-lib --no-examples
 
 # Non-interactive with features
 marmotte create ./my-app -t ui-app -n my-app -f lint format
+
+# Non-interactive with all features
+marmotte create ./my-app -t ui-app -n my-app --all
 ```
 
 ---
@@ -97,6 +101,9 @@ marmotte setup [dir] [options]
 | Flag | Description |
 |------|-------------|
 | `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt. |
+| `-a, --all` | Apply all available features. Takes precedence over `--features`. |
+
+> **Interactive mode**: all features are pre-selected by default. Deselect any you don't want.
 
 ### Available features
 
@@ -116,6 +123,9 @@ marmotte setup
 
 # Non-interactive: apply lint and format to an existing project
 marmotte setup -f lint format
+
+# Apply all features at once
+marmotte setup --all
 
 # Target a specific directory
 marmotte setup ./packages/my-lib -f lint format pre-commit
