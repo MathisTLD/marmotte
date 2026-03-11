@@ -9,23 +9,18 @@ export const preCommitFeature: Feature = {
     // Create .husky/pre-commit
     const huskyDir = join(dir, ".husky");
     await mkdir(huskyDir, { recursive: true });
-    await writeFile(
-      join(huskyDir, "pre-commit"),
-      `npx lint-staged\n`,
-      { mode: 0o755 },
-    );
+    await writeFile(join(huskyDir, "pre-commit"), `npx lint-staged\n`, { mode: 0o755 });
 
     pkg.scripts ??= {};
     pkg.scripts["prepare"] = "husky";
 
     pkg.devDependencies ??= {};
     pkg.devDependencies["husky"] = "^9.0.0";
-    pkg.devDependencies["lint-staged"] = "^15.0.0";
+    pkg.devDependencies["lint-staged"] = "^16.0.0";
 
     // Add lint-staged config
     (pkg as Record<string, unknown>)["lint-staged"] = {
-      "*.{ts,tsx,vue}": ["oxlint --fix"],
-      "*.{ts,tsx,vue,json,md}": ["oxfmt"],
+      "*": "oxfmt --no-error-on-unmatched-pattern",
     };
   },
 };
