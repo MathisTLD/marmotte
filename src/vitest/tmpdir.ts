@@ -17,7 +17,9 @@ export function createTmpDir() {
  * Sets up beforeAll and afterAll hooks to create a tmp dir
  *
  * the dir will be deleted at the end of test context (see https://vitest.dev/api/#afterall)
- * @returns a reference to the dir. **IT MUST ONLY BE ACCESSED INSIDE TESTS**
+ * @returns a reference to the dir. **It must only be accessed inside tests or subsequent `beforeAll` hooks**
+ *
+ * Note that `beforeAll` hooks are run sequentially (see https://github.com/vitest-dev/vitest/issues/2279)
  */
 export function withTmpDir() {
   let tmpDir: string | undefined = undefined;
