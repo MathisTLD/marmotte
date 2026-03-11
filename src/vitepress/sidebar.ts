@@ -59,7 +59,9 @@ export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[]
       const onFileChange = (file: string) => {
         if (!file.endsWith(".md") || !file.startsWith(root)) return;
         // TODO: auto-reload sidebar when pages are added/removed
-        server.config.logger.info("Page added/removed — restart the dev server to update the sidebar.");
+        server.config.logger.info(
+          "Page added/removed — restart the dev server to update the sidebar.",
+        );
       };
       server.watcher.on("add", onFileChange);
       server.watcher.on("unlink", onFileChange);

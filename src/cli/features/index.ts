@@ -36,4 +36,10 @@ export interface Feature {
 }
 
 /** All built-in features available via `marmotte create` and `marmotte setup`. */
-export const features: Feature[] = [lintFeature, formatFeature, preCommitFeature, changesetsFeature, versionLifecycleFeature];
+export const features: Feature[] = [
+  lintFeature,
+  formatFeature,
+  preCommitFeature,
+  changesetsFeature,
+  versionLifecycleFeature,
+];

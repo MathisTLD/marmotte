@@ -9,11 +9,7 @@ import { uiAppTemplate } from "./ui-app.js";
 
 export type { Template, TemplateOptions };
 
-export const builtinTemplates: Template[] = [
-  nodeLibraryTemplate,
-  uiLibraryTemplate,
-  uiAppTemplate,
-];
+export const builtinTemplates: Template[] = [nodeLibraryTemplate, uiLibraryTemplate, uiAppTemplate];
 
 /**
  * Resolve a template by id (built-in), giget source, or local path.

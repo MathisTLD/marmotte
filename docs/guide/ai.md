@@ -52,11 +52,11 @@ claude mcp list
 
 Open the config file in a text editor:
 
-| Platform | Path |
-|----------|------|
-| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Linux | `~/.config/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Platform | Path                                                              |
+| -------- | ----------------------------------------------------------------- |
+| macOS    | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Linux    | `~/.config/Claude/claude_desktop_config.json`                     |
+| Windows  | `%APPDATA%\Claude\claude_desktop_config.json`                     |
 
 Add the `marmotte` entry inside `mcpServers` (create the file if it doesn't exist):
 
@@ -106,7 +106,7 @@ For a project-scoped setup, place the file at `.cursor/mcp.json` in the project 
 
 Once the server is registered, ask your AI assistant to scaffold a project naturally:
 
-> *"Create a new TypeScript library in `./packages/logger` using the node-library template, no examples, with lint and format."*
+> _"Create a new TypeScript library in `./packages/logger` using the node-library template, no examples, with lint and format."_
 
 The assistant will call the `create` tool with the right inputs. No copy-pasting commands.
 
@@ -114,31 +114,31 @@ The assistant will call the `create` tool with the right inputs. No copy-pasting
 
 #### `create` — scaffold a new project
 
-| Input | Type | Description |
-|-------|------|-------------|
-| `dir` | `string` | Target directory, e.g. `"./my-lib"` |
-| `template` | `string` | Template ID or source (see below) |
-| `name` | `string?` | Package name. Defaults to directory basename. |
-| `examples` | `boolean?` | Include example files (default: `true`). Built-in templates only. |
-| `features` | `string[]?` | Feature IDs to apply after scaffolding. |
+| Input      | Type        | Description                                                       |
+| ---------- | ----------- | ----------------------------------------------------------------- |
+| `dir`      | `string`    | Target directory, e.g. `"./my-lib"`                               |
+| `template` | `string`    | Template ID or source (see below)                                 |
+| `name`     | `string?`   | Package name. Defaults to directory basename.                     |
+| `examples` | `boolean?`  | Include example files (default: `true`). Built-in templates only. |
+| `features` | `string[]?` | Feature IDs to apply after scaffolding.                           |
 
 **Template values:**
 
-| Value | Meaning |
-|-------|---------|
-| `node-library` | TypeScript library with `Lib()`, DTS, and docs |
-| `ui-library` | Vue 3 + Vuetify component library |
-| `ui-app` | Vue 3 + Vuetify SPA |
-| `user/repo` | GitHub shorthand — downloaded via [giget](https://github.com/unjs/giget) |
-| `github:user/repo` | Explicit giget source |
-| `./path/to/template` | Local directory |
+| Value                | Meaning                                                                  |
+| -------------------- | ------------------------------------------------------------------------ |
+| `node-library`       | TypeScript library with `Lib()`, DTS, and docs                           |
+| `ui-library`         | Vue 3 + Vuetify component library                                        |
+| `ui-app`             | Vue 3 + Vuetify SPA                                                      |
+| `user/repo`          | GitHub shorthand — downloaded via [giget](https://github.com/unjs/giget) |
+| `github:user/repo`   | Explicit giget source                                                    |
+| `./path/to/template` | Local directory                                                          |
 
 #### `setup` — add tooling to an existing project
 
-| Input | Type | Description |
-|-------|------|-------------|
-| `dir` | `string?` | Project root. Defaults to current working directory. |
-| `features` | `string[]` | Feature IDs to apply (at least one required). |
+| Input      | Type       | Description                                          |
+| ---------- | ---------- | ---------------------------------------------------- |
+| `dir`      | `string?`  | Project root. Defaults to current working directory. |
+| `features` | `string[]` | Feature IDs to apply (at least one required).        |
 
 **Feature IDs:** `lint`, `format`, `pre-commit`, `changesets`, `version-lifecycle`
 
@@ -146,10 +146,10 @@ The assistant will call the `create` tool with the right inputs. No copy-pasting
 
 The server also exposes two resources that the AI can read to discover valid values before calling a tool:
 
-| URI | Contents |
-|-----|----------|
+| URI                    | Contents                                                |
+| ---------------------- | ------------------------------------------------------- |
 | `marmotte://templates` | JSON list of `{ id, label }` for each built-in template |
-| `marmotte://features` | JSON list of `{ id, label }` for each available feature |
+| `marmotte://features`  | JSON list of `{ id, label }` for each available feature |
 
 ---
 
@@ -196,9 +196,9 @@ features.map((f) => f.id);
 import type { CreateOptions, SetupOptions, Feature, PackageJson } from "marmotte/cli/api";
 ```
 
-| Type | Description |
-|------|-------------|
-| `CreateOptions` | Options for `runCreate` |
-| `SetupOptions` | Options for `runSetup` |
-| `Feature` | `{ id, label, apply(dir, pkg) }` |
-| `PackageJson` | Minimal `package.json` shape used by features |
+| Type            | Description                                   |
+| --------------- | --------------------------------------------- |
+| `CreateOptions` | Options for `runCreate`                       |
+| `SetupOptions`  | Options for `runSetup`                        |
+| `Feature`       | `{ id, label, apply(dir, pkg) }`              |
+| `PackageJson`   | Minimal `package.json` shape used by features |

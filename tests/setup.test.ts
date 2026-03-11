@@ -24,7 +24,9 @@ vi.mock("@clack/prompts", () => ({
   cancel: vi.fn(),
   spinner: vi.fn(() => ({ start: vi.fn(), stop: vi.fn() })),
   group: vi.fn(
-    async (fields: Record<string, (ctx: { results: Record<string, unknown> }) => Promise<unknown>>) => {
+    async (
+      fields: Record<string, (ctx: { results: Record<string, unknown> }) => Promise<unknown>>,
+    ) => {
       const results: Record<string, unknown> = {};
       for (const [key, fn] of Object.entries(fields)) {
         results[key] = await fn({ results });

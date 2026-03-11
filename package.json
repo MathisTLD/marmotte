@@ -12,11 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/MathisTLD/marmotte.git"
   },
-  "type": "module",
   "bin": {
     "marmotte": "./dist/cli/index.js",
     "marmotte-mcp": "./dist/mcp/index.js"
   },
+  "type": "module",
   "exports": {
     "./vitest": "./dist/vitest/index.js",
     "./*.css": "./dist/*.css",

@@ -37,21 +37,21 @@ marmotte create [dir] [options]
 
 ### Options
 
-| Flag | Description |
-|------|-------------|
-| `-t, --template <id>` | Template ID or remote source. Skips the template prompt and enables non-interactive mode. |
-| `-n, --name <name>` | Project name written into `package.json`. Defaults to the directory basename. |
-| `--no-examples` | Omit example source files (built-in templates only). |
-| `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt. |
-| `-a, --all` | Apply all available features. Takes precedence over `--features`. |
+| Flag                      | Description                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| `-t, --template <id>`     | Template ID or remote source. Skips the template prompt and enables non-interactive mode. |
+| `-n, --name <name>`       | Project name written into `package.json`. Defaults to the directory basename.             |
+| `--no-examples`           | Omit example source files (built-in templates only).                                      |
+| `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt.                           |
+| `-a, --all`               | Apply all available features. Takes precedence over `--features`.                         |
 
 ### Built-in templates
 
-| ID | Description |
-|----|-------------|
-| `node-library` | TypeScript library with `Lib()`, DTS, and docs |
-| `ui-library` | Vue 3 + Vuetify component library with `UILib()` |
-| `ui-app` | Vue 3 + Vuetify SPA with routing and `UIApp()` |
+| ID             | Description                                      |
+| -------------- | ------------------------------------------------ |
+| `node-library` | TypeScript library with `Lib()`, DTS, and docs   |
+| `ui-library`   | Vue 3 + Vuetify component library with `UILib()` |
+| `ui-app`       | Vue 3 + Vuetify SPA with routing and `UIApp()`   |
 
 Custom templates are also supported — pass a git source or local path as the template value:
 
@@ -98,22 +98,22 @@ marmotte setup [dir] [options]
 
 ### Options
 
-| Flag | Description |
-|------|-------------|
-| `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt. |
-| `-a, --all` | Apply all available features. Takes precedence over `--features`. |
+| Flag                      | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------- |
+| `-f, --features <ids...>` | Space-separated feature IDs to apply. Skips the feature prompt.   |
+| `-a, --all`               | Apply all available features. Takes precedence over `--features`. |
 
 > **Interactive mode**: all features are pre-selected by default. Deselect any you don't want.
 
 ### Available features
 
-| ID | What it adds |
-|----|-------------|
-| `lint` | [oxlint](https://oxc.rs/docs/guide/usage/linter) — `lint` and `lint:fix` scripts |
-| `format` | [oxfmt](https://github.com/nicolo-ribaudo/oxfmt) — `fmt` and `fmt:check` scripts |
-| `pre-commit` | [husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) pre-commit hook |
-| `changesets` | [@changesets/cli](https://github.com/changesets/changesets) — `changeset`, `version`, and `release` scripts |
-| `version-lifecycle` | `preversion` runs `vitest run`, `postversion` runs `npm run build` |
+| ID                  | What it adds                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `lint`              | [oxlint](https://oxc.rs/docs/guide/usage/linter) — `lint` and `lint:fix` scripts                                       |
+| `format`            | [oxfmt](https://github.com/nicolo-ribaudo/oxfmt) — `fmt` and `fmt:check` scripts                                       |
+| `pre-commit`        | [husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) pre-commit hook |
+| `changesets`        | [@changesets/cli](https://github.com/changesets/changesets) — `changeset`, `version`, and `release` scripts            |
+| `version-lifecycle` | `preversion` runs `vitest run`, `postversion` runs `npm run build`                                                     |
 
 ### Examples
 

@@ -114,7 +114,6 @@ import { withTmpDir } from "marmotte/vitest";
 const { dir } = withTmpDir();
 ```
 
-
 ## Toolchain
 
 - **Bundler**: Vite (ESM-only output, no minification, sourcemaps on, modules preserved)

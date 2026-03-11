@@ -8,6 +8,6 @@ export const formatFeature: Feature = {
     pkg.scripts["fmt"] = "oxfmt";
     pkg.scripts["fmt:check"] = "oxfmt --check";
     pkg.devDependencies ??= {};
-    pkg.devDependencies["oxfmt"] = "^0.36.0";
+    pkg.devDependencies["oxfmt"] = "^0.37.0";
   },
 };

@@ -108,12 +108,12 @@ export async function runCreate(opts: CreateOptions = {}) {
         resolvedFeatures !== undefined
           ? Promise.resolve(resolvedFeatures)
           : nonInteractive
-          ? Promise.resolve([])
-          : p.multiselect({
-              message: "Optional features",
-              options: features.map((f) => ({ value: f.id, label: f.label })),
-              required: false,
-            }),
+            ? Promise.resolve([])
+            : p.multiselect({
+                message: "Optional features",
+                options: features.map((f) => ({ value: f.id, label: f.label })),
+                required: false,
+              }),
     },
     {
       onCancel: () => {
@@ -126,7 +126,9 @@ export async function runCreate(opts: CreateOptions = {}) {
   const dir = resolve(String(answers.dir));
   const name = String(answers.name);
   const templateSource =
-    answers.template === "__custom__" ? String(answers.customTemplate ?? "") : String(answers.template);
+    answers.template === "__custom__"
+      ? String(answers.customTemplate ?? "")
+      : String(answers.template);
 
   const template = resolveTemplate(templateSource);
 

@@ -28,7 +28,10 @@ export const changesetsFeature: Feature = {
       ) + "\n",
     );
 
-    await writeFile(join(changesetDir, "README.md"), `# Changesets\n\nSee [changesets docs](https://github.com/changesets/changesets).\n`);
+    await writeFile(
+      join(changesetDir, "README.md"),
+      `# Changesets\n\nSee [changesets docs](https://github.com/changesets/changesets).\n`,
+    );
 
     pkg.scripts ??= {};
     pkg.scripts["changeset"] = "changeset";
