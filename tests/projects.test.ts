@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { fileExists, dirExists } from "@/utils/fs";
-import { prepare, scaffold } from "./projects.test-utils";
+import { prepare, scaffold, run } from "./projects.test-utils";
 import { resolve } from "node:path";
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 
 // Shared assertions for library templates (node-library, ui-library)
 async function expectLibraryOutput(root: string) {
@@ -115,5 +115,35 @@ describe("Projects", () => {
     const assets = await readdir(resolve(dist, "assets"));
     expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
     expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
+  }, 60000);
+
+  test.concurrent("docs plugin is not loaded in vitest", async () => {
+    const root = await scaffold("node-library", {
+      dirname: "node-library-vitest",
+      async beforeInstall(root) {
+        // add vitest
+        const pkgPath = resolve(root, "package.json");
+        const pkg = JSON.parse(await readFile(pkgPath, "utf8"));
+        pkg.devDependencies["vitest"] = "^4.0.0";
+        await writeFile(pkgPath, JSON.stringify(pkg));
+      },
+      async beforeBuild(root) {
+        // write a test
+        await writeFile(
+          resolve(root, "src/foo.test.ts"),
+          `import { test, expect } from "vitest"
+test("foo", () => { expect(42).toBeGreaterThan(41) })
+`,
+        );
+        await run("npx vitest", { cwd: root });
+        // vitest should NOT make the docs plugin run (which created defaults in docs dir on resolveConfig)
+        const vitepressDir = resolve(root, "docs");
+        expect(dirExists(vitepressDir)).toBe(false);
+        // TODO: could use something like
+        // node --input-type=module -e "import {resolveConfig} from 'vitest/node'; import {inspect} from 'util'; const c = await resolveConfig({}, 'serve'); console.log(inspect(c.plugins, {depth:4, colors:false}))"
+      },
+    });
+    // now expect docs to be built
+    await expectLibraryDocumentation(root);
   }, 60000);
 });

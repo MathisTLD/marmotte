@@ -33,6 +33,9 @@ export function Docs(options: Options = {}) {
   let vitepress: typeof import("vitepress");
   return {
     name: "marmotte:docs",
+    apply() {
+      return !process.env.VITEST;
+    },
     async configResolved(resolvedConfig) {
       vitepress = await import("vitepress");
       config = resolvedConfig;

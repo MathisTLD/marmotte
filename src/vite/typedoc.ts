@@ -115,6 +115,9 @@ export function TypeDocPlugin(options: Options = {}) {
 
   return {
     name: "marmotte:typedoc",
+    apply() {
+      return !process.env.VITEST;
+    },
     async configResolved(resolvedConfig) {
       config = resolvedConfig;
       const docsRoot = userDocsRoot ?? resolve(config.root, "docs");
@@ -149,7 +152,7 @@ export function TypeDocPlugin(options: Options = {}) {
       await typedocPromise;
     },
     async configureServer() {
-      if (!process.env.VITEST) await startWatch();
+      await startWatch();
     },
   } satisfies Plugin;
 }

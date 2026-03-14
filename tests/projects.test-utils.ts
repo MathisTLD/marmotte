@@ -1,7 +1,7 @@
 import { build } from "vite";
 import { dirname, resolve } from "node:path";
 import { mkdir, rm } from "node:fs/promises";
-import { exec } from "node:child_process";
+import { exec, type ExecOptionsWithStringEncoding } from "node:child_process";
 import { promisify } from "node:util";
 import { resolveTemplate } from "@/cli/api";
 import pkg from "../package.json";
@@ -12,11 +12,21 @@ const rootDir = dirname(import.meta.dirname);
 const scaffoldDir = resolve(tmpdir(), "marmotte-test-projects");
 
 // Throw with captured output so build failures are readable in CI
-export async function run(cmd: string, cwd: string) {
+export async function run(
+  cmd: string,
+  options: ExecOptionsWithStringEncoding & Required<Pick<ExecOptionsWithStringEncoding, "cwd">>,
+) {
+  const opts = { ...options };
+  if (!opts.env) {
+    // default behavior
+    // don't pass VITEST env so that the docs plugins are not deactivated
+    const { VITEST: _, ...env } = process.env;
+    opts.env = env;
+  }
   try {
-    return await execAsync(cmd, { cwd });
+    return await execAsync(cmd, opts);
   } catch (e: any) {
-    throw new Error(`"${cmd}" failed in ${cwd}:\n${e.stdout}\n${e.stderr}`);
+    throw new Error(`"${cmd}" failed in ${options.cwd}:\n${e.stdout}\n${e.stderr}`);
   }
 }
 
@@ -24,7 +34,7 @@ let packagePath: string | undefined;
 
 async function getPackagePath() {
   if (packagePath) return packagePath;
-  await run(`npm pack --pack-destination "${scaffoldDir}"`, rootDir);
+  await run(`npm pack --pack-destination "${scaffoldDir}"`, { cwd: rootDir });
   packagePath = resolve(scaffoldDir, `${pkg.name}-${pkg.version}.tgz`);
   return packagePath;
 }
@@ -58,11 +68,11 @@ export async function scaffold(
   });
 
   await options.beforeInstall?.(root);
-  await run(`npm install "${await getPackagePath()}"`, root);
+  await run(`npm install "${await getPackagePath()}"`, { cwd: root });
   await options.afterInstall?.(root);
 
   await options.beforeBuild?.(root);
-  await run("npm run build", root);
+  await run("npm run build", { cwd: root });
   await options.afterBuild?.(root);
 
   return root;
