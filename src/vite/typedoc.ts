@@ -1,5 +1,6 @@
 import type { Plugin, ResolvedConfig } from "vite";
 import { Application, type ProjectReflection, type TypeDocOptions } from "typedoc";
+import { withDefaults, type WithNoDefaults } from "../utils/merge";
 import { join, resolve } from "path";
 import { mkdir, writeFile } from "fs/promises";
 
@@ -23,7 +24,7 @@ export type Options = Partial<BootstrapOptions> & {
   gitignore?: boolean;
 };
 
-type BootstrapOptions = TypeDocOptions & {
+type BootstrapOptions = WithNoDefaults<TypeDocOptions> & {
   /**
    * Path to the VitePress docs root directory.
    * TypeDoc output lands in `<docsRoot>/reference/api/`.
@@ -49,20 +50,21 @@ export async function bootstrapTypeDoc(options: BootstrapOptions) {
   const root = resolve(docsRoot);
   const out = resolve(root, "reference", "api");
 
-  const typedocOptions: TypeDocOptions = {
-    entryPoints: [join(sourceDir, "**", "*.ts")],
-    skipErrorChecking: true,
-    plugin: [...defaultPlugins],
-    out,
-    readme: "none",
-    alwaysCreateEntryPointModule: true,
-    cleanOutputDir: true,
-    router: "module",
-    // avoid to make the console flicker in dev mode
-    preserveWatchOutput: true,
-    // TODO: proper deepmerge
-    ...userTypedocOptions,
-  };
+  const typedocOptions = withDefaults<TypeDocOptions>(
+    {
+      entryPoints: [join(sourceDir, "**", "*.ts")],
+      skipErrorChecking: true,
+      plugin: [...defaultPlugins],
+      out,
+      readme: "none",
+      alwaysCreateEntryPointModule: true,
+      cleanOutputDir: true,
+      router: "module",
+      // avoid to make the console flicker in dev mode
+      preserveWatchOutput: true,
+    },
+    userTypedocOptions as WithNoDefaults<TypeDocOptions>,
+  );
 
   await onOptions?.(typedocOptions);
   const app = await Application.bootstrapWithPlugins(typedocOptions);

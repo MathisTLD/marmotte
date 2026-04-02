@@ -1,4 +1,4 @@
-import type { Plugin } from "vite";
+import { type Plugin } from "vite";
 
 import dts, { type PluginOptions as DTSPluginOptions } from "./dts";
 import { nodeExternals, type ExternalsOptions } from "./externals";
@@ -7,6 +7,7 @@ import { type PathFilter, resolveEntries } from "@/utils/fs";
 import { Docs, type Options as DocsPluginOptions } from "./docs";
 import TypeDoc, { type Options as TypeDocPluginOptions } from "./typedoc";
 import { BaseBundle } from "./base-config";
+import { withDefaults, type WithNoDefaults } from "@/utils/merge";
 
 export type LibConfigPluginOptions = {
   /**
@@ -65,7 +66,7 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
 
 export type LibPluginOptions = LibConfigPluginOptions & {
   /** Options for the `vite-plugin-dts` (will be merged with defaults) */
-  dts?: DTSPluginOptions;
+  dts?: WithNoDefaults<DTSPluginOptions>;
   /** Options for the `rollup-plugin-node-externals` */
   externals?: ExternalsOptions;
   /** Options for the {@link Docs} plugin, use false to disable */
@@ -80,19 +81,20 @@ export type LibPluginOptions = LibConfigPluginOptions & {
 export function Lib(options: LibPluginOptions = {}) {
   const plugin: Plugin[] = [];
 
-  const dtsOptions: DTSPluginOptions = {
-    cleanVueFileName: true,
-    compilerOptions: {
-      // set to true to enable declarationMap
-      declaration: true,
-      // declarations map are useful with linked packages / monorepos
-      declarationMap: true,
+  const dtsOptions = withDefaults<DTSPluginOptions>(
+    {
+      cleanVueFileName: true,
+      compilerOptions: {
+        // set to true to enable declarationMap
+        declaration: true,
+        // declarations map are useful with linked packages / monorepos
+        declarationMap: true,
+      },
+      // don't create declarations for test-related files
+      exclude: ["**/*.test.ts", "**/*.spec.ts", "**/*.test-*.ts", "**/*.bench.ts"],
     },
-    // don't create declarations for test-related files
-    exclude: ["**/*.test.ts", "**/*.test-*.ts"],
-    // TODO: proper merge
-    ...options.dts,
-  };
+    options.dts,
+  );
   // common
   plugin.push(
     ...BaseBundle(),

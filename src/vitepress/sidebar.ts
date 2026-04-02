@@ -6,17 +6,11 @@ import { generateSidebar } from "vitepress-sidebar";
 import type { SiteConfig } from "vitepress";
 import { getVitePressConfig } from "./utils";
 import { relative } from "path";
+import { withDefaults, type WithNoDefaults } from "@/utils/merge";
 
 export * from "vitepress-sidebar";
 
-type SidebarOptions = VitePressSidebarOptions & {
-  /**
-   * Don't inject defaults, only other passed options will be passed to {@link generateSidebar}
-   *
-   * @default false
-   * */
-  noDefaults?: boolean;
-};
+type SidebarOptions = WithNoDefaults<VitePressSidebarOptions>;
 
 export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[] = {}) {
   let resolvedOptions: VitePressSidebarOptions | VitePressSidebarOptions[];
@@ -32,21 +26,21 @@ export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[]
     enforce: "post",
     config(cfg) {
       function resolveSidebarOptions(opts: SidebarOptions): VitePressSidebarOptions {
-        const { noDefaults = false, ...userOptions } = opts;
-        if (noDefaults) return userOptions;
         const { root } = cfg;
         if (!root) throw new TypeError("Unable to resolve vitepress root");
-        return {
-          // vitepress-sidebar joins documentRootPath with process.cwd() internally,
-          // so this must be relative to CWD (= project root when running vitepress normally)
-          documentRootPath: relative(process.cwd(), root),
-          collapsed: true,
-          useFolderLinkFromIndexFile: true,
-          useTitleFromFrontmatter: true,
-          useTitleFromFileHeading: true,
-          useFolderTitleFromIndexFile: true,
-          ...userOptions,
-        };
+        return withDefaults<VitePressSidebarOptions>(
+          {
+            // vitepress-sidebar joins documentRootPath with process.cwd() internally,
+            // so this must be relative to CWD (= project root when running vitepress normally)
+            documentRootPath: relative(process.cwd(), root),
+            collapsed: true,
+            useFolderLinkFromIndexFile: true,
+            useTitleFromFrontmatter: true,
+            useTitleFromFileHeading: true,
+            useFolderTitleFromIndexFile: true,
+          },
+          opts,
+        );
       }
       resolvedOptions = Array.isArray(options)
         ? options.map(resolveSidebarOptions)

@@ -7,6 +7,7 @@ import VueComponents from "unplugin-vue-components/vite";
 import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 import { DefaultVitePluginContext, type contextOptions } from "./lib/context";
 import { resolveEntries } from "@/utils/fs";
+import { withDefaults, type WithNoDefaults } from "@/utils/merge";
 
 type VueComponentsPluginOptions = NonNullable<Parameters<typeof VueComponents>[0]>;
 type VuetifyPluginOptions = Parameters<typeof Vuetify>[0];
@@ -15,8 +16,8 @@ type VueRouterPluginOptions = NonNullable<
 >;
 
 export interface UICommonPluginOptions extends contextOptions<DefaultVitePluginContext> {
-  vue?: VuePluginOptions;
-  vueComponents?: VueComponentsPluginOptions;
+  vue?: WithNoDefaults<VuePluginOptions>;
+  vueComponents?: WithNoDefaults<VueComponentsPluginOptions>;
   /** Options for `vite-plugin-vuetify` or `false` to deactivate */
   vuetify?: VuetifyPluginOptions | false;
 }
@@ -35,18 +36,15 @@ export function UICommon(
   const plugin: (Plugin | Plugin[])[] = [];
   const ctx = new DefaultVitePluginContext(options);
 
-  const vuePluginOptions: VuePluginOptions = {};
-  if (options.vuetify !== false) {
-    vuePluginOptions.template = { transformAssetUrls };
-  }
-  // TODO: proper deep merge
-  Object.assign(vuePluginOptions, options.vue ?? {});
+  const vuePluginOptions = withDefaults<VuePluginOptions>(
+    options.vuetify !== false ? { template: { transformAssetUrls } } : {},
+    options.vue,
+  );
 
-  const vueComponentsPluginOptions: VueComponentsPluginOptions = {
-    dts: ctx.resolve("sourceDir", "components.d.ts"),
-  };
-  // TODO: proper deep merge
-  Object.assign(vueComponentsPluginOptions, options.vueComponents ?? {});
+  const vueComponentsPluginOptions = withDefaults<VueComponentsPluginOptions>(
+    { dts: ctx.resolve("sourceDir", "components.d.ts") },
+    options.vueComponents,
+  );
 
   // common
   plugin.push(...BaseBundle(), Vue(vuePluginOptions), VueComponents(vueComponentsPluginOptions));
@@ -96,7 +94,7 @@ export function UILib(options: UILibPluginOptions): Plugin[] {
 }
 
 export interface UIAppPluginOptions extends UICommonPluginOptions {
-  vueRouter?: VueRouterPluginOptions | false;
+  vueRouter?: WithNoDefaults<VueRouterPluginOptions> | false;
 }
 
 /**
@@ -109,10 +107,10 @@ export function UIApp(options: UIAppPluginOptions) {
   const { ctx } = common;
   const plugin: PluginOption = [];
   if (options.vueRouter !== false) {
-    const opts: VueRouterPluginOptions = {
-      dts: ctx.resolve("sourceDir", "typed-router.d.ts"),
-    };
-    Object.assign(opts, options.vueRouter ?? {});
+    const opts = withDefaults<VueRouterPluginOptions>(
+      { dts: ctx.resolve("sourceDir", "typed-router.d.ts") },
+      options.vueRouter,
+    );
     // add router before common because it must be before @vitejs/plugin-vue
     plugin.push(
       // dynamically import vue-router/vite so that you don't need it for UILib

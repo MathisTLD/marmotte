@@ -72,12 +72,12 @@ All three plugins share a common set of options through `UICommonPluginOptions`:
 
 ```ts
 UILib({
-  // Options passed directly to @vitejs/plugin-vue
+  // Options passed directly to @vitejs/plugin-vue (deep-merged with defaults)
   vue: {
     /* ... */
   },
 
-  // Options for unplugin-vue-components
+  // Options for unplugin-vue-components (deep-merged with defaults)
   vueComponents: {
     /* ... */
   },
@@ -90,6 +90,8 @@ UILib({
 `UILib` additionally accepts all [`LibPluginOptions`](/reference/api/vite/lib#libpluginoptions) (entries, dts, externals, docs).
 
 `UIApp` additionally accepts `vueRouter` options or `false`.
+
+Plugin option objects (`vue`, `vueComponents`, `vueRouter`) are **deep-merged** with marmotte's defaults. Pass `noDefaults: true` inside any of them to use your options as-is without merging.
 
 See the [API reference](/reference/api/vite/ui) for full option types.
 

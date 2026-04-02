@@ -50,7 +50,7 @@ Lib({
   // Entry filter (see above)
   entries: /\.ts$/,
 
-  // Pass-through to vite-plugin-dts
+  // Pass-through to vite-plugin-dts (deep-merged with defaults)
   dts: {
     tsconfigPath: "./tsconfig.lib.json",
   },
@@ -62,6 +62,19 @@ Lib({
 
   // Disable the embedded docs server
   docs: false,
+});
+```
+
+### Skipping `dts` defaults
+
+`dts` options are **deep-merged** with marmotte's defaults (e.g. `exclude` patterns for test files are concatenated rather than replaced). Pass `noDefaults: true` to bypass this and use your options as-is:
+
+```ts
+Lib({
+  dts: {
+    noDefaults: true,
+    exclude: ["**/my-own-excludes/**"],
+  },
 });
 ```
 
