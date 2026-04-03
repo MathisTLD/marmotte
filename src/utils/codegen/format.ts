@@ -3,7 +3,6 @@ export type CommentType = "//" | "#" | "xml";
 const CommentTypeResolvers: [CommentType, RegExp][] = [
   ["//", /\.(j|t)sx?$/],
   ["xml", /\.((x|ht)ml|md|vue)$/],
-  // TODO: other types of shell script extensions
   ["#", /\.(py|sh)$/],
   // .gitignore etc...
   ["#", /\.git[a-z]+$/],

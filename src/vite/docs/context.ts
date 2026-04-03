@@ -14,6 +14,6 @@ export class Context extends contextFactory(
 ) {
   readonly generator = {
     name: "marmotte/vite/docs",
-    version: "0.0.0", // FIXME: this should be automatic
+    version: import.meta.env.VITE_PACKAGE_VERSION,
   };
 }

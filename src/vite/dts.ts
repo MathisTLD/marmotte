@@ -2,7 +2,7 @@ const PLUGIN_NAME = "marmotte:dts";
 
 // TODO: replace by https://www.npmjs.com/package/unplugin-dts once stable
 import _dts, { type PluginOptions } from "vite-plugin-dts";
-import type { ResolvedConfig } from "vite";
+import type { Plugin, ResolvedConfig } from "vite";
 
 export type { PluginOptions };
 
@@ -11,7 +11,7 @@ export type { PluginOptions };
  * A wrapper around `vite-plugin-dts` that also exposes the options so that other plugins can use the same TS config
  * without having to copy paste settings
  */
-export default function dts(options: PluginOptions = {}) {
+export default function dts(options: PluginOptions = {}): Plugin<{ options: PluginOptions }> {
   const _plugins = _dts(options);
   return {
     ..._plugins,
@@ -34,5 +34,5 @@ export function getDTSPluginOptions(config: ResolvedConfig) {
     throw new TypeError(
       `Found ${plugins.length} instances of plugin ${PLUGIN_NAME}. Can't resolve options`,
     );
-  return plugins[0].api.options;
+  return plugins[0].api!.options;
 }

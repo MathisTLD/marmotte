@@ -100,7 +100,7 @@ export function Lib(options: LibPluginOptions = {}) {
     ...BaseBundle(),
     dts(dtsOptions),
     // only bundle what's in devDependencies
-    nodeExternals(options.externals),
+    nodeExternals(options.externals) as Plugin,
   );
   if (options.docs !== false) {
     plugin.push(Docs(options.docs));
