@@ -6,7 +6,86 @@ import { tmpdir } from "os";
 import { contextFactory } from "./context";
 import type { CommentType } from "@/utils/codegen";
 
-class Context extends contextFactory({ paths: {} }) {
+describe("path resolution", () => {
+  const root = "/project";
+
+  test("string default: resolved relative to root", () => {
+    const Ctx = contextFactory({}, { paths: { sourceDir: "./src" } });
+    const ctx = new Ctx({ root });
+    expect(ctx.resolve("sourceDir")).toBe("/project/src");
+  });
+
+  test("string default: absolute path returned as-is", () => {
+    const Ctx = contextFactory({}, { paths: { sourceDir: "/abs/src" } });
+    const ctx = new Ctx({ root });
+    expect(ctx.resolve("sourceDir")).toBe("/abs/src");
+  });
+
+  test("string default: overridden by user option", () => {
+    const Ctx = contextFactory({}, { paths: { sourceDir: "./src" } });
+    const ctx = new Ctx({ root, sourceDir: "./lib" });
+    expect(ctx.resolve("sourceDir")).toBe("/project/lib");
+  });
+
+  test("tuple default: resolved relative to named path", () => {
+    const Ctx = contextFactory(
+      {},
+      {
+        paths: {
+          sourceDir: "./src",
+          testDir: ["sourceDir", "__tests__"],
+        },
+      },
+    );
+    const ctx = new Ctx({ root });
+    expect(ctx.resolve("testDir")).toBe("/project/src/__tests__");
+  });
+
+  test("tuple default: follows override of base path", () => {
+    const Ctx = contextFactory(
+      {},
+      {
+        paths: {
+          sourceDir: "./src",
+          testDir: ["sourceDir", "__tests__"] as const,
+        },
+      },
+    );
+    const ctx = new Ctx({ root, sourceDir: "./lib" });
+    expect(ctx.resolve("testDir")).toBe("/project/lib/__tests__");
+  });
+});
+
+describe("options resolution", () => {
+  const root = "/project";
+
+  test("option default used when not overridden", () => {
+    const Ctx = contextFactory({ serve: "/docs/" as string | false }, { paths: {} });
+    const ctx = new Ctx({ root });
+    expect(ctx.options.serve).toBe("/docs/");
+  });
+
+  test("option default overridden by user value", () => {
+    const Ctx = contextFactory({ serve: "/docs/" as string | false }, { paths: {} });
+    const ctx = new Ctx({ root, serve: false });
+    expect(ctx.options.serve).toBe(false);
+  });
+
+  test("multiple options: partial override leaves other defaults intact", () => {
+    const Ctx = contextFactory({ serve: "/docs/" as string | false, minify: false }, { paths: {} });
+    const ctx = new Ctx({ root, serve: "/custom/" });
+    expect(ctx.options.serve).toBe("/custom/");
+    expect(ctx.options.minify).toBe(false);
+  });
+
+  test("paths-only factory call is backwards compatible", () => {
+    const Ctx = contextFactory({}, { paths: { sourceDir: "./src" } });
+    const ctx = new Ctx({ root });
+    expect(ctx.resolve("sourceDir")).toBe("/project/src");
+  });
+});
+
+class Context extends contextFactory({}, { paths: {} }) {
   generator = {
     name: "foo",
     version: "1.2.3",

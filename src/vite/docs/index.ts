@@ -2,9 +2,8 @@ import type { Plugin, ResolvedConfig } from "vite";
 import { Context } from "./context";
 import { writeDefaultFiles } from "./codegen";
 
-function resolveContext(config: ResolvedConfig) {
-  // TODO: make other parts configurable
-  return new Context({ root: config.root });
+function resolveContext(config: ResolvedConfig, options: Options) {
+  return new Context({ root: config.root, ...options });
 }
 
 export type Options = {
@@ -39,7 +38,7 @@ export function Docs(options: Options = {}) {
     async configResolved(resolvedConfig) {
       vitepress = await import("vitepress");
       config = resolvedConfig;
-      ctx = resolveContext(resolvedConfig);
+      ctx = resolveContext(resolvedConfig, options);
       await writeDefaultFiles(ctx);
     },
     buildEnd(error?: Error) {
@@ -53,7 +52,7 @@ export function Docs(options: Options = {}) {
       }
     },
     async configureServer(server) {
-      const serve = options.serve === false ? false : (options.serve ?? "/docs/");
+      const serve = ctx.options.serve;
       if (serve) {
         // https://vitepress.dev/reference/site-config#base
         if (!(serve.startsWith("/") && serve.endsWith("/")))

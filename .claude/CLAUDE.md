@@ -63,7 +63,24 @@ const ctx = new DefaultVitePluginContext({ root: cfg.root });
 ctx.resolve("sourceDir", "index.ts"); // → /abs/path/src/index.ts
 ```
 
-`DefaultVitePluginContext` maps `sourceDir → src/`. Use `contextFactory()` to create contexts with custom path names.
+`DefaultVitePluginContext` maps `sourceDir → src/`. Use `contextFactory()` to create contexts with custom named paths and typed plugin options.
+
+`contextFactory` takes two arguments:
+
+1. **Options object** — plugin config with defaults (empty `{}` if none). Keys become non-optional on `ctx.options`.
+2. **Factory config** — `{ paths: { ... } }`. Path values can be a string (relative to `root`) or a tuple `["baseName", "relative"]` (relative to another named path).
+
+Option keys and path keys must not overlap — TypeScript will error if they share a name.
+
+```ts
+const MyContext = contextFactory(
+  { serve: "/docs/" as string | false },
+  { paths: { sourceDir: "./src", testDir: ["sourceDir", "__tests__"] } },
+);
+// ctx.options.serve     → string | false (default applied)
+// ctx.options.sourceDir → string | undefined (path override)
+// ctx.resolve("testDir") → "<root>/src/__tests__"
+```
 
 ### Auto-managed vs default files
 
