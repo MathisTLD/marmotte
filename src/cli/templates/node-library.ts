@@ -23,7 +23,7 @@ export const nodeLibraryTemplate: Template = {
           devDependencies: {
             "@types/node": "^24.10.10",
             marmotte: `^${marmotteVersion}`,
-            vite: "^7.3.1",
+            vite: "^8.0.3",
             vitepress: "^2.0.0-alpha.16",
             vitest: "^4.0.18",
           },
