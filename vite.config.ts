@@ -56,10 +56,18 @@ export default defineConfig({
         "vitepress/sidebar": "./src/vitepress/sidebar.ts",
         // vitest
         "vitest/index": "./src/vitest/index.ts",
+        // since vite 8, even with treeShake: false some exports are stripped if not used or
+        // re-exported by an entry file. These exports are still present in .d.ts files but
+        // their implementation vanishes so wee need to manually add entries to fix this.
+        // utils
+        "utils/codegen/index": "./src/utils/codegen/index.ts",
+        "utils/fs": "./src/utils/fs.ts",
+        "utils/merge": "./src/utils/merge.ts",
+        "utils/package-json": "./src/utils/package-json.ts",
       },
       formats: ["es"],
     },
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         preserveModules: true,
         preserveModulesRoot: "./src",
