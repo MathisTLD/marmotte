@@ -33,4 +33,20 @@ describe("Lib Plugin", () => {
       "utils/codegen/index": resolve(ROOT, "src/utils/codegen/index.ts"),
     });
   });
+
+  test("Default sourcemap is hidden", async () => {
+    const config = await resolveConfig(
+      { plugins: [Lib({ docs: false })], configFile: false },
+      "build",
+    );
+    expect(config.build.sourcemap).toBe("hidden");
+  });
+
+  test("sourcemap can be overridden", async () => {
+    const config = await resolveConfig(
+      { build: { sourcemap: true }, plugins: [Lib({ docs: false })], configFile: false },
+      "build",
+    );
+    expect(config.build.sourcemap).toBe(true);
+  });
 });
