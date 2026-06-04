@@ -20,7 +20,7 @@ export default defineConfig({
 
 This single call wires up:
 
-- **ESM-only output** (`formats: ["es"]`) with source maps and no minification.
+- **ESM-only output** (`formats: ["es"]`) with hidden source maps and no minification.
 - **Preserved modules** — the output mirrors your source tree, which is ideal for tree-shaking by consumers.
 - **TypeScript declarations** (`.d.ts` + `.d.ts.map`) via `vite-plugin-dts`. The build **fails** on type errors.
 - **Node externals** — everything in `dependencies` and `peerDependencies` is excluded from the bundle.
@@ -79,6 +79,29 @@ Lib({
 ```
 
 See the [API reference](/reference/api/vite/lib) for the full option types.
+
+## Source maps
+
+`Lib` produces **hidden** source maps by default (`sourcemap: "hidden"`). Hidden maps are written as `.js.map` files alongside the output but are **not** referenced by a `//# sourceMappingURL` comment in the JS. This keeps the maps available for local debugging tools without embedding a pointer that consumers would download unnecessarily.
+
+> [!WARNING]
+> Hidden source maps should be **excluded from your npm publish**. Add them to `.npmignore` or limit `files` in `package.json`:
+>
+> ```json
+> { "files": ["dist/**/*.js", "dist/**/*.d.ts"] }
+> ```
+
+Override the default by setting `build.sourcemap` in your Vite config:
+
+```ts
+export default defineConfig({
+  build: { sourcemap: true },
+  plugins: Lib(),
+});
+```
+
+> [!CAUTION]
+> `sourcemap: true` embeds a `//# sourceMappingURL` comment in every output file. If the referenced `.map` file is missing in the consumer's `node_modules` (e.g. excluded from the publish), Vite will emit a `Failed to load source map for ...` warning for every file it processes. Prefer `"hidden"` (the default) or ensure the maps are included in your published package.
 
 ## Low-level: `LibConfig`
 

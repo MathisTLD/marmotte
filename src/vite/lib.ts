@@ -45,7 +45,9 @@ export function LibConfig(options: LibConfigPluginOptions): Plugin {
       return {
         build: {
           minify: false,
-          sourcemap: true,
+          // produce hidden sourcemap by default
+          // these sourcemaps should removed or ignored when publishing
+          sourcemap: cfg.build?.sourcemap ?? "hidden",
           lib: {
             entry,
             // only build es modules by default
