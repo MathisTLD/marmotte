@@ -94,6 +94,7 @@ export function Lib(options: LibPluginOptions = {}) {
       },
       // don't create declarations for test-related files
       exclude: ["**/*.test.ts", "**/*.spec.ts", "**/*.test-*.ts", "**/*.bench.ts"],
+      // TODO: use `afterDiagnostic` to make production build fail on TS error
     },
     options.dts,
   );

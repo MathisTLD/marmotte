@@ -21,6 +21,7 @@ export const uiLibraryTemplate: Template = {
             test: "vitest",
           },
           devDependencies: {
+            "@vue/language-core": "^3.1.5",
             marmotte: `^${marmotteVersion}`,
             "sass-embedded": "^1.97.3",
             vite: "^8.0.3",
