@@ -4,18 +4,21 @@ An extensible development toolkit for TypeScript projects — composable Vite pl
 
 **[Documentation →](https://marmotte.mtld.net/)**
 
-## Installation
+## Packages
+
+| Package          | Purpose                                                      |
+| ---------------- | ------------------------------------------------------------ |
+| `@mrmt/vite`     | `Lib`, `Docs`, `TypeDocPlugin`, `SidebarPlugin` Vite plugins |
+| `@mrmt/vite-ui`  | `UILib` / `UIApp` (Vue + Vuetify)                            |
+| `@mrmt/vitest`   | `withTmpDir` / `createTmpDir` test helpers                   |
+| `@mrmt/tsconfig` | shared tsconfig bases                                        |
+| `marmotte`       | CLI (`marmotte create` / `setup`) and MCP server             |
 
 ```sh
-npm install -D marmotte
-```
-
-Peer dependencies — install what you use:
-
-```sh
-npm install -D vite typescript       # always required
-npm install -D vitepress             # for Docs, SidebarPlugin
-npm install -D vitest                # for withTmpDir / createTmpDir
+npm install -D @mrmt/vite vite typescript   # library + docs plugins
+npm install -D @mrmt/vite-ui                # Vue + Vuetify
+npm install -D @mrmt/vitest vitest          # test helpers
+npm install -D vitepress                    # for Docs, SidebarPlugin
 ```
 
 ## Plugins
@@ -25,7 +28,7 @@ npm install -D vitest                # for withTmpDir / createTmpDir
 ```ts
 // vite.config.ts
 import { defineConfig } from "vite";
-import { Lib } from "marmotte/vite/lib";
+import { Lib } from "@mrmt/vite/lib";
 
 export default defineConfig({ plugins: Lib() });
 ```
@@ -45,7 +48,7 @@ Pass `docs: false` to skip the VitePress integration.
 ### `UILib` / `UIApp` — Vue + Vuetify
 
 ```ts
-import { UILib, UIApp } from "marmotte/vite/ui";
+import { UILib, UIApp } from "@mrmt/vite-ui";
 
 // component library
 export default defineConfig({ plugins: UILib() });
@@ -72,7 +75,7 @@ On first run it scaffolds `docs/index.md` and `docs/.vitepress/config.ts` as edi
 
 ```ts
 // vite.config.ts
-import TypeDoc from "marmotte/vite/typedoc";
+import TypeDoc from "@mrmt/unplugin-typedoc";
 
 export default defineConfig({
   plugins: [TypeDoc()],
@@ -88,7 +91,7 @@ Automatically writes a `.gitignore` inside the output directory so generated fil
 
 ```ts
 // docs/.vitepress/config.ts
-import Sidebar from "marmotte/vitepress/sidebar";
+import Sidebar from "@mrmt/vitepress-plugin-sidebar";
 
 export default defineConfig({
   vite: {
@@ -107,7 +110,7 @@ Also re-exports everything from [`vitepress-sidebar`](https://vitepress-sidebar.
 Included automatically by `Lib`. Injects `VITE_PACKAGE_NAME` and `VITE_PACKAGE_VERSION` at build time.
 
 ```ts
-import { resolvePackageMeta } from "marmotte/vite/package-meta/client";
+import { resolvePackageMeta } from "@mrmt/utils/package-meta";
 
 const { name, version } = resolvePackageMeta();
 ```
@@ -117,7 +120,7 @@ const { name, version } = resolvePackageMeta();
 ### Vitest helpers
 
 ```ts
-import { withTmpDir, createTmpDir } from "marmotte/vitest";
+import { withTmpDir, createTmpDir } from "@mrmt/vitest";
 
 // auto-created before the suite, deleted after
 const tmp = withTmpDir();

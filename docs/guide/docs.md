@@ -11,7 +11,7 @@ Marmotte provides first-class support for [VitePress](https://vitepress.dev) doc
 There are two complementary pieces:
 
 1. **[`Docs`](/reference/api/vite/docs#docs)** — a Vite plugin (included in `Lib` by default) that scaffolds a VitePress site and embeds its dev server into your main Vite dev server.
-2. **[`TypeDocPlugin`](/reference/api/vite/typedoc#typedocplugin)** — a Vite plugin added to your main `vite.config.ts` that generates Markdown from your source files' JSDoc comments.
+2. **`TypeDocPlugin`** — a Vite (and Rolldown) plugin added to your main `vite.config.ts` that generates Markdown from your source files' JSDoc comments.
 
 ## Dev mode
 
@@ -38,7 +38,7 @@ The first time `Docs` runs it writes these files (only if they don't exist):
 
 ```ts
 // vite.config.ts
-import { Lib } from "marmotte/vite/lib";
+import { Lib } from "@mrmt/vite/lib";
 
 export default defineConfig({
   plugins: Lib({
@@ -54,7 +54,7 @@ export default defineConfig({
 If you're not using `Lib`, add `Docs` directly:
 
 ```ts
-import { Docs } from "marmotte/vite/docs";
+import { Docs } from "@mrmt/vite/docs";
 
 export default defineConfig({
   plugins: [Docs()],
@@ -67,7 +67,7 @@ Add `TypeDocPlugin` to your main `vite.config.ts`:
 
 ```ts
 // vite.config.ts
-import TypeDoc from "marmotte/vite/typedoc";
+import TypeDoc from "@mrmt/unplugin-typedoc";
 
 export default defineConfig({
   plugins: [
@@ -98,12 +98,30 @@ export default defineConfig({
 
 Generated Markdown files land in `docs/reference/api/`. By default the plugin writes a `.gitignore` containing `*` inside that directory so the generated files are excluded from git automatically — no manual `.gitignore` entry needed.
 
-## Sidebar and navigation
+### With `vp pack` / Rolldown
 
-The default config uses [`generateSidebar`](/reference/api/vitepress/sidebar) from `vitepress-sidebar` to build the sidebar automatically from the docs directory tree. No manual sidebar config needed.
+`@mrmt/unplugin-typedoc` is built with [unplugin](https://github.com/unjs/unplugin) and exports one plugin per bundler: `vite` (also the default export and `TypeDocPlugin`) and `rolldown`. Use the Rolldown one with `vp pack` (tsdown); it generates the API reference during the build and fails the build on TypeDoc errors:
 
 ```ts
-import { generateSidebar } from "marmotte/vitepress/sidebar";
+// vite.config.ts
+import { defineConfig } from "vite-plus";
+import { rolldown as TypeDoc } from "@mrmt/unplugin-typedoc";
+
+export default defineConfig({
+  pack: {
+    plugins: [TypeDoc({ out: "docs/api" })],
+  },
+});
+```
+
+Outside Vite the project root defaults to the current directory; pass `root` to change it.
+
+## Sidebar and navigation
+
+The default config uses [`generateSidebar`](/reference/api/vitepress-plugin-sidebar/sidebar) from `vitepress-sidebar` to build the sidebar automatically from the docs directory tree. No manual sidebar config needed.
+
+```ts
+import { generateSidebar } from "@mrmt/vitepress-plugin-sidebar";
 
 const sidebar = generateSidebar({
   documentRootPath: "docs",

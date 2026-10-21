@@ -155,10 +155,10 @@ The server also exposes two resources that the AI can read to discover valid val
 
 ## Programmatic API
 
-For scripts and AI-generated code that need to call the CLI logic directly, import from `marmotte/cli/api`:
+For scripts and AI-generated code that need to call the CLI logic directly, import from `marmotte/api`:
 
 ```ts
-import { runCreate, runSetup } from "marmotte/cli/api";
+import { runCreate, runSetup } from "marmotte/api";
 
 // Fully non-interactive when template is supplied
 await runCreate({
@@ -181,7 +181,7 @@ Omit any field to fall back to interactive prompts for that field. Supplying `te
 ### Discover templates and features at runtime
 
 ```ts
-import { builtinTemplates, features } from "marmotte/cli/api";
+import { builtinTemplates, features } from "marmotte/api";
 
 builtinTemplates.map((t) => t.id);
 // ["node-library", "ui-library", "ui-app"]
@@ -193,7 +193,7 @@ features.map((f) => f.id);
 ### Types
 
 ```ts
-import type { CreateOptions, SetupOptions, Feature, PackageJson } from "marmotte/cli/api";
+import type { CreateOptions, SetupOptions, Feature, PackageJson } from "marmotte/api";
 ```
 
 | Type            | Description                                   |

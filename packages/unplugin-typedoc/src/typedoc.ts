@@ -1,0 +1,189 @@
+import { createUnplugin } from "unplugin";
+import { Application, type ProjectReflection, type TypeDocOptions } from "typedoc";
+import { withDefaults, type WithNoDefaults } from "@mrmt/utils/merge";
+import { join, resolve } from "path";
+import { mkdir, writeFile } from "fs/promises";
+
+export const defaultPlugins = [
+  async function typedocPluginMarkdown(app) {
+    return import("typedoc-plugin-markdown").then((m) => m.load(app));
+  },
+  async function typedocVitePressTheme(app) {
+    return import("typedoc-vitepress-theme").then((m) => m.load(app as any));
+  },
+] satisfies TypeDocOptions["plugin"];
+
+export type Options = Partial<BootstrapOptions> & {
+  /**
+   * Project root (where `src/` and `docs/` are looked up).
+   * @default Vite's resolved root, or `process.cwd()` with Rolldown / `vp pack`
+   */
+  root?: string;
+  /** a hook to call custom logic after files are generated */
+  onGenerated?: () => void | Promise<void>;
+  /**
+   * Write a `.gitignore` containing `*` inside the TypeDoc output directory so
+   * that generated Markdown files are excluded from git automatically.
+   * @default true
+   */
+  gitignore?: boolean;
+};
+
+type BootstrapOptions = WithNoDefaults<TypeDocOptions> & {
+  /**
+   * Path to the VitePress docs root directory.
+   * TypeDoc output lands in `<docsRoot>/reference/api/`.
+   * @default `<vite root>/docs`
+   */
+  docsRoot: string;
+  /**
+   * Path to the source directory. Default entry points are `<sourceDir>/**\/*.ts`.
+   * Resolved relative to the Vite root when used via `TypeDocPlugin`.
+   * @default `<vite root>/src`
+   */
+  sourceDir: string;
+  /** a hook to mutate in place typedocs options */
+  onOptions?: (options: TypeDocOptions) => Promise<void> | void;
+};
+
+/**
+ * Bootstrap a TypeDoc application generating an API reference into `<docsRoot>/reference/api/`.
+ * Override with the `out` TypeDoc option to change the output path.
+ */
+export async function bootstrapTypeDoc(options: BootstrapOptions) {
+  const { sourceDir, docsRoot, onOptions, ...userTypedocOptions } = options;
+  const root = resolve(docsRoot);
+  const out = resolve(root, "reference", "api");
+
+  const typedocOptions = withDefaults<TypeDocOptions>(
+    {
+      entryPoints: [join(sourceDir, "**", "*.ts")],
+      skipErrorChecking: true,
+      plugin: [...defaultPlugins],
+      out,
+      readme: "none",
+      alwaysCreateEntryPointModule: true,
+      cleanOutputDir: true,
+      router: "module",
+      // avoid to make the console flicker in dev mode
+      preserveWatchOutput: true,
+    },
+    userTypedocOptions as WithNoDefaults<TypeDocOptions>,
+  );
+
+  await onOptions?.(typedocOptions);
+  const app = await Application.bootstrapWithPlugins(typedocOptions);
+  return app;
+}
+
+/**
+ * Plugin generating a TypeDoc API reference as Markdown files. Works with Vite and Rolldown
+ * (`vp pack` / tsdown), see {@link vite} and {@link rolldown}.
+ *
+ * - **Build mode**: kicks off TypeDoc in `buildStart` (fire-and-forget) so it runs concurrently
+ *   with the bundler; the result is awaited in `buildEnd`, so TypeDoc errors fail the build.
+ * - **Watch mode** (`vite build --watch`, `vp pack --watch`): starts TypeDoc in watch mode.
+ * - **Vite dev server** (`vite dev`): starts TypeDoc in watch mode so the API reference stays
+ *   up-to-date while you iterate (Vite only).
+ *
+ * ```ts
+ * // vite.config.ts
+ * import { vite as TypeDocPlugin } from "@mrmt/unplugin-typedoc"
+ * export default defineConfig({ plugins: [TypeDocPlugin()] })
+ *
+ * // vite.config.ts with `vp pack`
+ * import { rolldown as TypeDocPlugin } from "@mrmt/unplugin-typedoc"
+ * export default defineConfig({ pack: { plugins: [TypeDocPlugin()] } })
+ * ```
+ */
+const unplugin = createUnplugin<Options | undefined>((options = {}, meta) => {
+  const {
+    root: userRoot,
+    docsRoot: userDocsRoot,
+    sourceDir: userSourceDir,
+    onGenerated,
+    gitignore = true,
+    ...bootstrapOptions
+  } = options;
+  let root = userRoot ?? process.cwd();
+  // Vite also runs `buildStart` in dev mode, where we only want the watcher (see `configureServer`)
+  let isBuild = meta.framework !== "vite";
+  let app: Application | undefined;
+  let watchStarted = false;
+  let typedocPromise: Promise<void> | undefined;
+
+  // lazy bootstrap app only if needed
+  const resolveApp = async () => {
+    if (!app) {
+      console.info("🚀 Bootstrapping TypeDoc application...");
+      app = await bootstrapTypeDoc({
+        docsRoot: userDocsRoot ?? resolve(root, "docs"),
+        sourceDir: resolve(root, userSourceDir ?? "src"),
+        ...bootstrapOptions,
+      });
+    }
+    return app;
+  };
+
+  const generate = async (project: ProjectReflection) => {
+    const app = await resolveApp();
+    console.info("🔄 Generating TypeDoc documentation...");
+    await app.generateOutputs(project);
+    if (gitignore) {
+      const outDir = app.options.getValue("out") as string;
+      await mkdir(outDir, { recursive: true });
+      await writeFile(
+        join(outDir, ".gitignore"),
+        "# Auto-generated by @mrmt/unplugin-typedoc — set gitignore: false to disable\n*\n",
+      );
+    }
+    await onGenerated?.();
+    console.info("✅ TypeDoc documentation generated!");
+  };
+
+  const startWatch = async () => {
+    if (watchStarted) return;
+    watchStarted = true;
+    (await resolveApp()).convertAndWatch((project) => generate(project));
+  };
+
+  return {
+    name: "marmotte:typedoc",
+    buildStart() {
+      if (process.env.VITEST || !isBuild) return;
+      // `meta.watchMode` is set by Rollup-compatible bundlers but not typed by unplugin
+      if ((this as any).meta?.watchMode) {
+        // build --watch: start the typedoc watcher alongside the bundler's watcher
+        return startWatch();
+      }
+      // fire without await — runs in parallel with the bundler
+      typedocPromise = resolveApp()
+        .then((app) => app.convert())
+        .then(async (project) => {
+          if (!project) throw new Error("TypeDoc project reflection is undefined");
+          await generate(project);
+        });
+    },
+    async buildEnd(error?: Error) {
+      // collect result and propagate any TypeDoc errors before the bundle is written
+      if (!error) await typedocPromise;
+    },
+    vite: {
+      apply: () => !process.env.VITEST,
+      configResolved(config) {
+        root = userRoot ?? config.root;
+        isBuild = config.command === "build";
+      },
+      configureServer: startWatch,
+    },
+  };
+});
+
+/** The plugin for Vite (`plugins: [vite()]`) */
+export const vite = unplugin.vite;
+/** The plugin for Rolldown, e.g. in the `pack.plugins` option of `vp pack` / tsdown */
+export const rolldown = unplugin.rolldown;
+/** @deprecated alias of {@link vite}, kept for compatibility */
+export const TypeDocPlugin = vite;
+
+export default vite;

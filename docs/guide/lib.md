@@ -11,7 +11,7 @@ The [`Lib`](/reference/api/vite/lib#lib) plugin configures Vite to build an ESM 
 ```ts
 // vite.config.ts
 import { defineConfig } from "vite";
-import { Lib } from "marmotte/vite/lib";
+import { Lib } from "@mrmt/vite/lib";
 
 export default defineConfig({
   plugins: Lib(),
@@ -108,7 +108,7 @@ export default defineConfig({
 [`LibConfig`](/reference/api/vite/lib#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
 
 ```ts
-import { LibConfig } from "marmotte/vite/lib";
+import { LibConfig } from "@mrmt/vite/lib";
 
 export default defineConfig({
   plugins: [

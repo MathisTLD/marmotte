@@ -8,39 +8,46 @@ Marmotte is an extensible development toolkit for TypeScript projects. It provid
 
 ## Installation
 
+Marmotte is a set of packages. Install only what you need:
+
 ```sh
-npm install --save-dev marmotte
+npm install --save-dev @mrmt/vite          # library build plugins (Lib, Docs, dts)
+npm install --save-dev @mrmt/unplugin-typedoc   # TypeDoc API reference plugin
+npm install --save-dev @mrmt/vitepress-plugin-sidebar   # VitePress sidebar plugin
+npm install --save-dev @mrmt/vite-ui       # Vue + Vuetify apps and libraries
+npm install --save-dev @mrmt/vitest        # test helpers
+npm install --save-dev @mrmt/tsconfig      # shared tsconfig bases
+npm install --save-dev marmotte            # CLI and MCP server
 ```
 
-Marmotte has optional peer dependencies depending on which plugins you use:
+Peer dependencies depend on which packages you use:
 
-| Feature           | Peer dependency      |
-| ----------------- | -------------------- |
-| All plugins       | `vite`, `typescript` |
-| Documentation     | `vitepress`          |
-| Testing utilities | `vitest`             |
-| Vue routing       | `vue-router`         |
+| Package         | Peer dependencies                                  |
+| --------------- | -------------------------------------------------- |
+| `@mrmt/vite`    | `vite`, `typescript`, `vitepress` (optional, docs) |
+| `@mrmt/vite-ui` | `vite`, `vue-router`                               |
+| `@mrmt/vitest`  | `vitest`                                           |
 
 ## What's included
 
-| Import path                  | Purpose                                 |
-| ---------------------------- | --------------------------------------- |
-| `marmotte/vite/lib`          | Build a TypeScript library              |
-| `marmotte/vite/ui`           | Build a Vue + Vuetify app or library    |
-| `marmotte/vite/docs`         | Embed VitePress docs in your dev server |
-| `marmotte/vite/typedoc`      | Auto-generate API reference from JSDoc  |
-| `marmotte/vitepress/sidebar` | Auto-generate VitePress sidebar         |
-| `marmotte/vitest`            | Helpers for tests                       |
+| Import path                      | Purpose                                 |
+| -------------------------------- | --------------------------------------- |
+| `@mrmt/vite/lib`                 | Build a TypeScript library              |
+| `@mrmt/vite-ui`                  | Build a Vue + Vuetify app or library    |
+| `@mrmt/vite/docs`                | Embed VitePress docs in your dev server |
+| `@mrmt/unplugin-typedoc`         | Auto-generate API reference from JSDoc  |
+| `@mrmt/vitepress-plugin-sidebar` | Auto-generate VitePress sidebar         |
+| `@mrmt/vitest`                   | Helpers for tests                       |
 
 ## Concepts
 
 ### Plugin composition
 
-Functions exported from `marmotte/vite/<plugin-name>` return a Vite `Plugin` or `Plugin[]`. You use them directly inside the `plugins` array of your `vite.config.ts`:
+Functions exported from `@mrmt/vite/<plugin-name>` return a Vite `Plugin` or `Plugin[]`. You use them directly inside the `plugins` array of your `vite.config.ts`:
 
 ```ts
 import { defineConfig } from "vite";
-import { Lib } from "marmotte/vite/lib";
+import { Lib } from "@mrmt/vite/lib";
 
 export default defineConfig({
   plugins: Lib(),
@@ -58,7 +65,7 @@ When the `Docs` plugin is active it writes two kinds of files into `docs/`:
 
 ### Entry point discovery
 
-`Lib` (and `LibConfig`) use [`resolveEntries`](/reference/api/utils/fs) to walk your `src/` directory and build a Rollup entry map automatically. Control which files become entries with a `RegExp` or predicate via the `entries` option.
+`Lib` (and `LibConfig`) use `resolveEntries` to walk your `src/` directory and build a Rollup entry map automatically. Control which files become entries with a `RegExp` or predicate via the `entries` option.
 
 ## Next steps
 

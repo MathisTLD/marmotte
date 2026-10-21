@@ -1,0 +1,5 @@
+{
+  "extends": "@mrmt/tsconfig/tsconfig.node-lib.json",
+  "compilerOptions": { "rootDir": ".", "verbatimModuleSyntax": true },
+  "include": ["src", "tests"]
+}

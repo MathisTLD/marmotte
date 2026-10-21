@@ -1,90 +1,26 @@
-/// <reference types="vitest/config" />
-import { defineConfig } from "vite";
-import { resolve } from "path";
-import { chmodSync } from "fs";
-import pkg from "./package.json";
-
-import { nodeExternals } from "./src/vite/externals";
-import dts from "./src/vite/dts";
-import { PackageMeta } from "./src/vite/package-meta";
-import { TypeDocPlugin } from "./src/vite/typedoc";
+import { defineConfig } from "vite-plus";
 
 export default defineConfig({
-  define: {
-    __MARMOTTE_VERSION__: JSON.stringify(pkg.version),
+  staged: {
+    "*": "vp check --fix",
   },
-  plugins: [
-    {
-      name: "chmod-cli",
-      closeBundle() {
-        chmodSync("dist/cli/index.js", 0o755);
-        chmodSync("dist/mcp/index.js", 0o755);
+  run: {
+    tasks: {
+      // docs aren't a workspace package: they're built from the root
+      // interim: copy each package's generated docs/api into the VitePress site
+      "api-docs": {
+        command: "node tooling/copy-api-docs.ts",
+        dependsOn: [
+          "@mrmt/vitest#build",
+          "@mrmt/vite#build",
+          "@mrmt/vitepress-plugin-sidebar#build",
+          "@mrmt/vite-ui#build",
+          "marmotte#build",
+        ],
+        cache: false,
       },
+      docs: { command: "vitepress dev docs", dependsOn: ["api-docs"], cache: false },
+      "build:docs": { command: "vitepress build docs", dependsOn: ["api-docs"] },
     },
-    PackageMeta(),
-    dts({
-      tsconfigPath: "./tsconfig.lib.json",
-      afterDiagnostic(diagnostics) {
-        // TODO: not allowing to build lib with typing error should be a default
-        if (diagnostics.length) {
-          throw new Error("got typing errors");
-        }
-      },
-    }),
-    nodeExternals(),
-    TypeDocPlugin({ tsconfig: "tsconfig.lib.json" }),
-  ],
-  build: {
-    minify: false,
-    sourcemap: "hidden",
-    lib: {
-      entry: {
-        // cli
-        "cli/index": "./src/cli/index.ts",
-        "cli/api": "./src/cli/api.ts",
-        // mcp
-        "mcp/index": "./src/mcp/index.ts",
-        // vite plugins
-        "vite/docs": "./src/vite/docs/index.ts",
-        "vite/dts": "./src/vite/dts.ts",
-        "vite/lib": "./src/vite/lib.ts",
-        "vite/typedoc": "./src/vite/typedoc.ts",
-        "vite/ui": "./src/vite/ui.ts",
-        // TODO: we might wanna build client files with another vite config
-        "vite/package-meta/client": "./src/vite/package-meta/client.ts",
-        // vitepress
-        "vitepress/sidebar": "./src/vitepress/sidebar.ts",
-        // vitest
-        "vitest/index": "./src/vitest/index.ts",
-        // since vite 8, even with treeShake: false some exports are stripped if not used or
-        // re-exported by an entry file. These exports are still present in .d.ts files but
-        // their implementation vanishes so wee need to manually add entries to fix this.
-        // utils
-        "utils/codegen/index": "./src/utils/codegen/index.ts",
-        "utils/fs": "./src/utils/fs.ts",
-        "utils/merge": "./src/utils/merge.ts",
-        "utils/package-json": "./src/utils/package-json.ts",
-      },
-      formats: ["es"],
-    },
-    rolldownOptions: {
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: "./src",
-        banner: (chunk) =>
-          chunk.fileName.startsWith("cli/index") || chunk.fileName.startsWith("mcp/index")
-            ? "#!/usr/bin/env node"
-            : "",
-      },
-      treeshake: false,
-    },
-  },
-  resolve: {
-    alias: {
-      "@": resolve(import.meta.dirname, "src"),
-    },
-  },
-  test: {
-    exclude: ["**/node_modules/**", "**/dist/**"],
   },
 });

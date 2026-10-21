@@ -1,0 +1,50 @@
+{
+  "name": "marmotte",
+  "version": "0.6.1",
+  "description": "An extensible development toolkit for TypeScript based projects",
+  "homepage": "https://github.com/MathisTLD/marmotte#readme",
+  "bugs": {
+    "url": "https://github.com/MathisTLD/marmotte/issues"
+  },
+  "license": "ISC",
+  "author": "MathisTLD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisTLD/marmotte.git",
+    "directory": "packages/cli"
+  },
+  "bin": {
+    "marmotte": "./dist/cli/index.js",
+    "marmotte-mcp": "./dist/mcp/index.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "type": "module",
+  "exports": {
+    "./api": {
+      "types": "./dist/cli/api.d.ts",
+      "import": "./dist/cli/api.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "commander": "^14.0.3",
+    "giget": "^3.1.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@mrmt/tsconfig": "workspace:^",
+    "@mrmt/unplugin-typedoc": "workspace:^",
+    "@mrmt/utils": "workspace:^",
+    "@mrmt/vite": "workspace:^",
+    "@mrmt/vite-ui": "workspace:^",
+    "@mrmt/vitest": "workspace:^",
+    "vite": "*",
+    "vitest": "*",
+    "vue-router": "^5.0.3"
+  }
+}

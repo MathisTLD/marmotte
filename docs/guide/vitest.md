@@ -7,7 +7,7 @@ title: Testing Utilities
 Marmotte ships lightweight Vitest helpers for tests that need to work with the filesystem.
 
 ```ts
-import { withTmpDir, createTmpDir, createTmpDirSync } from "marmotte/vitest";
+import { withTmpDir, createTmpDir, createTmpDirSync } from "@mrmt/vitest";
 ```
 
 See the [API reference](/reference/api/vitest/tmpdir) for full details.
@@ -18,7 +18,7 @@ The most common helper. Call it at the top level of a `describe` block to get a 
 
 ```ts
 import { describe, it, expect } from "vitest";
-import { withTmpDir } from "marmotte/vitest";
+import { withTmpDir } from "@mrmt/vitest";
 import { writeFile, readFile } from "fs/promises";
 import { join } from "path";
 
@@ -42,7 +42,7 @@ describe("my file-writing logic", () => {
 Use these when you need a temporary directory outside of a Vitest hook context, or when you want to manage the lifecycle yourself.
 
 ```ts
-import { createTmpDir, createTmpDirSync } from "marmotte/vitest";
+import { createTmpDir, createTmpDirSync } from "@mrmt/vitest";
 import { rm } from "fs/promises";
 
 // Async version

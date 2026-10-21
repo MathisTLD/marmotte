@@ -1,0 +1,13 @@
+packages:
+  - packages/*
+
+# make every consumer (incl. transitive/peer) resolve the Vite+ toolchain versions
+overrides:
+  vite@*: npm:@voidzero-dev/vite-plus-core@1.3.0
+  vitest@*: 5.0.5
+  "@microsoft/api-extractor>lodash": ~4.18.1
+  minimatch: ^10.2.3
+
+onlyBuiltDependencies:
+  - esbuild
+  - fsevents

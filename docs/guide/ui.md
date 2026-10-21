@@ -6,18 +6,18 @@ title: Vue UI Library / App
 
 Marmotte provides three composable plugins for Vue 3 + Vuetify projects. All of them include the same base setup: Vue, [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) (auto-import), and Vuetify.
 
-| Plugin                                        | Use case                                        |
-| --------------------------------------------- | ----------------------------------------------- |
-| [`UILib`](/reference/api/vite/ui#uilib)       | Distributable Vue component library             |
-| [`UIApp`](/reference/api/vite/ui#uiapp)       | Full Vue application (with vue-router)          |
-| [`UICommon`](/reference/api/vite/ui#uicommon) | Shared base — use when composing your own stack |
+| Plugin                                                | Use case                                        |
+| ----------------------------------------------------- | ----------------------------------------------- |
+| [`UILib`](/reference/api/vite-ui/index-1#uilib)       | Distributable Vue component library             |
+| [`UIApp`](/reference/api/vite-ui/index-1#uiapp)       | Full Vue application (with vue-router)          |
+| [`UICommon`](/reference/api/vite-ui/index-1#uicommon) | Shared base — use when composing your own stack |
 
 ## Building a Vue component library
 
 ```ts
 // vite.config.ts
 import { defineConfig } from "vite";
-import { UILib } from "marmotte/vite/ui";
+import { UILib } from "@mrmt/vite-ui";
 
 export default defineConfig({
   plugins: UILib({}),
@@ -49,7 +49,7 @@ UILib({ vuetify: false });
 ```ts
 // vite.config.ts
 import { defineConfig } from "vite";
-import { UIApp } from "marmotte/vite/ui";
+import { UIApp } from "@mrmt/vite-ui";
 
 export default defineConfig({
   plugins: UIApp({}),
@@ -73,14 +73,10 @@ All three plugins share a common set of options through `UICommonPluginOptions`:
 ```ts
 UILib({
   // Options passed directly to @vitejs/plugin-vue (deep-merged with defaults)
-  vue: {
-    /* ... */
-  },
+  vue: {/* ... */},
 
   // Options for unplugin-vue-components (deep-merged with defaults)
-  vueComponents: {
-    /* ... */
-  },
+  vueComponents: {/* ... */},
 
   // Options for vite-plugin-vuetify, or false to disable
   vuetify: { styles: { configFile: "src/styles/settings.scss" } },
@@ -93,14 +89,14 @@ UILib({
 
 Plugin option objects (`vue`, `vueComponents`, `vueRouter`) are **deep-merged** with marmotte's defaults. Pass `noDefaults: true` inside any of them to use your options as-is without merging.
 
-See the [API reference](/reference/api/vite/ui) for full option types.
+See the [API reference](/reference/api/vite-ui/index-1) for full option types.
 
 ## Using `UICommon` directly
 
 `UICommon` is the shared foundation. It returns the plugin array augmented with a `ctx` property for accessing the resolved [`DefaultVitePluginContext`](/reference/api/vite/lib/context#defaultviteplugincontext):
 
 ```ts
-import { UICommon } from "marmotte/vite/ui";
+import { UICommon } from "@mrmt/vite-ui";
 
 const common = UICommon({});
 const { ctx } = common;

@@ -1,0 +1,49 @@
+{
+  "name": "@mrmt/utils",
+  "version": "0.6.1",
+  "private": true,
+  "description": "Internal helpers (fs, merge, codegen, package.json schema), inlined into the published packages",
+  "license": "ISC",
+  "author": "MathisTLD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisTLD/marmotte.git",
+    "directory": "packages/utils"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "type": "module",
+  "exports": {
+    "./fs": {
+      "types": "./dist/fs.d.ts",
+      "import": "./dist/fs.js"
+    },
+    "./merge": {
+      "types": "./dist/merge.d.ts",
+      "import": "./dist/merge.js"
+    },
+    "./package-json": {
+      "types": "./dist/package-json.d.ts",
+      "import": "./dist/package-json.js"
+    },
+    "./package-meta": {
+      "types": "./dist/package-meta.d.ts",
+      "import": "./dist/package-meta.js"
+    },
+    "./codegen": {
+      "types": "./dist/codegen/index.d.ts",
+      "import": "./dist/codegen/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@mrmt/tsconfig": "workspace:^",
+    "vite": "*",
+    "vitest": "*"
+  }
+}

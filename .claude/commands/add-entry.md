@@ -1,21 +1,20 @@
 # Add a new library entry point
 
-Use this when you need to expose a new module from marmotte (not a Vite plugin).
+Use this when you need to expose a new module from an existing package (not a Vite plugin).
 
-The new entry is: `$ARGUMENTS`
+The new entry is: `$ARGUMENTS` (give it as `<package>/<module>`, e.g. `utils/foo`)
 
 ## Steps
 
-1. **Create the source file** at `src/<module>/index.ts` (or a single file at `src/<module>.ts`).
+1. **Create the source file** at `packages/<package>/src/<module>.ts` (or `<module>/index.ts`).
 
-2. **Register the entry** in [vite.config.ts](../../vite.config.ts):
+2. **Register the entry** in `packages/<package>/vite.config.ts`, inside the `pack.entry` object:
 
    ```ts
-   // inside build.lib.entry:
-   "<module>": "./src/<module>/index.ts",
+   "<module>": "src/<module>.ts",
    ```
 
-3. **Expose the export** in [package.json](../../package.json):
+3. **Expose the export** in `packages/<package>/package.json`:
 
    ```json
    "./<module>": {
@@ -24,15 +23,15 @@ The new entry is: `$ARGUMENTS`
    }
    ```
 
-   For CSS assets use `"./<module>.css": "./dist/<module>.css"`.
+   For CSS assets add a `copy` rule to the `pack` config and use `"./<module>.css": "./dist/<module>.css"`.
 
 4. **Build** to verify types and output are correct:
    ```sh
-   npm run build
+   vp run <package-name>#build   # e.g. @mrmt/utils#build
    ```
 
 ## Notes
 
-- Output format is always ESM (`"es"`), no CJS.
-- Module files are preserved (`preserveModules: true`, root at `./src`), so the output path mirrors the source path.
-- All dependencies should be in `devDependencies` (bundled) or `peerDependencies` (external). `nodeExternals()` automatically externalises peer/regular deps.
+- Output is ESM only and bundled per entry (`vp pack`): the output file is named after the entry key; shared code goes into chunks and unused code from inlined private packages is tree-shaken.
+- `dependencies` and `peerDependencies` are externalised automatically; everything else is bundled.
+- The shared pack baseline lives in `tooling/pack.ts`.

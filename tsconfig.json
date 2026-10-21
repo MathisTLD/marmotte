@@ -1,14 +1,4 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.tests.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "extends": "./packages/tsconfig/tsconfig.vite-config.json",
+  "include": ["vite.config.ts", "tooling", "packages/*/vite.config.ts"]
 }

@@ -1,0 +1,32 @@
+{
+  "name": "@mrmt/tsconfig",
+  "version": "0.6.1",
+  "description": "Shared tsconfig bases for marmotte projects",
+  "license": "ISC",
+  "author": "MathisTLD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisTLD/marmotte.git",
+    "directory": "packages/tsconfig"
+  },
+  "files": [
+    "*.json"
+  ],
+  "exports": {
+    "./*": "./*",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@tsconfig/node24": "^24.0.4",
+    "@vue/tsconfig": "^0.8.1"
+  },
+  "devDependencies": {
+    "vite": "*"
+  },
+  "peerDependencies": {
+    "vite": "^7.0.0 || ^8.0.0"
+  }
+}

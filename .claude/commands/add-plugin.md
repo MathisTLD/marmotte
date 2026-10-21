@@ -1,41 +1,43 @@
-# Add a new Vite plugin to marmotte
+# Add a new Vite plugin
 
-Follow these steps to add a new plugin named `$ARGUMENTS` to the marmotte library.
+Follow these steps to add a new plugin named `$ARGUMENTS` to `@mrmt/vite`.
 
 ## Steps
 
-1. **Read the existing conventions** by reviewing [CLAUDE.md](../../CLAUDE.md) and a similar plugin for reference (e.g. [src/vite/lib.ts](../../src/vite/lib.ts)).
+1. **Read the existing conventions** by reviewing [CLAUDE.md](../CLAUDE.md) and a similar plugin for reference (e.g. [lib.ts](../../packages/vite/src/lib.ts)).
 
-2. **Create the plugin file** at `src/vite/<name>.ts`:
+2. **Create the plugin file** at `packages/vite/src/<name>.ts`:
    - Export a `function MyPlugin(options: MyPluginOptions): Plugin | Plugin[]`
    - Use `DefaultVitePluginContext` from `./lib/context` if you need path resolution
-   - Follow the same naming pattern: `marmotte:<name>` for the plugin `name` field
+   - Follow the naming pattern `marmotte:<name>` for the plugin `name` field
 
-3. **Add the entry point** in [vite.config.ts](../../vite.config.ts) under the `build.lib.entry` object:
+3. **Add the entry point** in `packages/vite/vite.config.ts` under `pack.entry`:
 
    ```ts
-   "vite/<name>": "./src/vite/<name>.ts",
+   "<name>": "src/<name>.ts",
    ```
 
-4. **Add the export** in [package.json](../../package.json) under `"exports"`:
+4. **Add the export** in `packages/vite/package.json` under `"exports"`:
 
    ```json
-   "./vite/<name>": {
-     "types": "./dist/vite/<name>.d.ts",
-     "import": "./dist/vite/<name>.js"
+   "./<name>": {
+     "types": "./dist/<name>.d.ts",
+     "import": "./dist/<name>.js"
    }
    ```
 
-5. **Write a test** in `tests/vite-<name>.test.ts` using Vitest.
+5. **Write a test** next to the source, `packages/vite/src/<name>.test.ts`, using Vitest.
 
 6. **Build and verify**:
    ```sh
-   npm run build
-   npm run test
+   vp run @mrmt/vite#build
+   vp run @mrmt/vite#test
    ```
+
+Plugins that need Vue/Vuetify belong in `@mrmt/vite-ui` instead.
 
 ## Reference
 
-- Path resolution: `src/vite/lib/context.ts`
-- Plugin composition pattern: `src/vite/lib.ts` (`Lib` bundles multiple plugins)
-- Auto-managed file writing: `src/utils/codegen/index.ts`
+- Path resolution: `packages/vite/src/lib/context.ts`
+- Plugin composition pattern: `packages/vite/src/lib.ts` (`Lib` bundles multiple plugins)
+- Auto-managed file writing: `packages/utils/src/codegen/index.ts`

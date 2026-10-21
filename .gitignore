@@ -1,5 +1,9 @@
 node_modules
 
-/dist
+dist
 
 *.local.*
+
+# generated TypeDoc API reference
+packages/*/docs/api
+docs/reference/api

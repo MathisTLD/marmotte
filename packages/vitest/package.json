@@ -1,0 +1,40 @@
+{
+  "name": "@mrmt/vitest",
+  "version": "0.6.1",
+  "description": "Vitest helpers (temporary directories) for marmotte",
+  "license": "ISC",
+  "author": "MathisTLD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisTLD/marmotte.git",
+    "directory": "packages/vitest"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tmpdir": {
+      "types": "./dist/tmpdir.d.ts",
+      "import": "./dist/tmpdir.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@mrmt/tsconfig": "workspace:^",
+    "@mrmt/unplugin-typedoc": "workspace:^",
+    "vite": "*",
+    "vitest": "*"
+  },
+  "peerDependencies": {
+    "vitest": "^4.0.18 || ^5.0.0"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@mrmt/unplugin-typedoc",
+  "version": "0.6.1",
+  "description": "Vite and Rolldown plugin generating a TypeDoc API reference as VitePress-ready Markdown",
+  "license": "ISC",
+  "author": "MathisTLD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisTLD/marmotte.git",
+    "directory": "packages/unplugin-typedoc"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/typedoc.d.ts",
+      "import": "./dist/typedoc.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "typedoc": "^0.28.17",
+    "typedoc-plugin-markdown": "^4.10.0",
+    "typedoc-vitepress-theme": "^1.1.2",
+    "unplugin": "^3.4.0"
+  },
+  "devDependencies": {
+    "@mrmt/tsconfig": "workspace:^",
+    "@mrmt/utils": "workspace:^",
+    "vite": "*"
+  },
+  "peerDependencies": {
+    "vite": "^7.0.0 || ^8.0.0"
+  }
+}

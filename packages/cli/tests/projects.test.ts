@@ -1,0 +1,180 @@
+import { beforeAll, describe, expect, test } from "vitest";
+import { fileExists, dirExists } from "@mrmt/utils/fs";
+import { prepare, scaffold, run } from "./projects.test-utils";
+import { resolve } from "node:path";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+
+// scaffolding runs a real `npm install` (7 of them concurrently): leave room for a slow registry
+const SCAFFOLD_TIMEOUT = 180_000;
+
+// Shared assertions for library templates (node-library, ui-library)
+async function expectLibraryOutput(root: string) {
+  const dist = resolve(root, "dist");
+  expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+  expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
+
+  const js = await readFile(resolve(dist, "index.js"), "utf8");
+  expect(js).toContain("MyClass");
+
+  const dts = await readFile(resolve(dist, "index.d.ts"), "utf8");
+  expect(dts).toContain("MyClass");
+}
+
+async function expectLibraryDocumentation(root: string) {
+  // TypeDoc generated API markdown in docs/reference/api/
+  const apiDir = resolve(root, "docs/reference/api");
+  expect(dirExists(apiDir)).toBe(true);
+  const apiMdFiles = (await readdir(apiDir)).filter((f) => f.endsWith(".md"));
+  expect(apiMdFiles.length).toBeGreaterThan(0);
+  // At least one generated file references our exported class
+  const apiContents = await Promise.all(
+    apiMdFiles.map((f) => readFile(resolve(apiDir, f), "utf8")),
+  );
+  expect(apiContents.some((c) => c.includes("MyClass"))).toBe(true);
+
+  // VitePress site includes the TypeDoc API reference in a single build pass
+  expect(fileExists(resolve(root, "docs/.vitepress/dist/index.html"))).toBe(true);
+  expect(fileExists(resolve(root, "docs/.vitepress/dist/reference/api/index.html"))).toBe(true);
+}
+
+describe("Projects", () => {
+  beforeAll(async () => {
+    await prepare();
+  });
+
+  test.concurrent(
+    "node-library",
+    async () => {
+      const root = await scaffold("node-library");
+      await expectLibraryOutput(root);
+      await expectLibraryDocumentation(root);
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "ui-library",
+    async () => {
+      const root = await scaffold("ui-library");
+      await expectLibraryOutput(root);
+      await expectLibraryDocumentation(root);
+
+      // Example Vue component was scaffolded
+      expect(fileExists(resolve(root, "src/components/foo.vue"))).toBe(true);
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "ui-app",
+    async () => {
+      const root = await scaffold("ui-app");
+      const dist = resolve(root, "dist");
+
+      expect(fileExists(resolve(dist, "index.html"))).toBe(true);
+      const html = await readFile(resolve(dist, "index.html"), "utf8");
+      expect(html).toContain("/assets/");
+
+      const assets = await readdir(resolve(dist, "assets"));
+      expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
+      expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "node-library (no examples)",
+    async () => {
+      const root = await scaffold("node-library", {
+        dirname: "node-library-no-examples",
+        includeExamples: false,
+      });
+      const dist = resolve(root, "dist");
+
+      expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+      expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
+
+      // No example class in output
+      const js = await readFile(resolve(dist, "index.js"), "utf8");
+      expect(js).not.toContain("MyClass");
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "ui-library (no examples)",
+    async () => {
+      const root = await scaffold("ui-library", {
+        dirname: "ui-library-no-examples",
+        includeExamples: false,
+      });
+      const dist = resolve(root, "dist");
+
+      expect(fileExists(resolve(dist, "index.js"))).toBe(true);
+      expect(fileExists(resolve(dist, "index.d.ts"))).toBe(true);
+
+      // No example component was scaffolded
+      expect(fileExists(resolve(root, "src/components/foo.vue"))).toBe(false);
+
+      // No example class in output
+      const js = await readFile(resolve(dist, "index.js"), "utf8");
+      expect(js).not.toContain("MyClass");
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "ui-app (no examples)",
+    async () => {
+      const root = await scaffold("ui-app", {
+        dirname: "ui-app-no-examples",
+        includeExamples: false,
+      });
+      const dist = resolve(root, "dist");
+
+      expect(fileExists(resolve(dist, "index.html"))).toBe(true);
+      const html = await readFile(resolve(dist, "index.html"), "utf8");
+      expect(html).toContain("/assets/");
+
+      // Minimal page — no example card content
+      const assets = await readdir(resolve(dist, "assets"));
+      expect(assets.some((f) => f.endsWith(".js"))).toBe(true);
+      expect(assets.some((f) => f.endsWith(".css"))).toBe(true);
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+
+  test.concurrent(
+    "docs plugin is not loaded in vitest",
+    async () => {
+      const root = await scaffold("node-library", {
+        dirname: "node-library-vitest",
+        async beforeInstall(root) {
+          // add vitest
+          const pkgPath = resolve(root, "package.json");
+          const pkg = JSON.parse(await readFile(pkgPath, "utf8"));
+          pkg.devDependencies["vitest"] = "^4.0.0";
+          await writeFile(pkgPath, JSON.stringify(pkg));
+        },
+        async beforeBuild(root) {
+          // write a test
+          await writeFile(
+            resolve(root, "src/foo.test.ts"),
+            `import { test, expect } from "vitest"
+test("foo", () => { expect(42).toBeGreaterThan(41) })
+`,
+          );
+          await run("npx vitest", { cwd: root });
+          // vitest should NOT make the docs plugin run (which created defaults in docs dir on resolveConfig)
+          const vitepressDir = resolve(root, "docs");
+          expect(dirExists(vitepressDir)).toBe(false);
+          // TODO: could use something like
+          // node --input-type=module -e "import {resolveConfig} from 'vitest/node'; import {inspect} from 'util'; const c = await resolveConfig({}, 'serve'); console.log(inspect(c.plugins, {depth:4, colors:false}))"
+        },
+      });
+      // now expect docs to be built
+      await expectLibraryDocumentation(root);
+    },
+    SCAFFOLD_TIMEOUT,
+  );
+});
