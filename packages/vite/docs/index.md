@@ -1,5 +1,6 @@
 ---
 title: "@mrmt/vite"
+order: 1
 ---
 
 # @mrmt/vite

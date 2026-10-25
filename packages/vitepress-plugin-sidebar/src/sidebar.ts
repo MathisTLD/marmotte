@@ -7,12 +7,21 @@ import type { SiteConfig } from "vitepress";
 import { getVitePressConfig } from "./utils";
 import { relative } from "path";
 import { withDefaults, type WithNoDefaults } from "@mrmt/utils/merge";
+import { restartOnPageChanges, type RestartOptions } from "./watch";
 
 export * from "vitepress-sidebar";
 
 type SidebarOptions = WithNoDefaults<VitePressSidebarOptions>;
 
-export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[] = {}) {
+/**
+ * Generates the VitePress sidebar from the docs directory tree.
+ * In dev, VitePress restarts (debounced) when pages are added or removed or when an edit changes
+ * a title or order, so the sidebar stays up to date; pass `restart: false` to disable.
+ */
+export default function SidebarPlugin(
+  options: SidebarOptions | SidebarOptions[] = {},
+  restart: boolean | RestartOptions = true,
+) {
   let resolvedOptions: VitePressSidebarOptions | VitePressSidebarOptions[];
   let vitepressConfig: SiteConfig;
 
@@ -21,7 +30,7 @@ export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[]
     vitepressConfig.userConfig.themeConfig.sidebar = generateSidebar(resolvedOptions);
   }
 
-  return {
+  const sidebarPlugin = {
     name: "marmotte:vitepress-sidebar",
     enforce: "post",
     config(cfg) {
@@ -48,17 +57,12 @@ export default function SidebarPlugin(options: SidebarOptions | SidebarOptions[]
       vitepressConfig = getVitePressConfig(cfg);
       buildSidebar();
     },
-    configureServer(server) {
-      const { root } = server.config;
-      const onFileChange = (file: string) => {
-        if (!file.endsWith(".md") || !file.startsWith(root)) return;
-        // TODO: auto-reload sidebar when pages are added/removed
-        server.config.logger.info(
-          "Page added/removed — restart the dev server to update the sidebar.",
-        );
-      };
-      server.watcher.on("add", onFileChange);
-      server.watcher.on("unlink", onFileChange);
-    },
   } satisfies Plugin;
+
+  return restart === false
+    ? sidebarPlugin
+    : [
+        sidebarPlugin,
+        restartOnPageChanges((server) => [server.config.root], restart === true ? {} : restart),
+      ];
 }

@@ -7,6 +7,7 @@ import { getPackages } from "@manypkg/get-packages";
 import { generateSidebar } from "vitepress-sidebar";
 import type { VitePressSidebarOptions } from "vitepress-sidebar/types";
 import type { DefaultTheme, UserConfig } from "vitepress";
+import { restartOnPageChanges, type RestartOptions } from "./watch";
 
 export interface WorkspaceDocsOptions {
   /** Monorepo root. Defaults to the workspace root found from `process.cwd()`. */
@@ -21,6 +22,12 @@ export interface WorkspaceDocsOptions {
   navText?: string;
   /** Extra `srcExclude` globs (relative to `root`). */
   exclude?: string[];
+  /**
+   * Dev server: restart VitePress (debounced) when pages are added or removed, or when an edit
+   * changes a page title or order, so the sidebar stays up to date. `false` to disable.
+   * @default true
+   */
+  restart?: boolean | RestartOptions;
 }
 
 type MarkdownConfig = NonNullable<NonNullable<UserConfig["markdown"]>["config"]>;
@@ -107,8 +114,8 @@ function excludes(root: string, shell: string, packageDirs: string[], docsDir: s
  *   defineConfig({ title: "my monorepo", ...(await workspaceDocs()) });
  * ```
  *
- * ponytail: spread it, don't merge: if you set `themeConfig`, `markdown` or `rewrites` yourself,
- * merge with the returned values by hand.
+ * ponytail: spread it, don't merge: if you set `themeConfig`, `markdown`, `vite` or `rewrites`
+ * yourself, merge with the returned values by hand.
  */
 export async function workspaceDocs(options: WorkspaceDocsOptions = {}) {
   const { shell = "docs", docsDir = "docs", navText = "Packages", order = [] } = options;
@@ -141,18 +148,30 @@ export async function workspaceDocs(options: WorkspaceDocsOptions = {}) {
   };
 
   // vitepress-sidebar resolves `documentRootPath` from the current working directory
-  const sidebarOptions = (docsRoot: string, resolvePath: string): VitePressSidebarOptions => ({
+  const sidebarOptions = (
+    docsRoot: string,
+    resolvePath: string,
+    includeRootIndexFile: boolean,
+  ): VitePressSidebarOptions => ({
     documentRootPath: posix(relative(process.cwd(), docsRoot)),
     resolvePath,
+    // a package's index page is its landing page: list it in its own sidebar
+    includeRootIndexFile,
+    // handwritten pages first, the generated `api/` folder last
+    sortFolderTo: includeRootIndexFile ? "bottom" : undefined,
     collapsed: true,
     useFolderLinkFromIndexFile: true,
     useTitleFromFrontmatter: true,
+    // optional `order` front matter
+    sortMenusByFrontmatterOrder: true,
     useTitleFromFileHeading: true,
     useFolderTitleFromIndexFile: true,
   });
   const sidebar = generateSidebar([
-    sidebarOptions(join(root, shell), "/"),
-    ...docsPackages.map(({ slug, dir }) => sidebarOptions(join(root, dir, docsDir), `/${slug}/`)),
+    sidebarOptions(join(root, shell), "/", false),
+    ...docsPackages.map(({ slug, dir }) =>
+      sidebarOptions(join(root, dir, docsDir), `/${slug}/`, true),
+    ),
   ]) as DefaultTheme.Sidebar;
 
   const markdownConfig: MarkdownConfig = (md) => {
@@ -191,6 +210,17 @@ export async function workspaceDocs(options: WorkspaceDocsOptions = {}) {
       ),
     },
     markdown: { config: markdownConfig },
+    vite: {
+      plugins:
+        options.restart === false
+          ? []
+          : [
+              restartOnPageChanges(
+                [join(root, shell), ...docsPackages.map(({ dir }) => join(root, dir, docsDir))],
+                typeof options.restart === "object" ? options.restart : {},
+              ),
+            ],
+    },
     themeConfig: {
       nav: [
         {

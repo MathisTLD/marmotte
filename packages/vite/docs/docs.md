@@ -1,5 +1,6 @@
 ---
 title: Documentation plugin
+order: 3
 ---
 
 # Documentation plugin

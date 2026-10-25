@@ -1,5 +1,6 @@
 ---
 title: Building a Library
+order: 2
 ---
 
 # Building a TypeScript Library

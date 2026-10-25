@@ -10,13 +10,14 @@ Marmotte is an extensible development toolkit for TypeScript projects, organised
 
 ## Start here
 
-| Page                                | Read it when you…                                                     |
-| ----------------------------------- | --------------------------------------------------------------------- |
-| [Architecture](./architecture.md)   | need the repo layout, package graph, public exports and code patterns |
-| [Build system](./build-system.md)   | touch builds, tasks, dependencies or releases                         |
-| [Recipes](./recipes.md)             | add an entry point, a package or a plugin                             |
-| [Testing](./testing.md)             | write or debug tests (incl. the scaffold integration tests)           |
-| [Documentation](./documentation.md) | write docs: where they live, how they are linked and built            |
+| Page                                  | Read it when you…                                                     |
+| ------------------------------------- | --------------------------------------------------------------------- |
+| [Architecture](./architecture.md)     | need the repo layout, package graph, public exports and code patterns |
+| [Build system](./build-system.md)     | touch builds, tasks, dependencies or releases                         |
+| [Recipes](./recipes.md)               | add an entry point, a package or a plugin                             |
+| [Testing](./testing.md)               | write or debug tests (incl. the scaffold integration tests)           |
+| [Documentation](./documentation.md)   | write docs: where they live, how they are linked and built            |
+| [Open questions](./open-questions.md) | want to know what is still undecided, and what we found so far        |
 
 ## Everyday commands
 

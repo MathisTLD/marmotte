@@ -59,6 +59,19 @@ export default async () => {
 - **Relative `.md` links work on disk and on the site**, including across packages (`../../vite/docs/lib.md`): they are resolved from the real source file and mapped to site URLs.
 - It adds a **Packages** nav dropdown and one sidebar per package, and generates the `srcExclude` that keeps READMEs, changelogs and sources out of the site.
 
-Options: `root`, `shell` (site shell folder, default `docs`), `docsDir` (default `docs`), `order` (package directories listed first), `navText` and `exclude` (extra `srcExclude` globs). The result is meant to be spread: if you set `themeConfig`, `markdown` or `rewrites` yourself, merge them by hand.
+Options: `root`, `shell` (site shell folder, default `docs`), `docsDir` (default `docs`), `order` (package directories listed first), `navText`, `exclude` (extra `srcExclude` globs) and `restart` (see below). The result is meant to be spread: if you set `themeConfig`, `markdown` or `rewrites` yourself, merge them by hand.
 
-Pages added or removed while the dev server runs need a restart. See also [how this repository organises its docs](../../../docs/dev/documentation.md).
+Inside a package's sidebar, handwritten pages come first (sorted by the optional `order` front matter), then the generated `api/` folder, and a package's own `index.md` is listed as its landing page.
+
+## Dev server
+
+The sidebar is computed when the VitePress config is evaluated, so in `vitepress dev` it would go stale when you add or remove pages or retitle one. Both `workspaceDocs()` and the `Sidebar()` plugin therefore restart VitePress for you, **debounced** (500 ms by default), when:
+
+- a page is added or removed in the docs folders;
+- an edit changes what the sidebar shows: the front matter `title` or `order`, or the first `#` heading.
+
+Edits to the body of a page don't restart anything (normal hot reload). Disable it with `restart: false`, or tune it with `restart: { debounce: 1000 }`: in `workspaceDocs({ restart })`, or as the second argument of `Sidebar(options, restart)`.
+
+Restarting works by touching the VitePress config file, which VitePress already watches. Regenerating a package's `docs/api` (a build in watch mode) adds and removes many pages at once, which the debounce turns into a single restart.
+
+See also [how this repository organises its docs](../../../docs/dev/documentation.md).
