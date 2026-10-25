@@ -10,7 +10,7 @@ Marmotte ships lightweight Vitest helpers for tests that need to work with the f
 import { withTmpDir, createTmpDir, createTmpDirSync } from "@mrmt/vitest";
 ```
 
-See the [API reference](/reference/api/vitest/tmpdir) for full details.
+See the [API reference](./api/tmpdir.md) for full details.
 
 ## `withTmpDir` — auto-managed temporary directory
 

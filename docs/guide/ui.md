@@ -6,11 +6,11 @@ title: Vue UI Library / App
 
 Marmotte provides three composable plugins for Vue 3 + Vuetify projects. All of them include the same base setup: Vue, [`unplugin-vue-components`](https://github.com/unplugin/unplugin-vue-components) (auto-import), and Vuetify.
 
-| Plugin                                                | Use case                                        |
-| ----------------------------------------------------- | ----------------------------------------------- |
-| [`UILib`](/reference/api/vite-ui/index-1#uilib)       | Distributable Vue component library             |
-| [`UIApp`](/reference/api/vite-ui/index-1#uiapp)       | Full Vue application (with vue-router)          |
-| [`UICommon`](/reference/api/vite-ui/index-1#uicommon) | Shared base — use when composing your own stack |
+| Plugin                                                            | Use case                                        |
+| ----------------------------------------------------------------- | ----------------------------------------------- |
+| [`UILib`](../../packages/vite-ui/docs/api/index-1.md#uilib)       | Distributable Vue component library             |
+| [`UIApp`](../../packages/vite-ui/docs/api/index-1.md#uiapp)       | Full Vue application (with vue-router)          |
+| [`UICommon`](../../packages/vite-ui/docs/api/index-1.md#uicommon) | Shared base — use when composing your own stack |
 
 ## Building a Vue component library
 
@@ -83,17 +83,17 @@ UILib({
 });
 ```
 
-`UILib` additionally accepts all [`LibPluginOptions`](/reference/api/vite/lib#libpluginoptions) (entries, dts, externals, docs).
+`UILib` additionally accepts all [`LibPluginOptions`](../../packages/vite/docs/api/lib.md#libpluginoptions) (entries, dts, externals, docs).
 
 `UIApp` additionally accepts `vueRouter` options or `false`.
 
 Plugin option objects (`vue`, `vueComponents`, `vueRouter`) are **deep-merged** with marmotte's defaults. Pass `noDefaults: true` inside any of them to use your options as-is without merging.
 
-See the [API reference](/reference/api/vite-ui/index-1) for full option types.
+See the [API reference](../../packages/vite-ui/docs/api/index-1.md) for full option types.
 
 ## Using `UICommon` directly
 
-`UICommon` is the shared foundation. It returns the plugin array augmented with a `ctx` property for accessing the resolved [`DefaultVitePluginContext`](/reference/api/vite/lib/context#defaultviteplugincontext):
+`UICommon` is the shared foundation. It returns the plugin array augmented with a `ctx` property for accessing the resolved [`DefaultVitePluginContext`](../../packages/vite/docs/api/lib/context.md#defaultviteplugincontext):
 
 ```ts
 import { UICommon } from "@mrmt/vite-ui";

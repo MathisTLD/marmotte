@@ -4,7 +4,7 @@ title: Building a Library
 
 # Building a TypeScript Library
 
-The [`Lib`](/reference/api/vite/lib#lib) plugin configures Vite to build an ESM TypeScript library with sensible defaults.
+The [`Lib`](../../packages/vite/docs/api/lib.md#lib) plugin configures Vite to build an ESM TypeScript library with sensible defaults.
 
 ## Basic setup
 
@@ -78,7 +78,7 @@ Lib({
 });
 ```
 
-See the [API reference](/reference/api/vite/lib) for the full option types.
+See the [API reference](../../packages/vite/docs/api/lib.md) for the full option types.
 
 ## Source maps
 
@@ -105,7 +105,7 @@ export default defineConfig({
 
 ## Low-level: `LibConfig`
 
-[`LibConfig`](/reference/api/vite/lib#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
+[`LibConfig`](../../packages/vite/docs/api/lib.md#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
 
 ```ts
 import { LibConfig } from "@mrmt/vite/lib";

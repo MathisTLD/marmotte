@@ -16,7 +16,7 @@ hero:
       link: /guide/
     - theme: alt
       text: API Reference
-      link: /reference/api/
+      link: /vite/api/
 
 features:
   - title: "📦 Library building"

@@ -19,6 +19,10 @@
       "types": "./dist/sidebar.d.ts",
       "import": "./dist/sidebar.js"
     },
+    "./workspace": {
+      "types": "./dist/workspace.d.ts",
+      "import": "./dist/workspace.js"
+    },
     "./indent.css": "./dist/indent.css",
     "./package.json": "./package.json"
   },
@@ -26,14 +30,18 @@
     "access": "public"
   },
   "dependencies": {
+    "@manypkg/get-packages": "^3.1.0",
+    "qsu": "~1.21.0",
     "vitepress-sidebar": "^1.39.0"
   },
   "devDependencies": {
     "@mrmt/tsconfig": "workspace:^",
     "@mrmt/unplugin-typedoc": "workspace:^",
     "@mrmt/utils": "workspace:^",
+    "@mrmt/vitest": "workspace:^",
     "vite": "*",
-    "vitepress": "^2.0.0-alpha.16"
+    "vitepress": "^2.0.0-alpha.16",
+    "vitest": "*"
   },
   "peerDependencies": {
     "vite": "^7.0.0 || ^8.0.0",

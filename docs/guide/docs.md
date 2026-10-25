@@ -10,7 +10,7 @@ Marmotte provides first-class support for [VitePress](https://vitepress.dev) doc
 
 There are two complementary pieces:
 
-1. **[`Docs`](/reference/api/vite/docs#docs)** — a Vite plugin (included in `Lib` by default) that scaffolds a VitePress site and embeds its dev server into your main Vite dev server.
+1. **[`Docs`](../../packages/vite/docs/api/docs.md#docs)** — a Vite plugin (included in `Lib` by default) that scaffolds a VitePress site and embeds its dev server into your main Vite dev server.
 2. **`TypeDocPlugin`** — a Vite (and Rolldown) plugin added to your main `vite.config.ts` that generates Markdown from your source files' JSDoc comments.
 
 ## Dev mode
@@ -118,7 +118,7 @@ Outside Vite the project root defaults to the current directory; pass `root` to 
 
 ## Sidebar and navigation
 
-The default config uses [`generateSidebar`](/reference/api/vitepress-plugin-sidebar/sidebar) from `vitepress-sidebar` to build the sidebar automatically from the docs directory tree. No manual sidebar config needed.
+The default config uses [`generateSidebar`](../../packages/vitepress-plugin-sidebar/docs/api/sidebar.md) from `vitepress-sidebar` to build the sidebar automatically from the docs directory tree. No manual sidebar config needed.
 
 ```ts
 import { generateSidebar } from "@mrmt/vitepress-plugin-sidebar";

@@ -363,6 +363,12 @@ importers:
 
   packages/vitepress-plugin-sidebar:
     dependencies:
+      '@manypkg/get-packages':
+        specifier: ^3.1.0
+        version: 3.1.0
+      qsu:
+        specifier: ~1.21.0
+        version: 1.21.0
       vite:
         specifier: npm:@voidzero-dev/vite-plus-core@1.3.0
         version: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(@volar/typescript@2.4.28(typescript@5.9.3))(typescript@5.9.3)(yaml@2.9.1)'
@@ -379,9 +385,15 @@ importers:
       '@mrmt/utils':
         specifier: workspace:^
         version: link:../utils
+      '@mrmt/vitest':
+        specifier: workspace:^
+        version: link:../vitest
       vitepress:
         specifier: ^2.0.0-alpha.16
         version: 2.0.0-alpha.20(@types/node@26.6.5)(@volar/typescript@2.4.28(typescript@5.9.3))(postcss@8.5.30)(typescript@5.9.3)(yaml@2.9.1)
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@26.6.5)(@vitest/browser-preview@5.0.5)(@vitest/ui@5.0.5)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(@volar/typescript@2.4.28(typescript@5.9.3))(typescript@5.9.3)(yaml@2.9.1))(@volar/typescript@2.4.28(typescript@5.9.3))(typescript@5.9.3)(yaml@2.9.1)
 
   packages/vitest:
     devDependencies:

@@ -73,5 +73,5 @@ When the `Docs` plugin is active it writes two kinds of files into `docs/`:
 - [Build a TypeScript library →](./lib)
 - [Build a Vue app or library →](./ui)
 - [Set up documentation →](./docs)
-- [Testing utilities →](./vitest)
+- [Testing utilities →](../../packages/vitest/docs/index.md)
 - [AI integration (MCP server + programmatic API) →](./ai)

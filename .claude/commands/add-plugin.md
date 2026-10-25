@@ -4,7 +4,7 @@ Follow these steps to add a new plugin named `$ARGUMENTS` to `@mrmt/vite`.
 
 ## Steps
 
-1. **Read the existing conventions** by reviewing [CLAUDE.md](../CLAUDE.md) and a similar plugin for reference (e.g. [lib.ts](../../packages/vite/src/lib.ts)).
+1. **Read the existing conventions** by reviewing [the architecture docs](../../docs/dev/architecture.md) and a similar plugin for reference (e.g. [lib.ts](../../packages/vite/src/lib.ts)).
 
 2. **Create the plugin file** at `packages/vite/src/<name>.ts`:
    - Export a `function MyPlugin(options: MyPluginOptions): Plugin | Plugin[]`
