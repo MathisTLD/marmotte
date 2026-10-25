@@ -4,7 +4,7 @@ title: Building a Library
 
 # Building a TypeScript Library
 
-The [`Lib`](../../packages/vite/docs/api/lib.md#lib) plugin configures Vite to build an ESM TypeScript library with sensible defaults.
+The [`Lib`](../../vite/docs/api/lib.md#lib) plugin configures Vite to build an ESM TypeScript library with sensible defaults.
 
 ## Basic setup
 
@@ -24,7 +24,7 @@ This single call wires up:
 - **Preserved modules** — the output mirrors your source tree, which is ideal for tree-shaking by consumers.
 - **TypeScript declarations** (`.d.ts` + `.d.ts.map`) via `vite-plugin-dts`. The build **fails** on type errors.
 - **Node externals** — everything in `dependencies` and `peerDependencies` is excluded from the bundle.
-- **VitePress docs** embedded in the dev server (see [Documentation](./docs)).
+- **VitePress docs** embedded in the dev server (see [Documentation](./docs.md)).
 - **`@` alias** pointing to your `src/` directory.
 - **`VITE_PACKAGE_NAME` / `VITE_PACKAGE_VERSION`** env vars injected from `package.json`.
 
@@ -78,7 +78,7 @@ Lib({
 });
 ```
 
-See the [API reference](../../packages/vite/docs/api/lib.md) for the full option types.
+See the [API reference](../../vite/docs/api/lib.md) for the full option types.
 
 ## Source maps
 
@@ -105,7 +105,7 @@ export default defineConfig({
 
 ## Low-level: `LibConfig`
 
-[`LibConfig`](../../packages/vite/docs/api/lib.md#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
+[`LibConfig`](../../vite/docs/api/lib.md#libconfig) is the inner plugin that only handles entry resolution and build settings. Use it if you want to compose your own plugin stack without the DTS generator, externals, or docs:
 
 ```ts
 import { LibConfig } from "@mrmt/vite/lib";

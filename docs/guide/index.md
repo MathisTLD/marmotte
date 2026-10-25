@@ -69,9 +69,9 @@ When the `Docs` plugin is active it writes two kinds of files into `docs/`:
 
 ## Next steps
 
-- [Scaffold a project with the CLI →](./cli)
-- [Build a TypeScript library →](./lib)
-- [Build a Vue app or library →](./ui)
-- [Set up documentation →](./docs)
+- [Scaffold a project with the CLI →](../../packages/cli/docs/index.md)
+- [Build a TypeScript library →](../../packages/vite/docs/lib.md)
+- [Build a Vue app or library →](../../packages/vite-ui/docs/index.md)
+- [Set up documentation →](../../packages/vite/docs/docs.md)
 - [Testing utilities →](../../packages/vitest/docs/index.md)
-- [AI integration (MCP server + programmatic API) →](./ai)
+- [AI integration (MCP server + programmatic API) →](../../packages/cli/docs/ai.md)

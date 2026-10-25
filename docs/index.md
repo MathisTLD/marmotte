@@ -21,26 +21,26 @@ hero:
 features:
   - title: "📦 Library building"
     details: "One-liner Vite config for ESM libraries: automatic entry discovery, TypeScript declarations, source maps, and node externals."
-    link: /guide/lib
+    link: /vite/lib
     linkText: Build a library
 
   - title: "🎨 Vue + Vuetify"
     details: "Pre-wired Vue 3, unplugin-vue-components, Vuetify, and vue-router. Works for both UI libraries and full applications."
-    link: /guide/ui
+    link: /vite-ui/
     linkText: Build a Vue app
 
   - title: "📖 Documentation"
     details: "VitePress dev server embedded in your Vite dev server. API reference auto-generated from JSDoc via TypeDoc."
-    link: /guide/docs
+    link: /vite/docs
     linkText: Set up docs
 
   - title: "🧪 Testing utilities"
     details: "Vitest helpers for temporary directories with automatic cleanup via beforeAll/afterAll hooks."
-    link: /guide/vitest
+    link: /vitest/
     linkText: Testing helpers
 
   - title: "🤖 AI integration"
     details: "MCP server for Claude Code, Claude Desktop, and Cursor. Programmatic API for Node.js scripts and AI-generated code."
-    link: /guide/ai
+    link: /cli/ai
     linkText: AI integration
 ---
