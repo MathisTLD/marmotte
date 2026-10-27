@@ -23,15 +23,15 @@ Marmotte is an extensible development toolkit for TypeScript projects, organised
 
 Run them from the repository root with `vp` (installed globally, or `node_modules/.bin/vp`). Don't use `npx vp` or `npm run`: npm refuses to run in this pnpm project.
 
-| Command              | What it does                                                                        |
-| -------------------- | ----------------------------------------------------------------------------------- |
-| `vp install`         | install dependencies (pnpm is downloaded by `vp`)                                   |
-| `vp run build`       | build every package in dependency order (cached); generates each package's API docs |
-| `vp run test`        | unit tests + the CLI scaffold integration tests (slow, needs network)               |
-| `vp check`           | format (oxfmt) + lint (oxlint); `vp check --fix` fixes. Does **not** type-check     |
-| `vp run <pkg>#build` | one package, e.g. `@mrmt/vite#build`, `marmotte#test`                               |
-| `vp run docs`        | VitePress dev server                                                                |
-| `vp run build:docs`  | build the packages then the documentation site                                      |
+| Command              | What it does                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `vp install`         | install dependencies (pnpm is downloaded by `vp`)                                                                   |
+| `vp run build`       | build every package in dependency order (cached); also writes the API reference of `@mrmt/vite` and `@mrmt/vite-ui` |
+| `vp run test`        | unit tests + the CLI scaffold integration tests (slow, needs network)                                               |
+| `vp check`           | format (oxfmt) + lint (oxlint); `vp check --fix` fixes. Does **not** type-check                                     |
+| `vp run <pkg>#build` | one package, e.g. `@mrmt/vite#build`, `marmotte#test`                                                               |
+| `vp run docs`        | VitePress dev server                                                                                                |
+| `vp run build:docs`  | build the packages then the documentation site                                                                      |
 
 Type-check a package, tests included, with `vp exec tsc --noEmit -p packages/<name>/tsconfig.json` (and `-p tsconfig.json` at the root for the `vite.config.ts` files and `tooling/`).
 

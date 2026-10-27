@@ -101,4 +101,4 @@ const MyContext = contextFactory(
 
 ### Package name and version injection
 
-`vp pack` replaces `import.meta.env.VITE_PACKAGE_NAME`, `import.meta.env.VITE_PACKAGE_VERSION` and `__MARMOTTE_VERSION__` with the **package's own** name and version at build time (see `tooling/pack.ts`). A generated-file header therefore names the package whose code wrote it. Packages are versioned in lockstep.
+`vp pack` replaces `import.meta.env.VITE_PACKAGE_NAME` and `import.meta.env.VITE_PACKAGE_VERSION` with the **package's own** name and version at build time (see `tooling/pack.ts`). A generated-file header therefore names the package whose code wrote it. Packages are versioned in lockstep.

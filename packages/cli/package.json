@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@mrmt/tsconfig": "workspace:^",
-    "@mrmt/unplugin-typedoc": "workspace:^",
     "@mrmt/utils": "workspace:^",
     "@mrmt/vite": "workspace:^",
     "@mrmt/vite-ui": "workspace:^",

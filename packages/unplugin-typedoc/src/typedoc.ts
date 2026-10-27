@@ -49,6 +49,9 @@ type BootstrapOptions = WithNoDefaults<TypeDocOptions> & {
 /**
  * Bootstrap a TypeDoc application generating an API reference into `<docsRoot>/reference/api/`.
  * Override with the `out` TypeDoc option to change the output path.
+ *
+ * Entry points default to every `.ts` file of `sourceDir`; passing `entryPoints` **replaces** that
+ * default (other array options, like `plugin`, are added to the defaults).
  */
 export async function bootstrapTypeDoc(options: BootstrapOptions) {
   const { sourceDir, docsRoot, onOptions, ...userTypedocOptions } = options;
@@ -57,7 +60,8 @@ export async function bootstrapTypeDoc(options: BootstrapOptions) {
 
   const typedocOptions = withDefaults<TypeDocOptions>(
     {
-      entryPoints: [join(sourceDir, "**", "*.ts")],
+      // arrays are concatenated with the user's: only default when none are given
+      entryPoints: userTypedocOptions.entryPoints ? [] : [join(sourceDir, "**", "*.ts")],
       skipErrorChecking: true,
       plugin: [...defaultPlugins],
       out,

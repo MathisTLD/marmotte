@@ -3,12 +3,10 @@ import { Command } from "commander";
 import { runCreate } from "./create.js";
 import { runSetup } from "./setup.js";
 
-declare const __MARMOTTE_VERSION__: string;
-
 const program = new Command()
   .name("marmotte")
   .description("Extensible development toolkit for TypeScript projects")
-  .version(__MARMOTTE_VERSION__);
+  .version(import.meta.env.VITE_PACKAGE_VERSION);
 
 program
   .command("create [dir]")

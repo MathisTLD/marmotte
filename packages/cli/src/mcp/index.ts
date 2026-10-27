@@ -7,8 +7,6 @@ import { runSetup } from "../cli/setup.js";
 import { builtinTemplates } from "../cli/templates/index.js";
 import { features } from "../cli/features/index.js";
 
-declare const __MARMOTTE_VERSION__: string;
-
 /** Redirect clack UI output to stderr so it doesn't corrupt the MCP stdio JSON-RPC framing. */
 async function withStderrAsStdout<T>(fn: () => Promise<T>): Promise<T> {
   const real = process.stdout;
@@ -20,7 +18,7 @@ async function withStderrAsStdout<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-const server = new McpServer({ name: "marmotte", version: __MARMOTTE_VERSION__ });
+const server = new McpServer({ name: "marmotte", version: import.meta.env.VITE_PACKAGE_VERSION });
 
 // Resources — let agents discover available templates and features
 server.registerResource(

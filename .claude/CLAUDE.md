@@ -8,12 +8,12 @@ The contributor documentation lives in the docs, not here. Read these before cha
 
 - [docs/dev/index.md](../docs/dev/index.md): commands and the rules that bite
 - [docs/dev/architecture.md](../docs/dev/architecture.md): layout, package graph, exports, code patterns
-- [docs/dev/build-system.md](../docs/dev/build-system.md): Vite+ tasks, API docs generation, private/inlined packages, releases
+- [docs/dev/build-system.md](../docs/dev/build-system.md): Vite+ tasks, the opt-in API reference, private/inlined packages, releases
 - [docs/dev/recipes.md](../docs/dev/recipes.md): add an entry point, a package, a plugin
 - [docs/dev/testing.md](../docs/dev/testing.md): unit and scaffold integration tests
 - [docs/dev/documentation.md](../docs/dev/documentation.md): how docs are organised and linked
 
-Each package also keeps its own docs next to its code: `packages/<pkg>/docs/` (handwritten pages, plus a generated, gitignored `api/` folder written by the build). Follow relative links between the `.md` files; they work without the built site.
+Each package also keeps its own docs next to its code: `packages/<pkg>/docs/` (handwritten pages; `@mrmt/vite` and `@mrmt/vite-ui` also get a generated, gitignored `api/` reference from their build). Follow relative links between the `.md` files; they work without the built site.
 
 ## Essentials
 

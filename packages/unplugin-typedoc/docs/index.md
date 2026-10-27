@@ -10,7 +10,7 @@ title: TypeDoc plugin
 npm install --save-dev @mrmt/unplugin-typedoc
 ```
 
-`Lib()` from [`@mrmt/vite`](../../vite/docs/lib.md) already includes it. In a monorepo where each package keeps its docs next to its code, point `out` at the package's `docs/api` folder: that is what this repository does for every package.
+`Lib()` from [`@mrmt/vite`](../../vite/docs/lib.md) already includes it. In a monorepo where each package keeps its docs next to its code, point `out` at the package's `docs/api` folder: that is what this repository does for `@mrmt/vite` and `@mrmt/vite-ui`.
 
 ## Configuring TypeDoc
 
@@ -39,6 +39,9 @@ export default defineConfig({
 
       // Opt out of the automatic .gitignore written in the output dir
       gitignore: false,
+
+      // Document these entry points only (default: every .ts file of sourceDir)
+      entryPoints: ["./src/index.ts"],
 
       // Any other TypeDoc option is passed through
       excludePrivate: true,

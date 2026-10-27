@@ -6,7 +6,6 @@ import { features, type PackageJson } from "./features/index.js";
 import { builtinTemplates, resolveTemplate } from "./templates/index.js";
 
 // Injected at build time by vite
-declare const __MARMOTTE_VERSION__: string;
 
 /** Options for {@link runCreate}. All fields are optional; missing ones are prompted interactively. */
 export type CreateOptions = {
@@ -132,7 +131,7 @@ export async function runCreate(opts: CreateOptions = {}) {
 
   const template = resolveTemplate(templateSource);
 
-  const marmotteVersion = __MARMOTTE_VERSION__;
+  const marmotteVersion = import.meta.env.VITE_PACKAGE_VERSION;
   const includeExamples = Boolean(answers.includeExamples);
 
   const spinner = p.spinner();

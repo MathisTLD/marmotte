@@ -17,8 +17,8 @@ title: Recipes
    - `package.json`: `name`, a `version` equal to the other packages, `type: "module"`, `workspace:^` for `@mrmt/*` dependencies (including a devDependency on `@mrmt/tsconfig`), `files: ["dist", "!dist/**/*.map"]`, explicit `exports`, and `publishConfig.access: "public"` for scoped names;
    - `tsconfig.json` extending `@mrmt/tsconfig/tsconfig.node-lib.json`;
    - `vite.config.ts` using `packageConfig`.
-2. `packages/*` in `pnpm-workspace.yaml` picks it up. Add `@mrmt/unplugin-typedoc` as a `workspace:^` devDependency unless the package opts out with `api: false`. If the site should depend on its build, add `<name>#build` to `docsDependencies` in the root `vite.config.ts`.
-3. Give it a `docs/` folder if it has anything to document ([Documentation](./documentation.md)).
+2. `packages/*` in `pnpm-workspace.yaml` picks it up. If the site should depend on its build, add `<name>#build` to `docsDependencies` in the root `vite.config.ts`.
+3. Give it a `docs/` folder if it has anything to document ([Documentation](./documentation.md)). Only add a generated API reference if people will look its types up ([Build system](./build-system.md#api-reference)).
 4. `vp install`, then `vp run build`.
 
 ## Add a Vite plugin

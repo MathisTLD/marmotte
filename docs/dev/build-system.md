@@ -21,14 +21,22 @@ Workspace dependencies use the `workspace:^` protocol; that is what lets `vp run
 
 A package that imports another workspace package (or extends `@mrmt/tsconfig`) must declare it. pnpm's `node_modules` is strict: nothing is hoisted by accident.
 
-## API docs are generated during build
+## API reference
 
-The TypeDoc plugin (`@mrmt/unplugin-typedoc`, Rolldown flavour) is set up in `packageConfig` and writes each package's API reference into `packages/<pkg>/docs/api/` (gitignored) as part of `vp pack`.
+A generated API reference is **opt-in**, for packages whose option types people look up: today `@mrmt/vite` and `@mrmt/vite-ui`. The other packages are small and covered by their handwritten pages plus the JSDoc in their `.d.ts` files; a reference for them was mostly noise (the CLI generated 17 pages for a single public entry).
 
-- `@mrmt/utils` and `@mrmt/unplugin-typedoc` opt out with `api: false`: the plugin depends on `utils`, so documenting them with it would make the build graph cyclic.
-- Every other package lists `@mrmt/unplugin-typedoc` as a `workspace:^` devDependency so `vp` builds it first.
-- The plugin is imported lazily (`lazyTypeDoc` in `tooling/pack.ts`) because configs are evaluated to build the task graph, before anything is built.
-- `docs/**` is excluded from the build task's cache inputs: TypeDoc cleans and rewrites it.
+A package opts in with one line in its `vite.config.ts`:
+
+```ts
+pack: { entry, plugins: [apiDocs(import.meta.dirname, entry)] },
+```
+
+`apiDocs` (`tooling/typedoc.ts`) runs the TypeDoc plugin (`@mrmt/unplugin-typedoc`, Rolldown flavour) during `vp pack`, documents only the package's **public entries** (its `pack.entry`) and writes `packages/<pkg>/docs/api/` (gitignored). To use it a package must:
+
+- list `@mrmt/unplugin-typedoc` as a `workspace:^` dependency (devDependency is enough), so `vp` builds the plugin first;
+- not be `@mrmt/utils` or `@mrmt/unplugin-typedoc` itself: the plugin depends on `utils`, so that would make the build graph cyclic.
+
+The plugin is imported lazily, in `buildStart`: package configs are evaluated to build the task graph, before anything (the plugin included) is built. `docs/**` is excluded from the build task's cache inputs since TypeDoc cleans and rewrites it.
 
 See [Documentation](./documentation.md) for how the site reads these files.
 
