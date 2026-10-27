@@ -13,10 +13,31 @@ async function ensureVitePressDir(ctx: Context) {
 export async function writeDefaultFiles(ctx: Context, force = false) {
   const vitePressDir = await ensureVitePressDir(ctx);
   const pkg = await ctx.resolvePackageJson();
+  const { workspace } = ctx.options;
 
-  await writeDefaultFile(
+  await ctx.writeDefaultFile(
     resolve(vitePressDir, "config.ts"),
-    `import { defineConfig } from "vitepress";
+    workspace
+      ? `import { defineConfig } from "vitepress";
+import { workspaceDocs } from "@mrmt/vitepress-plugin-sidebar/workspace";
+
+export default async () => {
+  // pages are read in place from \`<package>/docs/\` of every workspace package
+  const workspace = await workspaceDocs();
+  return defineConfig({
+    title: "${pkg.name}",
+    ...workspace,
+    themeConfig: {
+      ...workspace.themeConfig,
+      // enable search by default
+      search: {
+        provider: "local",
+      },
+    },
+  });
+}
+`
+      : `import { defineConfig } from "vitepress";
 import Sidebar from "@mrmt/vitepress-plugin-sidebar";
 
 export default async () => {
@@ -66,12 +87,16 @@ layout: home
 hero:
   name: "${pkg.name}"
   # text: ""
-  tagline: "${pkg.description}"
+  tagline: "${pkg.description ?? ""}"${
+    workspace
+      ? ""
+      : `
   actions:
     # see https://vitepress.dev/reference/default-theme-home-page#hero-section
     - theme: alt
       text: "API Reference"
-      link: /reference/api/
+      link: /reference/api/`
+  }
 ---`,
     {
       // file must start with `--` on first line so header is added manually with `defaultFileHeader("#")`

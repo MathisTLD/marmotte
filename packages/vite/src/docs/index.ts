@@ -9,6 +9,17 @@ function resolveContext(config: ResolvedConfig, options: Options) {
 export type Options = {
   /** Path where to serve vitepress dev server when in dev mode (default `/docs`) use false to disable */
   serve?: string | false;
+  /**
+   * Monorepo mode: scaffold a site assembling the docs of every workspace package
+   * (`packages/<pkg>/docs/**`) with `workspaceDocs()` from `@mrmt/vitepress-plugin-sidebar/workspace`,
+   * instead of a single-package site. Use it in the monorepo root's `vite.config.ts`.
+   * Options of `workspaceDocs()` are edited in the generated `docs/.vitepress/config.ts`.
+   *
+   * The dev server integration works as usual. A root has no bundle entry, so build the site
+   * with `vitepress build docs` rather than `vite build`.
+   * @default false
+   */
+  workspace?: boolean;
 };
 
 /**

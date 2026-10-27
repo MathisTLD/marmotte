@@ -31,6 +31,8 @@ Nothing below is enforced. They keep things easy to navigate:
 - front matter `title` (otherwise the first heading is used) and, where the order matters, `order` (pages without one sort by file name);
 - one topic per file, named after the topic.
 
+This repository's `docs/.vitepress/config.ts` is written by hand. Other monorepos can scaffold the equivalent with `Docs({ workspace: true })` ([Documentation plugin](../../packages/vite/docs/docs.md#monorepo-mode)).
+
 ## How the site assembles the pages
 
 `docs/.vitepress/config.ts` calls `workspaceDocs()` from `@mrmt/vitepress-plugin-sidebar/workspace` and spreads the result into the VitePress config. It:

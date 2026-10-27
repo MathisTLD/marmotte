@@ -61,3 +61,27 @@ export default defineConfig({
   plugins: [Docs()],
 });
 ```
+
+## Monorepo mode
+
+In a monorepo where every package keeps its docs next to its code (`packages/<pkg>/docs/`), scaffold **one** site assembling all of them. Put `Docs` in the **root** `vite.config.ts` with `workspace: true`:
+
+```ts
+// vite.config.ts (monorepo root)
+import { Docs } from "@mrmt/vite/docs";
+
+export default defineConfig({
+  plugins: [Docs({ workspace: true })],
+});
+```
+
+The first run writes the same default files as above, with two differences:
+
+- `docs/.vitepress/config.ts` calls [`workspaceDocs()`](../../vitepress-plugin-sidebar/docs/index.md#monorepos-docs-next-to-code) instead of the single-site `Sidebar()` plugin, so each package with markdown in its `docs/` folder is served at `/<package directory name>/`, with a **Packages** nav dropdown, a sidebar per package, and relative `.md` links working across packages. Pass options (`order`, `shell`, `restart`, …) to `workspaceDocs()` in that file: it is a default file, so it is yours to edit.
+- `docs/index.md` has no "API Reference" button, since there is no single API reference to point at.
+
+Notes:
+
+- The root `package.json` needs `"type": "module"`, like the single-package site: the config imports ESM-only packages.
+- `vite dev` mounts the docs at `/docs/` as usual. A monorepo root has no bundle entry, so build the site with `vitepress build docs` rather than `vite build`.
+- Add `@mrmt/vitepress-plugin-sidebar` and `vitepress` to the root's dev dependencies.

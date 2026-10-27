@@ -59,6 +59,8 @@ export default async () => {
 - **Relative `.md` links work on disk and on the site**, including across packages (`../../vite/docs/lib.md`): they are resolved from the real source file and mapped to site URLs.
 - It adds a **Packages** nav dropdown and one sidebar per package, and generates the `srcExclude` that keeps READMEs, changelogs and sources out of the site.
 
+To get this config scaffolded for you, use [`Docs({ workspace: true })`](../../vite/docs/docs.md#monorepo-mode) from `@mrmt/vite`.
+
 Options: `root`, `shell` (site shell folder, default `docs`), `docsDir` (default `docs`), `order` (package directories listed first), `navText`, `exclude` (extra `srcExclude` globs) and `restart` (see below). The result is meant to be spread: if you set `themeConfig`, `markdown` or `rewrites` yourself, merge them by hand.
 
 Inside a package's sidebar, handwritten pages come first (sorted by the optional `order` front matter), then the generated `api/` folder, and a package's own `index.md` is listed as its landing page.
