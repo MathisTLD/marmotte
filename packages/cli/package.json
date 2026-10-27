@@ -32,6 +32,9 @@
   "dependencies": {
     "@clack/prompts": "^1.1.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
+    "bingo": "^0.13.2",
+    "bingo-fs": "^0.6.0",
+    "bingo-stratum": "^0.8.0",
     "commander": "^14.0.3",
     "giget": "^3.1.2",
     "zod": "^4.3.6"
@@ -42,6 +45,7 @@
     "@mrmt/vite": "workspace:^",
     "@mrmt/vite-ui": "workspace:^",
     "@mrmt/vitest": "workspace:^",
+    "bingo-stratum-testers": "^0.5.15",
     "vite": "*",
     "vitest": "*",
     "vue-router": "^5.0.3"
