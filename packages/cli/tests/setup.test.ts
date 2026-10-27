@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { createTmpDir } from "@mrmt/vitest";
 import { rm, writeFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { features } from "../src/cli/features/index";
+import { features } from "../src/template/index";
 import { runSetup } from "../src/cli/setup";
 
 // Prevent actual npm install from running

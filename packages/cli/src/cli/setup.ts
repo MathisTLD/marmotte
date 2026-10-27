@@ -1,8 +1,9 @@
 import * as p from "@clack/prompts";
-import { readFile, writeFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import { join, resolve } from "path";
 import { spawn } from "child_process";
-import { features, type PackageJson } from "./features/index.js";
+import { features } from "../template/index.js";
+import { applyTemplate } from "./scaffold.js";
 
 /** Options for {@link runSetup}. All fields are optional; missing ones are prompted interactively. */
 export type SetupOptions = {
@@ -17,9 +18,8 @@ export type SetupOptions = {
 /**
  * Add tooling features to an existing project.
  *
- * Reads the project's `package.json`, applies each selected feature (adding
- * scripts and devDependencies), writes the updated `package.json`, then runs
- * `npm install`.
+ * Adds each selected feature (scripts, devDependencies and config files) to the project, keeping
+ * what is already in its `package.json`, then runs `npm install`.
  *
  * @example Interactive
  * ```ts
@@ -58,26 +58,24 @@ export async function runSetup(opts: SetupOptions = {}) {
   const cwd = opts.dir ? resolve(opts.dir) : process.cwd();
   const pkgPath = join(cwd, "package.json");
 
-  let pkg: PackageJson;
+  let name: string;
   try {
-    const raw = await readFile(pkgPath, "utf8");
-    pkg = JSON.parse(raw) as PackageJson;
+    name = JSON.parse(await readFile(pkgPath, "utf8")).name;
   } catch {
     p.outro("No package.json found in current directory.");
     process.exit(1);
   }
 
-  const selectedFeatureIds = answers.selectedFeatures as string[];
-  const selectedFeatureList = features.filter((f) => selectedFeatureIds.includes(f.id));
-
   const spinner = p.spinner();
   spinner.start("Applying features…");
 
-  for (const feature of selectedFeatureList) {
-    await feature.apply(cwd, pkg);
-  }
-
-  await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+  await applyTemplate(cwd, {
+    mode: "transition",
+    preset: "bare",
+    name,
+    marmotteVersion: import.meta.env.VITE_PACKAGE_VERSION,
+    features: answers.selectedFeatures as string[],
+  });
   spinner.stop("Features applied!");
 
   spinner.start("Running npm install…");

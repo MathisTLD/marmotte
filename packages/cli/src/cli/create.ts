@@ -1,11 +1,8 @@
 import * as p from "@clack/prompts";
 import { basename, resolve } from "path";
-import { writeFile } from "fs/promises";
-import { join } from "path";
-import { features, type PackageJson } from "./features/index.js";
-import { builtinTemplates, resolveTemplate } from "./templates/index.js";
-
-// Injected at build time by vite
+import { features, templates } from "../template/index.js";
+import { generateCustomTemplate } from "./custom-template.js";
+import { applyTemplate } from "./scaffold.js";
 
 /** Options for {@link runCreate}. All fields are optional; missing ones are prompted interactively. */
 export type CreateOptions = {
@@ -84,7 +81,7 @@ export async function runCreate(opts: CreateOptions = {}) {
           : p.select({
               message: "Project type",
               options: [
-                ...builtinTemplates.map((t) => ({ value: t.id, label: t.label })),
+                ...templates.map((t) => ({ value: t.id, label: t.label })),
                 { value: "__custom__", label: "Custom (git URL or local path)" },
               ],
             }),
@@ -129,39 +126,39 @@ export async function runCreate(opts: CreateOptions = {}) {
       ? String(answers.customTemplate ?? "")
       : String(answers.template);
 
-  const template = resolveTemplate(templateSource);
-
+  const builtin = templates.find((t) => t.id === templateSource);
   const marmotteVersion = import.meta.env.VITE_PACKAGE_VERSION;
-  const includeExamples = Boolean(answers.includeExamples);
+  const selectedFeatureIds = answers.selectedFeatures as string[];
 
   const spinner = p.spinner();
-  spinner.start(`Generating ${template.label}…`);
+  spinner.start(`Generating ${builtin?.label ?? `template ${templateSource}`}…`);
   try {
-    await template.generate(dir, { name, marmotteVersion, includeExamples });
+    if (builtin) {
+      await applyTemplate(dir, {
+        mode: "setup",
+        preset: builtin.id,
+        name,
+        marmotteVersion,
+        includeExamples: Boolean(answers.includeExamples),
+        features: selectedFeatureIds,
+      });
+    } else {
+      await generateCustomTemplate(templateSource, dir, { name, marmotteVersion });
+      // what the template made is kept, the features are added to it
+      if (selectedFeatureIds.length > 0) {
+        await applyTemplate(dir, {
+          mode: "transition",
+          preset: "bare",
+          name,
+          marmotteVersion,
+          features: selectedFeatureIds,
+        });
+      }
+    }
   } catch (e) {
     spinner.stop("Generation failed");
     p.outro(`Error: ${e instanceof Error ? e.message : String(e)}`);
     process.exit(1);
-  }
-
-  // Apply selected features
-  const selectedFeatureIds = answers.selectedFeatures as string[];
-  if (selectedFeatureIds.length > 0) {
-    const pkgPath = join(dir, "package.json");
-    let pkg: PackageJson;
-    try {
-      const raw = await import("fs/promises").then((m) => m.readFile(pkgPath, "utf8"));
-      pkg = JSON.parse(raw) as PackageJson;
-    } catch {
-      pkg = { name, version: "0.1.0" };
-    }
-
-    const selectedFeatureList = features.filter((f) => selectedFeatureIds.includes(f.id));
-    for (const feature of selectedFeatureList) {
-      await feature.apply(dir, pkg);
-    }
-
-    await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
   }
 
   spinner.stop("Project created!");

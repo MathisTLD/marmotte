@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import { mkdir, rm } from "node:fs/promises";
 import { exec, type ExecOptionsWithStringEncoding } from "node:child_process";
 import { promisify } from "node:util";
-import { resolveTemplate } from "../src/cli/api";
+import { applyTemplate } from "../src/cli/api";
 import pkg from "../package.json";
 
 const execAsync = promisify(exec);
@@ -70,8 +70,9 @@ export async function scaffold(
   await rm(root, { recursive: true, force: true });
   await mkdir(root, { recursive: true });
 
-  const template = resolveTemplate(templateId);
-  await template.generate(root, {
+  await applyTemplate(root, {
+    mode: "setup",
+    preset: templateId,
     name: templateId,
     marmotteVersion: pkg.version,
     includeExamples: options.includeExamples ?? true,

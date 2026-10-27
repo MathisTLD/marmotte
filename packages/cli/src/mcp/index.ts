@@ -4,8 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { runCreate } from "../cli/create.js";
 import { runSetup } from "../cli/setup.js";
-import { builtinTemplates } from "../cli/templates/index.js";
-import { features } from "../cli/features/index.js";
+import { features, templates } from "../template/index.js";
 
 /** Redirect clack UI output to stderr so it doesn't corrupt the MCP stdio JSON-RPC framing. */
 async function withStderrAsStdout<T>(fn: () => Promise<T>): Promise<T> {
@@ -30,11 +29,7 @@ server.registerResource(
       {
         uri: "marmotte://templates",
         mimeType: "application/json",
-        text: JSON.stringify(
-          builtinTemplates.map((t) => ({ id: t.id, label: t.label })),
-          null,
-          2,
-        ),
+        text: JSON.stringify(templates, null, 2),
       },
     ],
   }),
@@ -49,11 +44,7 @@ server.registerResource(
       {
         uri: "marmotte://features",
         mimeType: "application/json",
-        text: JSON.stringify(
-          features.map((f) => ({ id: f.id, label: f.label })),
-          null,
-          2,
-        ),
+        text: JSON.stringify(features, null, 2),
       },
     ],
   }),
