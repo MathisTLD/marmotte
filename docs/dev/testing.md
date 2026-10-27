@@ -13,9 +13,13 @@ import { withTmpDir } from "@mrmt/vitest";
 const { dir } = withTmpDir();
 ```
 
+## Template tests
+
+`packages/cli/src/template/template.test.ts` tests the scaffolding blocks without installing anything. `testBlock` and `testIntake` from `bingo-stratum-testers` run one block in memory; the other tests run a full `setup`, then a `transition` after hand edits, on a temporary directory. Start here when you change a block, and keep the scaffold integration tests below for "does the generated project build".
+
 ## Scaffold integration tests
 
-`packages/cli/tests/` scaffolds real projects from the CLI templates and builds them:
+`packages/cli/tests/` scaffolds real projects from the built-in templates and builds them:
 
 1. `vp pm pack` packs every publishable workspace package (not the private root, not `@mrmt/utils`). Unpublished `@mrmt/*` dependencies cannot come from the registry.
 2. All the tarballs are installed **together** in each generated project.

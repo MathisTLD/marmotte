@@ -45,9 +45,23 @@ Dependency graph: `utils` (private, inlined as a devDependency of the others) â†
 | `@mrmt/vitest` (+ `/tmpdir`)                       | `packages/vitest/src/`                               | `withTmpDir()`, `createTmpDir()`                                 |
 | `@mrmt/utils/*`                                    | `packages/utils/src/`                                | internal only (private package, inlined)                         |
 | `@mrmt/tsconfig/tsconfig.*.json`                   | `packages/tsconfig/`                                 | tsconfig bases                                                   |
-| `marmotte/api`                                     | `packages/cli/src/cli/api.ts`                        | programmatic CLI API                                             |
+| `marmotte/api`                                     | `packages/cli/src/cli/api.ts`                        | `runCreate()`, `runSetup()`, `applyTemplate()`, catalogs         |
 
 There are no `./*` wildcard exports: every public path is listed explicitly in the package's `package.json`.
+
+## Scaffolding
+
+`marmotte create` and `marmotte setup` write files with a [Bingo](https://www.create.bingo) template (the Stratum engine) in `packages/cli/src/template/`. The prompts and flags stay ours (`src/cli/`); `applyTemplate()` in `src/cli/scaffold.ts` runs the template offline, without GitHub, git or installs.
+
+- **Presets** are the project types: `node-library`, `ui-library`, `ui-app`, and `bare` (only `package.json`, for projects that already exist).
+- **Blocks** are the pieces: a build block (`vite.config.ts`, tsconfigs, scripts, devDependencies) and a starter block per preset, and the five features (`lint`, `format`, `pre-commit`, `changesets`, `version-lifecycle`), which are in no preset and added with `add-<id>`.
+- **`package.json` is composed, not mutated.** `blocks/package-json.ts` owns the file. Other blocks add `scripts`, `devDependencies` and `properties` to it as addons, and Stratum merges them.
+- **Setup vs transition.** `setup` creates a project; the `setup()` hook of a block (starter code) only runs then, so later edits are never overwritten. `transition` updates an existing project: the existing `package.json` is read back (`intake`) so what the user added survives.
+- **The template wins on what it manages.** Stratum aborts if an existing value differs from the one a block adds. The package.json block therefore leaves out of what it reads back the keys that the selected blocks set (`managedByTemplate`), so an edited `scripts.lint` is reset. Blocks the template doesn't know about still abort on a conflict.
+- **Custom templates** (`marmotte create -t user/repo` or a local path) are plain directories copied by `custom-template.ts` (`{{name}}` and `{{marmotteVersion}}` are substituted in `package.json`); selected features are then added to the result with the `bare` preset in transition mode.
+- Blocks are tested in memory with `testBlock` / `testIntake` (`bingo-stratum-testers`); see [Testing](./testing.md#template-tests).
+
+Bingo is 0.x (`bingo` 0.13, `bingo-stratum` 0.8) and its documentation lags the code: read the `.d.ts` files in `node_modules/bingo-stratum` when the docs and the types disagree.
 
 ## Code patterns
 

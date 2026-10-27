@@ -90,7 +90,7 @@ marmotte create ./my-app -t ui-app -n my-app --all
 
 ## `marmotte setup [dir]`
 
-Add tooling features to an existing project. Reads `package.json`, patches it with the selected features, and runs `npm install`.
+Add tooling features to an existing project, then run `npm install`. What is already in `package.json` (fields, scripts, dependencies) is kept; a script or dependency a feature manages (e.g. `lint`) is set to the feature's value. Running it again is safe.
 
 ```sh
 marmotte setup [dir] [options]

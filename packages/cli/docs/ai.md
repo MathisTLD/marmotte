@@ -181,24 +181,55 @@ Omit any field to fall back to interactive prompts for that field. Supplying `te
 ### Discover templates and features at runtime
 
 ```ts
-import { builtinTemplates, features } from "marmotte/api";
+import { templates, features } from "marmotte/api";
 
-builtinTemplates.map((t) => t.id);
+templates.map((t) => t.id);
 // ["node-library", "ui-library", "ui-app"]
 
 features.map((f) => f.id);
-// ["lint", "format", "pre-commit", "changesets"]
+// ["lint", "format", "pre-commit", "changesets", "version-lifecycle"]
+```
+
+### Write a template without prompts
+
+`applyTemplate` is what `runCreate` and `runSetup` use: no prompts, no `npm install`.
+
+```ts
+import { applyTemplate } from "marmotte/api";
+
+// a new project
+await applyTemplate("./my-lib", {
+  mode: "setup",
+  preset: "node-library",
+  name: "my-lib",
+  marmotteVersion: "0.7.0",
+  features: ["lint"],
+});
+
+// an existing project: its `package.json` is kept, only features are added
+await applyTemplate("./existing", {
+  mode: "transition",
+  preset: "bare",
+  name: "existing",
+  marmotteVersion: "0.7.0",
+  features: ["format"],
+});
 ```
 
 ### Types
 
 ```ts
-import type { CreateOptions, SetupOptions, Feature, PackageJson } from "marmotte/api";
+import type { CreateOptions, SetupOptions, ApplyTemplateOptions } from "marmotte/api";
 ```
 
-| Type            | Description                                   |
-| --------------- | --------------------------------------------- |
-| `CreateOptions` | Options for `runCreate`                       |
-| `SetupOptions`  | Options for `runSetup`                        |
-| `Feature`       | `{ id, label, apply(dir, pkg) }`              |
-| `PackageJson`   | Minimal `package.json` shape used by features |
+| Type                   | Description                 |
+| ---------------------- | --------------------------- |
+| `CreateOptions`        | Options for `runCreate`     |
+| `SetupOptions`         | Options for `runSetup`      |
+| `ApplyTemplateOptions` | Options for `applyTemplate` |
+
+--------------- | --------------------------------------------- |
+| `CreateOptions` | Options for `runCreate` |
+| `SetupOptions` | Options for `runSetup` |
+| `Feature` | `{ id, label, apply(dir, pkg) }` |
+| `PackageJson` | Minimal `package.json` shape used by features |
