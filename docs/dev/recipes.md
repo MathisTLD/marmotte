@@ -18,7 +18,7 @@ title: Recipes
    - `tsconfig.json` extending `@mrmt/tsconfig/tsconfig.node-lib.json`;
    - `vite.config.ts` using `packageConfig`.
 2. `packages/*` in `pnpm-workspace.yaml` picks it up. If the site should depend on its build, add `<name>#build` to `docsDependencies` in the root `vite.config.ts`.
-3. Give it a `docs/` folder if it has anything to document ([Documentation](./documentation.md)). Only add a generated API reference if people will look its types up ([Build system](./build-system.md#api-reference)).
+3. Give it a `docs/` folder if it has anything to document ([Documentation](./documentation/index.md)). Only add a generated API reference if people will look its types up ([Build system](./build-system.md#api-reference)).
 4. `vp install`, then `vp run build`.
 
 ## Add a Vite plugin

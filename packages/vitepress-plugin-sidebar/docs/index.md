@@ -76,4 +76,4 @@ Edits to the body of a page don't restart anything (normal hot reload). Disable 
 
 Restarting works by touching the VitePress config file, which VitePress already watches. Regenerating a package's `docs/api` (a build in watch mode) adds and removes many pages at once, which the debounce turns into a single restart.
 
-See also [how this repository organises its docs](../../../docs/dev/documentation.md).
+See also [how this repository organises its docs](../../../docs/dev/documentation/index.md).

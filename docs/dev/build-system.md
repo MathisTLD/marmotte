@@ -38,7 +38,7 @@ pack: { entry, plugins: [apiDocs(import.meta.dirname, entry)] },
 
 The plugin is imported lazily, in `buildStart`: package configs are evaluated to build the task graph, before anything (the plugin included) is built. `docs/**` is excluded from the build task's cache inputs since TypeDoc cleans and rewrites it.
 
-See [Documentation](./documentation.md) for how the site reads these files.
+See [Documentation](./documentation/index.md) for how the site reads these files.
 
 ## Private packages are inlined
 

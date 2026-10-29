@@ -10,14 +10,14 @@ Marmotte is an extensible development toolkit for TypeScript projects, organised
 
 ## Start here
 
-| Page                                  | Read it when you…                                                     |
-| ------------------------------------- | --------------------------------------------------------------------- |
-| [Architecture](./architecture.md)     | need the repo layout, package graph, public exports and code patterns |
-| [Build system](./build-system.md)     | touch builds, tasks, dependencies or releases                         |
-| [Recipes](./recipes.md)               | add an entry point, a package or a plugin                             |
-| [Testing](./testing.md)               | write or debug tests (incl. the scaffold integration tests)           |
-| [Documentation](./documentation.md)   | write docs: where they live, how they are linked and built            |
-| [Open questions](./open-questions.md) | want to know what is still undecided, and what we found so far        |
+| Page                                      | Read it when you…                                                     |
+| ----------------------------------------- | --------------------------------------------------------------------- |
+| [Architecture](./architecture.md)         | need the repo layout, package graph, public exports and code patterns |
+| [Build system](./build-system.md)         | touch builds, tasks, dependencies or releases                         |
+| [Recipes](./recipes.md)                   | add an entry point, a package or a plugin                             |
+| [Testing](./testing.md)                   | write or debug tests (incl. the scaffold integration tests)           |
+| [Documentation](./documentation/index.md) | write docs: where they live, how they are linked and built            |
+| [Open questions](./open-questions.md)     | want to know what is still undecided, and what we found so far        |
 
 ## Everyday commands
 
@@ -40,4 +40,4 @@ Type-check a package, tests included, with `vp exec tsc --noEmit -p packages/<na
 - Use `vp` / `pnpm`. Never `npm pack` or `npm publish`: they would ship the literal `workspace:^` ranges.
 - A package that imports another workspace package, or extends `@mrmt/tsconfig`, must declare it (`"@mrmt/x": "workspace:^"`). pnpm's `node_modules` is strict.
 - `@mrmt/utils` is private and inlined into the packages that use it. See [Build system](./build-system.md#private-packages-are-inlined).
-- When you change a package's public API or behaviour, update its docs in the same change ([Documentation](./documentation.md)).
+- When you change a package's public API or behaviour, update its docs in the same change ([Documentation](./documentation/index.md)).
